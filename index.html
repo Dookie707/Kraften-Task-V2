@@ -1,0 +1,1033 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Kraften Task</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--page:#e9e9ec;--surface:#fafafa;--card:#fff;--ink:#141414;--muted:#8a8a92;--line:#ececf0;--black:#111;
+--g1:linear-gradient(115deg,#eef1ff 0%,#f4ecff 55%,#fde9f5 100%);--g2:linear-gradient(115deg,#e2f7ec 0%,#e7ecff 55%,#efe5ff 100%);
+--orange:#f5a623;--green:#22c55e;--red:#ef4444;--violet:#8b5cf6;--blue:#3b82f6;--gray:#a3a3aa}
+*{box-sizing:border-box}
+body{margin:0;background:var(--page);font-family:Poppins,system-ui,sans-serif;color:var(--ink);font-size:13px}
+button,input,select,textarea{font:inherit;color:inherit}
+.shell{min-height:calc(100vh - 40px);margin:20px;background:var(--surface);border-radius:40px;display:flex;gap:28px;padding:26px}
+.side{width:88px;flex:none;background:var(--black);border-radius:28px;display:flex;flex-direction:column;align-items:center;padding:22px 0;position:sticky;top:26px;height:calc(100vh - 104px)}
+.logo{width:60px;height:60px;background:#fff;border-radius:16px;display:grid;place-items:center;margin-bottom:36px;overflow:hidden}.logo img{width:100%;height:100%;object-fit:contain;display:block}
+.nav{display:flex;flex-direction:column;gap:14px;width:100%;flex:1}
+.nav button{border:0;background:none;color:#fff;height:52px;width:100%;display:grid;place-items:center;cursor:pointer;position:relative}
+.nav button.on{background:var(--surface);color:var(--black);border-radius:24px 0 0 24px;margin-left:18px;width:calc(100% - 18px)}
+.nav button.on::before,.nav button.on::after{content:"";position:absolute;right:0;width:24px;height:24px;pointer-events:none}
+.nav button.on::before{top:-24px;background:radial-gradient(circle at 0 0,transparent 23.5px,var(--surface) 24px)}
+.nav button.on::after{bottom:-24px;background:radial-gradient(circle at 0 100%,transparent 23.5px,var(--surface) 24px)}
+.nav button:hover:not(.on){color:#bbb}
+.nav button .tip{position:absolute;left:78px;background:#111;color:#fff;padding:5px 10px;border-radius:8px;white-space:nowrap;font-size:12px;opacity:0;pointer-events:none;transition:.15s;z-index:5}
+.nav button:hover .tip{opacity:1}
+.side .out{border:0;background:none;color:#fff;cursor:pointer}
+svg.i{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.main{flex:1;min-width:0}
+.top{display:flex;align-items:center;gap:18px;margin-bottom:24px}
+.search{flex:0 1 300px;display:flex;align-items:center;gap:8px;border:1px solid #d9d9de;border-radius:12px;padding:9px 14px;background:#fff;color:var(--muted)}
+.search input{border:0;outline:0;flex:1;background:none}
+.top h1{font-size:20px;font-weight:600;margin:0;flex:1}
+.bell{position:relative;border:0;background:none;cursor:pointer}
+.bell b{position:absolute;top:-6px;right:-6px;background:#ef4444;color:#fff;font-size:10px;border-radius:50%;width:16px;height:16px;display:grid;place-items:center;border:2px solid var(--surface)}
+.who{display:flex;align-items:center;gap:10px;cursor:pointer;border:0;background:none}
+.who small{display:block;color:var(--muted);font-size:11px;text-align:left}
+.av{width:40px;height:40px;border-radius:50%;display:grid;place-items:center;font-weight:600;font-size:13px;color:#fff;flex:none}
+.av.s{width:30px;height:30px;font-size:11px}
+.grid{display:grid;gap:20px}
+.g2{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}
+.g4{grid-template-columns:repeat(4,minmax(0,1fr))}
+.g32{grid-template-columns:minmax(0,1.25fr) minmax(0,1fr)}
+.card{background:var(--card);border-radius:24px;padding:24px;box-shadow:0 10px 30px #1b1b2b0a}
+.hero{background:var(--g1)}
+.info{background:var(--g2)}
+.card h2{font-size:16px;font-weight:600;margin:0 0 4px}
+.card p.sub{color:#555;margin:0 0 16px}
+.kpi.tone{position:relative;overflow:hidden;transition:transform .15s,box-shadow .15s}.kpi.tone[onclick]:hover{transform:translateY(-2px);box-shadow:0 10px 24px #1b1b2b14}.kemo{width:40px;height:40px;border-radius:12px;background:#fff;display:grid;place-items:center;font-size:20px;box-shadow:0 4px 12px #0000000d}.kflag{color:#fff;font-size:10.5px;font-weight:600;padding:3px 8px;border-radius:7px}
+.kpi small{color:var(--muted);display:block}
+.kpi strong{font-size:26px;font-weight:600;white-space:nowrap}.kpi .row{flex-wrap:wrap}
+.lbl{color:var(--muted);font-size:11px;display:block}
+.val{font-weight:500}
+.pill{display:inline-flex;align-items:center;gap:6px;border:1px solid #222;border-radius:7px;padding:2px 8px;font-size:11px;white-space:nowrap;background:#fff}
+.pill i,.dot{width:6px;height:6px;border-radius:50%;display:inline-block;flex:none}
+.btn{border:0;background:var(--black);color:#fff;border-radius:12px;padding:10px 16px;cursor:pointer;font-weight:500;display:inline-flex;align-items:center;gap:8px}
+.btn.ghost{background:#fff;color:#111;border:1px solid #d9d9de}
+.btn.sm{padding:6px 11px;font-size:12px;border-radius:9px}
+.btn.icon{width:44px;height:44px;padding:0;justify-content:center}
+.btn:disabled{opacity:.35;cursor:not-allowed}
+.row{display:flex;align-items:center;gap:12px}
+.between{justify-content:space-between}
+.wrap{flex-wrap:wrap}
+.list .it{display:flex;align-items:center;gap:14px;padding:12px 0;border-bottom:1px solid var(--line)}
+.list .it:last-child{border:0}
+.ic{width:40px;height:40px;border-radius:10px;display:grid;place-items:center;flex:none;font-weight:600}
+.it .t{font-weight:500}
+.it .s{color:var(--muted);font-size:12px}
+.grow{flex:1;min-width:0}
+table{width:100%;border-collapse:collapse}
+th{font-weight:500;color:var(--muted);text-align:left;font-size:11px;padding:8px 10px;border-bottom:1px solid var(--line)}
+td{padding:11px 10px;border-bottom:1px solid var(--line);vertical-align:middle}
+tr.proj td{background:#f7f7fa;font-weight:500}
+tr.click{cursor:pointer}tr.click:hover td{background:#f5f5fb}
+.field{display:flex;flex-direction:column;gap:6px;margin-bottom:14px}
+.field label{font-size:12px;color:#555}
+.inp{border:1px solid #dcdce2;background:#fff;border-radius:12px;padding:10px 13px;outline:0;width:100%}
+.inp:focus{border-color:#111}
+#dist_rows,#nt_resp{counter-reset:r}.resp:only-child .rdue{display:none}.resp{counter-increment:r}.rn::before{content:counter(r) "º"}.rn{flex:none}
+select.inp{appearance:none;-webkit-appearance:none;padding-right:42px;background:#fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23141414' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E") no-repeat right 16px center;cursor:pointer}
+select.inp:disabled{cursor:not-allowed;opacity:.6}
+textarea.inp{min-height:80px;resize:vertical}
+.inpbar{display:flex;background:#fff;border-radius:12px;padding:4px 4px 4px 14px;align-items:center}
+.inpbar input{border:0;outline:0;flex:1}
+.sep{height:1px;background:#0000000f;margin:16px 0}
+.dash{flex:1;border-top:2px dashed #111;margin:0 14px;position:relative}
+.flow{display:flex;gap:10px;flex-wrap:wrap;align-items:stretch}
+.stage{border:1px solid var(--line);border-radius:16px;padding:12px;min-width:180px;flex:1;background:#fff}
+.tabs{display:inline-flex;background:#fff;border-radius:12px;padding:4px;gap:4px;margin-bottom:18px;border:1px solid var(--line)}
+.tabs button{border:0;background:none;padding:8px 16px;border-radius:9px;cursor:pointer}
+.tabs button.on{background:#111;color:#fff}
+.cal{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:6px}
+.cal .h{color:var(--muted);font-size:11px;text-align:center;padding:4px}
+.cal .d{height:118px;overflow:hidden;display:flex;flex-direction:column;min-width:0;background:#fff;border-radius:12px;padding:6px;border:1px solid var(--line)}
+.cal .d.today{border-color:#111}
+.cal .d.off{background:transparent;border-color:transparent}
+.cal .n{font-size:11px;color:var(--muted)}
+.ev{display:block;width:100%;text-align:left;border:0;border-radius:7px;padding:3px 6px;font-size:10.5px;margin-top:3px;cursor:pointer;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.handoff{display:flex;align-items:flex-start;margin:20px 0 16px}.hline{flex:1;border-top:2px dashed #111;margin-top:11px;min-width:20px}
+.hnode{flex:0 1 auto;max-width:34%;display:flex;flex-direction:column;align-items:center;text-align:center;gap:2px;padding:0 6px}
+.hdot{width:24px;height:24px;border-radius:50%;border:2px solid #111;background:#fff;display:grid;place-items:center;margin-bottom:4px}.hnode.ok .hdot{background:var(--green);border-color:var(--green)}.hnode.ok .hdot::after{content:'✓';color:#fff;font-size:12px;font-weight:600}
+.hnode.me .hdot{background:#111;color:#fff;width:30px;height:30px;margin-top:-3px}.hwho{font-weight:500;font-size:12.5px}.hsub{font-size:11px;color:var(--muted)}
+.dn{border:0;background:none;padding:2px 4px;border-radius:6px;font-size:11px;color:var(--muted);cursor:pointer}.dn:hover{background:#111;color:#fff}
+.week{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:8px}.wcol{background:#fff;border:1px solid var(--line);border-radius:16px;padding:8px;height:440px;overflow-y:auto;display:flex;flex-direction:column;gap:6px}.wcol.today{border-color:#111}
+.wh{display:flex;align-items:center;gap:2px;font-size:12px;font-weight:500;padding:2px 2px 6px;border-bottom:1px solid var(--line);margin-bottom:2px}.wh .s{margin-left:auto;color:var(--muted);font-size:11px}
+.evc{display:flex;flex-direction:column;align-items:flex-start;gap:3px;width:100%;text-align:left;border:1px solid var(--line);background:#fff;border-radius:12px;padding:8px 10px;cursor:pointer;font-size:11.5px}.evc:hover{box-shadow:0 6px 16px #1b1b2b14}.evc .t{font-weight:500;font-size:12px}.evc .s{color:var(--muted);font-size:11px}
+.dayg{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:10px}
+@media(max-width:900px){.week{grid-template-columns:1fr}.wcol{height:auto;max-height:320px}}
+.ev.more{background:#111;color:#fff;text-align:center;font-weight:500}
+.stack{display:flex;height:12px;border-radius:6px;overflow:hidden;background:#efeff3;margin-top:5px}.stack i{display:block;height:100%}
+.cols{display:flex;gap:6px;align-items:flex-end;height:170px}.colw{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;height:100%}.cpair{flex:1;width:100%;display:flex;gap:2px;align-items:flex-end}.cpair i{flex:1;border-radius:4px 4px 0 0;min-height:2px}.colw span{font-size:10px;color:var(--muted);height:12px}
+.bar{height:8px;background:#efeff3;border-radius:5px;overflow:hidden}.bar i{display:block;height:100%;background:#111;border-radius:5px}
+.panel{position:fixed;inset:0;background:#0006;display:none;align-items:flex-start;justify-content:center;padding:50px 16px;z-index:20;overflow:auto}
+.panel.open{display:flex}
+.modal{background:#fff;border-radius:24px;padding:26px;width:min(620px,100%)}
+.modal{position:relative;padding-top:52px}.mclose{position:absolute;top:12px;right:12px;width:34px;height:34px;border-radius:10px;border:1px solid #dcdce2;background:#fff;cursor:pointer;font-size:14px;color:#444;display:grid;place-items:center}.mclose:hover{background:#111;color:#fff;border-color:#111}.mclose:focus-visible{outline:2px solid #111;outline-offset:2px}
+.modal.wide{width:min(900px,100%)}
+.empty{color:var(--muted);padding:14px 0}
+.note{font-size:12px;color:#666;background:#f6f6f9;border-radius:10px;padding:9px 12px}
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:#111;color:#fff;padding:11px 18px;border-radius:12px;opacity:0;transition:.2s;z-index:40;pointer-events:none}
+.toast.show{opacity:1}
+.login{max-width:1000px;margin:0 auto}
+.chip{display:inline-block;background:#f1f1f5;border-radius:8px;padding:2px 8px;font-size:11px}
+.scroll{max-height:420px;overflow:auto}
+@media(max-width:900px){.shell{margin:0;border-radius:0;border:0;padding:14px;gap:14px}.side{width:64px;height:auto}.g2,.g4,.g32{grid-template-columns:1fr}.top .search{display:none}}
+</style>
+</head>
+<body>
+<div id="app"></div>
+<div class="panel" id="panel" onclick="if(event.target===this)closeM()"><div class="modal" id="modal"></div></div>
+<div class="toast" id="toast"></div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
+<script>
+// ---------- utilidades ----------
+const LOGO='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAL4AAAC+CAYAAACLdLWdAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAOdEVYdFNvZnR3YXJlAEZpZ21hnrGWYwAABqNJREFUeAHt3TFTFFkUhuHjltkmRhsP+QYQmYL51o6ZmVjmq5NvFRAZAr9AzMxgy1wwNCMwl3gjk41dPrGrXBeGmZ57T9/2e58qi0QRqt7p6bl9+vadz5cCMPNTAIYIH5YIH5YIH5YIH5YIH5YIH5YIH5YIH5YIH5YIH5YIH5YIH5YIH5YIH5YIH5YIH5YIH5YIH5YIH5YIH5YIH5YIH5YIH5YIH5YIH5YIH5YIH5YIH5YIH5YIH5YIH5YIH5YIH5YIH5YIH5YIH5YIH5YIH5YIH5YIH5YIH5YIH5YIH5buRqM+ffoUBwcHUdru7m605vz8PE5OTiLLZDKJ7e3tcHbn86Vo0MXFRaytrUVprf26+j23tra+fM2g6E9PT798dcapzoCIfjiEPxCiHxbhD4Doh0f4yfSh/eHDh0Q/MMJPpOh1pNcqTgaivxnhJ3r+/DnRN4Lwk2jd/NWrV5Hh3r17cXx8TPRzEH4CXTTLjF5H+vX19cDNCL8yRb+3txcZiH5xhF8R0beL8Csh+rYRfgVHR0dE3zjCL0xTlk+ePIkMRN8f4RekNXqiHwfCL0TR66qsrs7WRvSrI/wCNHej+RuiHw/CX1H2pCXRl0H4K8iOXqtFRF8G4fc0RPSPHz8OlEH4PWTP1BN9eYTfQ+ZMPdHXQfhL0ngx0Y8f4S9BN5JkjRcTfV2EvyANnR0eHkYGoq+P8BeQOWlJ9DkI/xZE/2Mi/Dm0dyfR/5gI/wYKcTabRQa9wIg+F+FfI3OmXqdSz549C+Qi/O9kztQr+p2dnUA+wv9GN3+TMV5M9MMi/K+I3gvhR+6kJdG3wT58ovdkHX63ezHR+7ENn+i92YY/nU5TxouJvk2W4Wum/t27d1Eb0bfLLvysmXqib5vdc24zEH37WMcvjOjHgfALIvrxIPxCiH5cCL8Aoh8fwl8R0Y8T4a+A6MeL8FfQ6EowFkD4K9CN6DrqY3wIf0WKP2t3NZRD+AVo9of4x4XwCyH+cSH8goh/PAi/ME1/Zm0jjv7swtdTA2vq7uwi/rbZhb+/vx+1EX/77MLXefjLly+jNuJvm+2thxkXnrIfEofF2X641YxNRvzZjwXFYqxXdRS/VmFqI/722C9n6sNuxt70xN8W1vHj6sEM6+vrURvxt4Pw42pt//T0NCaTSdRG/G0g/K+I3wvhf0PRZ8efsR8//o/wv6Poj4+Pq482CPEPh/CvoQ+6OvJn0JVd4s9H+DdQ/BmjDUL8+Qh/Do02ZAy1ieLXeANyEP4tdGU364bys7OztEeNuiP8BWTN9YieqE789RH+ghR/xmiDEH99hL8EBbm5uRkZ9H/NZrNAHYS/JK3xZ8z1iGaI2LCqDsJfUuZog7BbWx2E3wPxj9/dQC/dXE/WsJnil/QXwIeziPcnEX9fRPzzzQW2tcvTvfvTiF83Y4zsHv5W+tfNvuqatrT69iji9d5V8PP8Mol4tBPxYDvGhPAL0IUnxZ+lavw6qr+4PJJ/WPI5wApfLwC9EEaAc/wCtMSZNdcj1c75dXSfbSwfvegd4s+t298hGkH4hWRtWdKpsj35quHq374Yx7wR4ReUOdogRTepfb1b5mj98fzqezWO8AvL2rKkUyR+Bf96L4p5c/jfFaAGEX4FWVuWdFaOX8uVJSn6NwfRMsKvJHOuRxR/730631bY07/PB+REhF9R5lyP9N6k9mOFjW114athhF+RRhsUf9ZoQ68dmmsuPza8tEn4lWVuWSJsT74Ywk/QxZ+xZYl08bNh1c0IP0mz8WvE4OcKP5O+Z8PjC4SfSB90s3ZtkIW3Klyr8AF8Le9DfR+EnyzrUUSdheK//3sU9yDvOkYfhD+A7LmeW+PXZGXJ0x2d4jQ+pkz4A8me65kbv6L/o+C7kMaTG0f4A8qe65kbv+6m+q3Az/JodxQ3pRD+wLLneubu0Px0f7X4u5tRRoDwG5D1KKLOrfHrqL0MnSo9PSh7ulQZtx42QhFubGykXnTqtkO/9trCl1Hl3Yj3f908YqzgtXqjd4mR3HLYaTZ8haAjYWktb9Oh6DXVmUnxT6fT+X9JA2caZOteAApe6/T6U+PiV4Jmwwdq4hwflggflggflggflggflggflggflggflggflggflggflggflggflggflggflggflggflggflggflggflggflggflggflggflggflggflggflggflggflggflggflggflggflggflggflggflggflggflggflggflggflggflggflggflv4F+cFWhqzaOxUAAAAASUVORK5CYII=';
+const IC={home:'<path d="M3 10.5 12 3l9 7.5V21h-6v-6H9v6H3z"/>',grid:'<rect x="4" y="4" width="7" height="7" rx="2"/><rect x="13" y="4" width="7" height="7" rx="2"/><rect x="4" y="13" width="7" height="7" rx="2"/><rect x="13" y="13" width="7" height="7" rx="2"/>',
+cal:'<rect x="3" y="5" width="18" height="16" rx="3"/><path d="M3 10h18M8 3v4M16 3v4"/>',doc:'<rect x="5" y="3" width="14" height="18" rx="3"/><path d="M9 8h6M9 12h6M9 16h4"/>',
+plus:'<rect x="3" y="3" width="18" height="18" rx="5"/><path d="M12 8v8M8 12h8"/>',chart:'<path d="M4 20V11M10 20V4M16 20v-7M21 20H3"/>',
+help:'<circle cx="12" cy="12" r="9"/><path d="M9.5 9a2.5 2.5 0 1 1 3.5 2.3c-.6.3-1 .9-1 1.7M12 17h.01"/>',build:'<rect x="4" y="3" width="16" height="18" rx="2"/><path d="M9 7h1M14 7h1M9 11h1M14 11h1M10 21v-4h4v4"/>',
+gear:'<circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-2.9 1.2V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-2.9-1.2l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1A1.7 1.7 0 0 0 3.1 14H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.2-2.9l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1A1.7 1.7 0 0 0 10 3.1V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 2.9 1.2l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0 1.2 2.9h.1a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/>',
+check:'<rect x="3" y="3" width="18" height="18" rx="5"/><path d="m8 12 3 3 5-6"/>',
+out:'<path d="M10 4H6a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h4M15 8l4 4-4 4M19 12H9"/>',bell:'<path d="M6 8a6 6 0 1 1 12 0c0 7 3 8 3 8H3s3-1 3-8M10 20a2 2 0 0 0 4 0"/>',
+search:'<circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/>',arrow:'<path d="M5 12h14M13 6l6 6-6 6"/>',dots:'<circle cx="5" cy="12" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/>',
+msg:'<path d="M21 12a8 8 0 0 1-11.6 7.1L4 20l1-4.6A8 8 0 1 1 21 12z"/>',pin:'<path d="M12 21s7-6.2 7-12a7 7 0 0 0-14 0c0 5.8 7 12 7 12z"/><circle cx="12" cy="9" r="2.5"/>'};
+const ic=(n,s)=>`<svg class="i" viewBox="0 0 24 24" ${s?`style="width:${s}px;height:${s}px"`:''}>${IC[n]}</svg>`;
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const uid=()=>Math.random().toString(36).slice(2,9);
+const T0=(()=>{const d=new Date();d.setHours(0,0,0,0);return d})();
+const iso=d=>`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+const dd=n=>{const d=new Date(T0);d.setDate(d.getDate()+n);return iso(d)};
+const fmt=s=>s?s.slice(8,10)+'/'+s.slice(5,7)+'/'+s.slice(0,4):'—';
+const fmtS=s=>s?s.slice(8,10)+'/'+s.slice(5,7):'—';
+const daysTo=s=>Math.round((new Date(s+'T00:00')-T0)/864e5);
+const now=()=>{const d=new Date();return fmt(iso(d))+' '+String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0')};
+const COLORS=['#f97316','#8b5cf6','#06b6d4','#ec4899','#22c55e','#3b82f6','#eab308','#14b8a6'];
+const SECT_BG={Design:'#f1e4fb',Marketing:'#e4e9fd',Tecnologia:'#dff6ea',Financeiro:'#fbecd6',Comercial:'#fde2e2'};
+const SECT_FG={Design:'#7c3aed',Marketing:'#3b5bdb',Tecnologia:'#15803d',Financeiro:'#b45309',Comercial:'#be123c'};
+const ROLE={admin:'Super Admin',ceo:'CEO',gestor:'Gestor',func:'Funcionário'};
+const STC={'Em andamento':'var(--orange)','Concluída':'var(--green)','Concluído':'var(--green)','Bloqueado':'var(--red)','Bloqueada':'var(--red)','Não iniciada':'var(--gray)','Não iniciado':'var(--gray)',
+'Aguardando acordo':'var(--violet)','Aguardando resposta':'var(--violet)','Ajustes solicitados':'var(--red)','Reenviada':'var(--violet)','Distribuída':'var(--green)','Aguardando vez':'var(--gray)',
+'Cancelada':'#555','Aguardando aprovação':'var(--violet)','Recusado':'var(--red)','Pronto para concluir':'var(--blue)','Aguardando aprovação':'var(--violet)','Recusado':'var(--red)','Arquivado':'var(--gray)','Aberto':'var(--orange)','Em análise':'var(--blue)','Aguardando cliente':'var(--violet)','Resolvido':'var(--green)',
+'ativo':'var(--green)','pendente':'var(--orange)','bloqueado':'var(--red)','Pendente':'var(--orange)','Aprovada':'var(--green)','Rejeitada':'var(--red)'};
+const pill=s=>`<span class="pill"><i style="background:${STC[s]||'#999'}"></i>${esc(s)}</span>`;
+const FAROL={verde:['var(--green)','No prazo'],amarelo:['var(--orange)','Prazo próximo'],vermelho:['var(--red)','Crítico'],neutro:['#c4c4c4','Finalizada']};
+const farolPill=f=>`<span class="pill" style="border-color:#ddd"><i style="background:${FAROL[f][0]}"></i>${FAROL[f][1]}</span>`;
+function farol(due,started,done){if(done)return'neutro';const n=daysTo(due);if(n<=0)return'vermelho';if(n===1)return started?'amarelo':'vermelho';if(n<=3)return'amarelo';return'verde'}
+const toast=m=>{const t=document.getElementById('toast');t.textContent=m;t.classList.add('show');clearTimeout(t._h);t._h=setTimeout(()=>t.classList.remove('show'),2400)};
+function openM(html,wide){const m=document.getElementById('modal');m.className='modal'+(wide?' wide':'');html=html.replace(/<button class="btn ghost sm" onclick="closeM\(\)">✕<\/button>/g,'');m.innerHTML='<button class="mclose" onclick="closeAll()" aria-label="Fechar" title="Fechar">✕</button>'+html;document.getElementById('panel').classList.add('open')}
+function closeAll(){BACK=null;closeM()}
+let BACK=null;function closeM(){if(BACK){const b=BACK;BACK=null;return b()}document.getElementById('panel').classList.remove('open')}
+const val=id=>(document.getElementById(id)?.value||'').trim();
+
+// ---------- dados ----------
+function seed(){
+  const u=(id,name,role,sector,email,status='ativo',declared)=>({id,name,role,sector,email,status,declared:declared||role,color:COLORS[(id.charCodeAt(1)+name.length)%8]});
+  const users=[u('u0','Admin Plataforma','admin',null,'admin@kraften.app'),u('u1','Marina Souza','ceo',null,'marina@acme.com'),
+  u('u2','Paulo Mendes','gestor','Design','paulo@acme.com'),u('u3','Carla Dias','gestor','Marketing','carla@acme.com'),u('u4','Rafael Torres','gestor','Tecnologia','rafael@acme.com'),u('u5','Beatriz Lopes','gestor','Financeiro','beatriz@acme.com'),
+  u('u6','Ana Costa','func','Design','ana@acme.com'),u('u7','Carlos Lima','func','Design','carlos@acme.com'),u('u8','João Ribeiro','func','Marketing','joao@acme.com'),
+  u('u9','Lia Martins','func','Tecnologia','lia@acme.com'),u('ua','Pedro Alves','func','Tecnologia','pedro@acme.com'),u('ub','Sofia Rocha','func','Financeiro','sofia@acme.com'),
+  u('uc','Bruno Reis','func','Comercial','bruno@acme.com','pendente','gestor'),u('ud','Elisa Prado','func',null,'elisa@acme.com','pendente','ceo')];
+  const st=(user,status='Não iniciada',reason='')=>({user,status,reason,links:'',notes:''});
+  const stage=(sector,phase,part,steps,due)=>({id:uid(),sector,phase,part,steps,due,partNote:''});
+  const projects=[
+   {id:'p1',name:'Campanha de novembro',sector:'Marketing',desc:'Lançamento da campanha de fim de ano em todos os canais.',due:dd(17),priority:'Alta',creator:'u3',concluded:false,archived:false,cycles:0,rec:null},
+   {id:'p2',name:'Site institucional',sector:'Design',desc:'Novo site com identidade atualizada.',due:dd(20),priority:'Alta',creator:'u2',concluded:false,archived:false,cycles:0,rec:{freq:'—'}},
+   {id:'p3',name:'Identidade visual',sector:'Design',desc:'Revisão da paleta e tipografia da marca.',due:dd(5),priority:'Média',creator:'u2',concluded:false,archived:false,cycles:0,rec:null},
+   {id:'p4',name:'Fechamento mensal',sector:'Financeiro',desc:'Fechamento contábil de outubro.',due:dd(9),priority:'Alta',creator:'u5',concluded:false,archived:false,cycles:0,rec:{freq:'Mensal',start:dd(18),mode:'rascunho',struct:'tarefas'}}];
+  projects[1].rec=null;
+  const tasks=[
+   {id:'t1',code:'TK-101',project:'p1',name:'Peças para redes sociais',desc:'Criar e publicar o pacote de peças da campanha.',due:dd(8),creator:'u3',cancelled:false,
+    stages:[stage('Marketing',1,'Distribuída',[st('u8','Em andamento')],dd(4)),stage('Design',1,'Aguardando resposta',[],dd(5)),stage('Tecnologia',2,'Distribuída',[st('u9')],dd(7))]},
+   {id:'t2',code:'TK-102',project:'p2',name:'Layout da página inicial',desc:'Criar o layout da página inicial conforme briefing.',due:dd(1),creator:'u2',cancelled:false,
+    stages:[stage('Design',1,'Distribuída',[st('u6','Bloqueado','Aguardando briefing do cliente'),st('u7')],dd(1)),stage('Tecnologia',2,'Distribuída',[st('ua')],dd(1))]},
+   {id:'t3',code:'TK-103',project:'p2',name:'Guia de componentes',desc:'Documentar componentes reutilizáveis.',due:dd(-1),creator:'u2',cancelled:false,
+    stages:[stage('Design',1,'Distribuída',[st('u7','Concluída'),st('u6','Em andamento')],dd(-1))]},
+   {id:'t4',code:'TK-104',project:'p3',name:'Validar paleta',desc:'Testar contraste e aprovar a paleta final.',due:dd(-3),creator:'u2',cancelled:false,
+    stages:[stage('Design',1,'Distribuída',[st('u6','Concluída')],dd(-3))]},
+   {id:'t5',code:'TK-105',project:'p4',name:'Conciliação bancária',desc:'Conciliar extratos de todas as contas.',due:dd(2),creator:'u5',cancelled:false,
+    stages:[stage('Financeiro',1,'Distribuída',[st('ub','Em andamento')],dd(2)),stage('Tecnologia',2,'Ajustes solicitados',[],dd(3))]}];
+  tasks[4].stages[1].partNote='Precisamos de mais 2 dias por conta da sprint atual.';
+  // Dia de alta carga: Feira de Inovação com muitas entregas na mesma data
+  projects.push({id:'p5',name:'Feira de Inovação 2026',sector:'Design',desc:'Estande, materiais e demonstrações para a feira anual.',due:dd(9),priority:'Alta',creator:'u2',concluded:false,archived:false,cycles:0,rec:null});
+  const D=dd(7),X=[
+   ['Painel principal do estande',[['Design',1,[['u6','Em andamento']]]]],
+   ['Folder institucional',[['Design',1,[['u7','Concluída']]],['Marketing',2,[['u8','Em andamento']]]]],
+   ['Banners laterais',[['Design',1,[['u6','Não iniciada'],['u7','Não iniciada']]]]],
+   ['Crachás da equipe',[['Design',1,[['u7','Em andamento']]]]],
+   ['Apresentação de abertura',[['Design',1,[['u6','Bloqueado','Aguardando dados de vendas do Comercial']]]]],
+   ['Vídeo de demonstração',[['Design',1,[['u7','Concluída'],['u6','Em andamento']]],['Tecnologia',2,[['ua','Não iniciada']]]]],
+   ['Totem interativo',[['Tecnologia',1,[['u9','Em andamento']]],['Design',1,[['u6','Concluída']]]]],
+   ['Brindes personalizados',[['Design',1,[['u7','Não iniciada']]],['Financeiro',1,'pend']]],
+   ['Cardápio do coffee break',[['Design',1,[['u6','Concluída']]]]],
+   ['Sinalização do espaço',[['Design',1,[['u7','Em andamento']]]]],
+   ['Posts de contagem regressiva',[['Marketing',1,[['u8','Concluída']]],['Design',2,[['u6','Em andamento']]]]],
+   ['Mockups do aplicativo',[['Design',1,[['u7','Não iniciada']]],['Tecnologia',1,[['u9','Em andamento']]]]],
+   ['Ficha técnica dos produtos',[['Design',1,[['u6','Não iniciada']]]]]];
+  X.forEach(([name,sts],k)=>tasks.push({id:'tx'+k,code:'TK-'+(110+k),project:'p5',name,desc:name+' para a Feira de Inovação.',due:D,creator:'u2',cancelled:false,extra:true,
+   stages:sts.map(([sec,ph,steps])=>steps==='pend'?stage(sec,ph,'Aguardando resposta',[],D):stage(sec,ph,'Distribuída',steps.map(([u,s,r])=>st(u,s,r)),D))}));
+  return {v:5,session:null,sectors:['Design','Marketing','Tecnologia','Financeiro','Comercial'],users,projects,tasks,seq:106,
+   company:{name:'Acme Tecnologia',slug:'acme-tecnologia',status:'Ativa',limit:300,allowSignup:true,gestorApproval:true,domain:'acme.com'},
+   deadlineReqs:[{id:'d1',task:'t1',stage:tasks[0].stages[2].id,by:'u4',from:dd(7),to:dd(9),reason:'Aguardando entrega das peças do Design.',status:'Pendente'}],
+   tickets:[{id:'SUP-001',subject:'Erro ao exportar relatório',cat:'Relatórios',status:'Aberto',created:fmt(dd(-1)),by:'u1',msgs:[{by:'u1',text:'O relatório de desempenho não gera o PDF.',at:fmt(dd(-1))}]},
+            {id:'SUP-002',subject:'Aumento do limite de usuários',cat:'Plano',status:'Resolvido',created:fmt(dd(-6)),by:'u1',msgs:[{by:'u1',text:'Precisamos de 350 usuários.',at:fmt(dd(-6))},{by:'u0',text:'Limite ajustado.',at:fmt(dd(-5))}]}],
+   notifs:[],logs:seedLogs(tasks)};
+}
+function seedLogs(tasks){const o=Object.fromEntries(tasks.map(t=>[t.id,`${t.code} ${t.name}`]));
+ const L=(n,h,by,type,action,obj,detail='')=>({at:fmt(dd(n))+' '+h,by,type,action,obj,detail,_k:dd(n)+h});
+ const s='Não iniciada',a='Em andamento';
+ const logs=[
+  L(-30,'09:10','u0','Empresa','Empresa criada','Acme Tecnologia','Limite: 300 usuários'),
+  L(-30,'09:25','u0','Acesso','Perfil alterado','Marina Souza','Funcionário → CEO (CEO autorizado)'),
+  L(-28,'10:02','u1','Acesso','Perfil Gestor aprovado','Paulo Mendes','Funcionário → Gestor'),
+  L(-28,'10:04','u1','Acesso','Perfil Gestor aprovado','Carla Dias','Funcionário → Gestor'),
+  L(-28,'10:05','u1','Acesso','Perfil Gestor aprovado','Rafael Torres','Funcionário → Gestor'),
+  L(-27,'15:40','u1','Acesso','Perfil Gestor aprovado','Beatriz Lopes','Funcionário → Gestor'),
+  L(-14,'08:50','u2','Projeto','Projeto criado','Identidade visual'),
+  L(-12,'09:30','u2','Tarefa','Tarefa criada',o.t4,'Design · responsável: Ana Costa'),
+  L(-11,'10:12','u6','Tarefa',`Status: ${s} → ${a}`,o.t4),
+  L(-11,'16:00','u2','Projeto','Projeto criado','Site institucional'),
+  L(-10,'09:05','u2','Tarefa','Tarefa criada',o.t3,'Design · Carlos Lima → Ana Costa'),
+  L(-9,'11:20','u7','Tarefa',`Status: ${s} → ${a}`,o.t3),
+  L(-8,'14:00','u2','Tarefa','Tarefa criada',o.t2,'Design → Tecnologia'),
+  L(-8,'14:01','u2','Participação','Participação solicitada',o.t2,'Tecnologia · entrega proposta '+fmt(dd(1))),
+  L(-7,'09:30','u4','Participação','Participação aceita e distribuída',o.t2,'Tecnologia: Pedro Alves'),
+  L(-7,'13:15','u3','Projeto','Projeto criado','Campanha de novembro'),
+  L(-6,'09:12','u3','Tarefa','Tarefa criada',o.t1,'Marketing / Design → Tecnologia'),
+  L(-6,'09:13','u3','Participação','Participação solicitada',o.t1,'Design · entrega proposta '+fmt(dd(5))),
+  L(-6,'09:13','u3','Participação','Participação solicitada',o.t1,'Tecnologia · entrega proposta '+fmt(dd(7))),
+  L(-6,'10:15','u6','Tarefa',`Status: ${s} → ${a}`,o.t2),
+  L(-5,'10:40','u4','Participação','Participação aceita e distribuída',o.t1,'Tecnologia: Lia Martins'),
+  L(-5,'11:00','u5','Projeto','Projeto criado','Fechamento mensal','Recorrente: Mensal'),
+  L(-5,'11:30','u5','Tarefa','Tarefa criada',o.t5,'Financeiro → Tecnologia'),
+  L(-5,'11:31','u5','Participação','Participação solicitada',o.t5,'Tecnologia · entrega proposta '+fmt(dd(3))),
+  L(-4,'08:55','u8','Tarefa',`Status: ${s} → ${a}`,o.t1),
+  L(-4,'09:40','ub','Tarefa',`Status: ${s} → ${a}`,o.t5),
+  L(-4,'17:05','u7','Tarefa',`Status: ${a} → Concluída`,o.t3,'Etapa liberada para Ana Costa'),
+  L(-3,'09:10','u6','Tarefa',`Status: ${s} → ${a}`,o.t3),
+  L(-3,'14:22','u6','Tarefa',`Status: ${a} → Concluída`,o.t4),
+  L(-3,'14:22','u6','Tarefa','Tarefa concluída',o.t4,'Todas as etapas concluídas'),
+  L(-3,'16:48','u4','Participação','Ajustes solicitados',o.t5,'Precisamos de mais 2 dias por conta da sprint atual.'),
+  L(-3,'17:42','u6','Tarefa',`Status: ${a} → Bloqueado`,o.t2,'Aguardando briefing do cliente'),
+  L(-2,'10:30','u2','Prazo','Prazo final alterado',o.t3,`${fmt(dd(-3))} → ${fmt(dd(-1))}: inclusão dos componentes de formulário`),
+  L(-2,'16:20','u3','Tarefa','Descrição atualizada',o.t1,'Incluídos formatos para Stories e Reels'),
+  L(-1,'11:05','u4','Prazo','Alteração de prazo solicitada',o.t1,`${fmt(dd(7))} → ${fmt(dd(9))}: Aguardando entrega das peças do Design.`),
+  L(-1,'15:30','u1','Suporte','Chamado aberto','#SUP-001','Erro ao exportar relatório')];
+ logs.push(L(-9,'10:00','u2','Projeto','Projeto criado','Feira de Inovação 2026'));
+ tasks.filter(t=>t.extra).forEach((t,k)=>{const h=String(10+Math.floor(k/4)).padStart(2,'0')+':'+String(10+k*3).padStart(2,'0');
+  logs.push(L(-8,h,'u2','Tarefa','Tarefa criada',o[t.id],flowLabel(t)));
+  t.stages.forEach(s=>{if(s.sector!=='Design')logs.push(L(-8,h,'u2','Participação','Participação solicitada',o[t.id],s.sector));
+   if(s.part==='Distribuída'&&s.sector!=='Design')logs.push(L(-7,'09:'+String(10+k).padStart(2,'0'),gestorOf2(s.sector),'Participação','Participação aceita e distribuída',o[t.id],s.sector+': '+s.steps.map(x=>nameOf(x.user)).join(' → ')));
+   s.steps.forEach((x,i)=>{if(x.status!=='Não iniciada')logs.push(L(-6+i,'1'+(i+1)+':'+String(15+k).padStart(2,'0'),x.user,'Tarefa',`Status: Não iniciada → Em andamento`,o[t.id]));
+    if(x.status==='Concluída')logs.push(L(-3+i,'16:'+String(10+k).padStart(2,'0'),x.user,'Tarefa','Status: Em andamento → Concluída',o[t.id]));
+    if(x.status==='Bloqueado')logs.push(L(-1,'14:'+String(10+k).padStart(2,'0'),x.user,'Tarefa','Status: Em andamento → Bloqueado',o[t.id],x.reason))})})});
+ return logs.sort((x,y)=>y._k.localeCompare(x._k)).map(({_k,...r})=>r)}
+const SEED_G={Design:'u2',Marketing:'u3',Tecnologia:'u4',Financeiro:'u5'},gestorOf2=s=>SEED_G[s];
+const nameOf=id=>({u6:'Ana Costa',u7:'Carlos Lima',u8:'João Ribeiro',u9:'Lia Martins',ua:'Pedro Alves',ub:'Sofia Rocha'})[id]||id;
+let S;try{S=JSON.parse(localStorage.getItem('kraften-task'))}catch(e){}
+if(!S||S.v!==5)S=seed();
+const objLabel=o=>String(o||'').replace(/^TK-\d+\s*/,'');
+const save=()=>{try{localStorage.setItem('kraften-task',JSON.stringify(S))}catch(e){}};
+let VIEW='home',UI={sel:null,collapsed:{},calSector:'Todos',logType:'Todos',q:''};
+const U=id=>S.users.find(u=>u.id===id)||{name:'—',color:'#999'};
+const me=()=>U(S.session);
+const P=id=>S.projects.find(p=>p.id===id);
+const Tk=id=>S.tasks.find(t=>t.id===id);
+const gestorOf=sec=>S.users.find(u=>u.role==='gestor'&&u.sector===sec&&u.status==='ativo');
+const ini=n=>n.split(' ').map(x=>x[0]).slice(0,2).join('');
+const av=(id,s)=>{const u=U(id);return `<span class="av ${s?'s':''}" style="background:${u.color}" title="${esc(u.name)}">${ini(u.name)}</span>`};
+function log(type,action,obj,detail=''){S.logs.unshift({at:now(),by:S.session,type,action,obj,detail})}
+function notify(uids,text){[...new Set(uids.filter(Boolean))].forEach(to=>{if(to!==S.session)S.notifs.unshift({id:uid(),to,text,at:now(),read:false})})}
+
+// ---------- regras de execução ----------
+const stageDone=s=>s.steps.length>0&&s.steps.every(x=>x.status==='Concluída');
+const stageStarted=s=>s.steps.some(x=>x.status!=='Não iniciada');
+const curIdx=s=>s.steps.findIndex(x=>x.status!=='Concluída');
+function stageReady(t,s){if(t.cancelled||s.part!=='Distribuída')return false;return t.stages.filter(o=>o.phase<s.phase).every(stageDone)}
+function tStatus(t){if(t.cancelled)return'Cancelada';if(t.stages.every(stageDone))return'Concluída';
+ if(t.stages.some(s=>s.steps.some(x=>x.status==='Bloqueado')))return'Bloqueada';
+ if(t.stages.some(stageStarted))return'Em andamento';if(t.stages.some(s=>s.part!=='Distribuída'))return'Aguardando acordo';return'Não iniciada'}
+const tDone=t=>t.cancelled||tStatus(t)==='Concluída';
+const tFarol=t=>farol(t.due,t.stages.some(stageStarted),tDone(t));
+const stFarol=(t,s)=>farol(s.due,stageStarted(s),t.cancelled||stageDone(s));
+function pStatus(p){if(p.approval==='pendente')return'Aguardando aprovação';if(p.approval==='recusado')return'Recusado';if(p.archived)return'Arquivado';if(p.concluded)return'Concluído';const ts=S.tasks.filter(t=>t.project===p.id);
+ if(ts.length&&ts.every(tDone))return'Pronto para concluir';if(ts.some(t=>t.stages.some(stageStarted)))return'Em andamento';return'Não iniciado'}
+function flowLabel(t){const ph=[...new Set(t.stages.map(s=>s.phase))].sort((a,b)=>a-b);return ph.map(n=>t.stages.filter(s=>s.phase===n).map(s=>s.sector).join(' / ')).join(' → ')}
+function stepView(t,s,i){const x=s.steps[i];if(t.cancelled)return'Cancelada';if(x.status==='Não iniciada'&&(!stageReady(t,s)||curIdx(s)!==i))return'Aguardando vez';return x.status}
+function myAssign(uid_){const out=[];S.tasks.forEach(t=>t.stages.forEach(s=>s.steps.forEach((x,i)=>{if(x.user===uid_)out.push({t,s,i,x,p:P(t.project),d:x.due||s.due})})));return out}
+const involvesSector=(t,sec)=>t.stages.some(s=>s.sector===sec);
+
+function setStatus(tid,sid,i,status,reason){
+ const t=Tk(tid),s=t.stages.find(z=>z.id===sid),x=s.steps[i],prev=x.status,g=gestorOf(s.sector);
+ if(x.user!==S.session)return toast('Somente o responsável altera o status.');
+ if(!stageReady(t,s)||curIdx(s)!==i)return toast('Esta etapa ainda não foi liberada para você.');
+ if(prev==='Concluída')return toast('Etapa concluída não pode ser alterada.');
+ x.status=status;x.reason=status==='Bloqueado'?reason:'';
+ log('Tarefa',`Status: ${prev} → ${status}`,`${t.code} ${t.name}`,reason||'');
+ if(status==='Bloqueado')notify([g?.id,t.creator],`${me().name} bloqueou "${t.name}": ${reason}`);
+ if(prev==='Bloqueado'&&status==='Em andamento')notify([g?.id],`${me().name} desbloqueou "${t.name}".`);
+ if(status==='Concluída'){
+  const nx=s.steps[i+1];
+  if(nx)notify([nx.user],`Sua etapa em "${t.name}" foi liberada.`);
+  else{notify([g?.id,t.creator],`Setor ${s.sector} concluiu sua etapa em "${t.name}".`);
+   t.stages.filter(o=>o.phase>s.phase&&stageReady(t,o)).forEach(o=>notify([o.steps[0]?.user,gestorOf(o.sector)?.id],`Etapa de ${o.sector} liberada em "${t.name}".`));
+   if(tStatus(t)==='Concluída'){log('Tarefa','Tarefa concluída',`${t.code} ${t.name}`);notify([t.creator],`Tarefa "${t.name}" concluída.`)}}
+ }
+ save();render();toast('Status atualizado');
+}
+
+// ---------- layout ----------
+const NAV={func:[['home','Visão geral','home'],['cal','Calendário do setor','cal'],['create','Projetos e tarefas','plus']],
+ gestor:[['home','Visão geral','home'],['cal','Calendário global','cal'],['create','Projetos e tarefas','plus'],['stats','Análises e desempenho','chart'],['approvals','Aprovações','check']],
+ ceo:[['home','Visão geral','home'],['stats','Análises e desempenho','chart'],['approvals','Aprovações','check'],['support','Solicitar suporte','help']],
+ admin:[['home','Visão geral','home'],['company','Empresas e acessos','build'],['support','Central de suporte','help'],['logs','Logs e auditoria','doc'],['config','Configurações','gear']]};
+function render(){
+ const app=document.getElementById('app');
+ if(!S.session){app.innerHTML=loginView();return}
+ const m=me(),nav=NAV[m.role],cur=nav.find(n=>n[0]===VIEW)||nav[0];VIEW=cur[0];
+ const unread=S.notifs.filter(n=>n.to===m.id&&!n.read).length;
+ app.innerHTML=`<div class="shell"><aside class="side"><div class="logo"><img src="${LOGO}" alt="Kraften Task"></div><nav class="nav">${nav.map(n=>`<button class="${n[0]===VIEW?'on':''}" onclick="go('${n[0]}')" aria-label="${n[1]}">${ic(n[2])}<span class="tip">${n[1]}</span></button>`).join('')}</nav>
+ <button class="out" onclick="logout()" title="Sair">${ic('out')}</button></aside>
+ <main class="main"><div class="top"><h1>${cur[1]}</h1><label class="search">${ic('search',18)}<input id="q" placeholder="Buscar tarefa ou projeto" value="${esc(UI.q)}" oninput="UI.q=this.value;renderBody()"></label>
+ <button class="bell" onclick="showNotifs()" aria-label="Notificações">${ic('bell')}${unread?`<b>${unread}</b>`:''}</button>
+ <button class="who" onclick="logout()">${av(m.id)}<span>${esc(m.name)}<small>${ROLE[m.role]}${m.sector?' · '+m.sector:''}</small></span></button></div>
+ <div id="body"></div></main></div>`;
+ renderBody();
+}
+function renderBody(){const m=me(),k=m.role+':'+VIEW;const V={
+ 'func:home':funcHome,'func:cal':calView,'func:mine':mineView,'func:create':()=>createView()+myProjStatus(),
+ 'gestor:home':gestHome,'gestor:stats':statsView,'gestor:approvals':gestHome,'gestor:cal':calView,'gestor:sector':sectorView,'gestor:create':createView,
+ 'ceo:home':ceoHome,'ceo:approvals':ceoApprovals,'ceo:cal':calView,'ceo:stats':statsView,'ceo:support':ceoSupport,
+ 'admin:home':adminHome,'admin:company':companyView,'admin:support':adminSupport,'admin:logs':logsView,'admin:config':configView}[k];
+ document.getElementById('body').innerHTML=V();}
+function go(v){VIEW=v;UI.sel=null;render()}
+function logout(){S.session=null;save();render()}
+function login(id){S.session=id;UI.nx=0;VIEW='home';save();render()}
+const match=(...xs)=>!UI.q||xs.join(' ').toLowerCase().includes(UI.q.toLowerCase());
+function showNotifs(){const l=S.notifs.filter(n=>n.to===S.session);l.forEach(n=>n.read=true);save();
+ openM(`<div class="row between"><h2>Notificações</h2><button class="btn ghost sm" onclick="closeM();render()">Fechar</button></div><div class="list scroll">${l.length?l.map(n=>`<div class="it"><span class="dot" style="background:#111"></span><div class="grow"><div>${esc(n.text)}</div><div class="s">${n.at}</div></div></div>`).join(''):'<div class="empty">Nenhuma notificação.</div>'}</div>`)}
+
+// ---------- login / cadastro ----------
+function loginView(){
+ const groups=['admin','ceo','gestor','func'];
+ return `<div class="shell"><aside class="side"><div class="logo"><img src="${LOGO}" alt="Kraften Task"></div></aside><main class="main login">
+ <div class="grid g32"><div class="card hero"><h2 style="font-size:22px">Kraften Task</h2><p class="sub">Projetos, tarefas e setores de ${esc(S.company.name)}. Escolha um usuário para entrar (ambiente de demonstração).</p>
+ ${groups.map(r=>`<div style="margin-top:14px"><span class="lbl">${ROLE[r]}</span><div class="row wrap" style="margin-top:6px">${S.users.filter(u=>u.role===r).map(u=>`<button class="btn ghost sm" ${u.status!=='ativo'?'disabled title="Aguardando aprovação"':''} onclick="login('${u.id}')">${av(u.id,1)} ${esc(u.name)}${u.sector?` <span class="chip">${u.sector}</span>`:''}</button>`).join('')}</div></div>`).join('')}
+ <div class="sep"></div><button class="btn ghost sm" onclick="if(confirm('Restaurar os dados de demonstração?')){S=seed();save();render()}">Restaurar dados de demonstração</button></div>
+ <div class="card info"><h2>Criar minha conta</h2><p class="sub">Cargo declarado não é acesso autorizado.</p>
+ <div class="field"><label>Nome completo</label><input class="inp" id="su_name"></div>
+ <div class="field"><label>E-mail corporativo</label><input class="inp" id="su_mail" placeholder="voce@${esc(S.company.domain)}"></div>
+ <div class="field"><label>Setor</label><select class="inp" id="su_sec"><option value="">—</option>${S.sectors.map(s=>`<option>${s}</option>`).join('')}</select></div>
+ <div class="field"><label>Qual é o seu cargo?</label><select class="inp" id="su_role"><option value="func">Funcionário</option><option value="gestor">Gestor</option><option value="ceo">CEO</option></select></div>
+ <button class="btn" onclick="signup()">Criar conta ${ic('arrow',18)}</button>
+ <p class="note" style="margin-top:14px">Funcionário: ativo após validar e-mail do domínio. Gestor: aguarda aprovação do CEO. CEO: validado pelo Super Admin.</p></div></div></main></div>`}
+function signup(){const name=val('su_name'),mail=val('su_mail').toLowerCase(),sec=val('su_sec'),role=val('su_role');
+ if(!S.company.allowSignup)return toast('Autocadastro desabilitado para esta empresa.');
+ if(!name||!mail)return toast('Preencha nome e e-mail.');
+ if(!mail.endsWith('@'+S.company.domain))return toast('Use um e-mail do domínio @'+S.company.domain);
+ if(S.users.some(u=>u.email===mail))return toast('E-mail já cadastrado.');
+ if(role!=='ceo'&&!sec)return toast('Selecione o setor.');
+ if(role==='gestor'&&gestorOf(sec))return toast('O setor '+sec+' já possui Gestor.');
+ const id='u'+uid(),pend=role!=='func'&&(role==='ceo'||S.company.gestorApproval);
+ S.users.push({id,name,email:mail,sector:role==='ceo'?null:sec,role:pend?'func':role,declared:role,status:pend?'pendente':'ativo',color:COLORS[name.length%8]});
+ S.session=id;log('Acesso','Autocadastro',name,'Cargo declarado: '+ROLE[role]);S.session=null;
+ if(role==='gestor')notify(S.users.filter(u=>u.role==='ceo').map(u=>u.id),`${name} solicitou acesso de Gestor (${sec}).`);
+ if(role==='ceo')notify(['u0'],`${name} declarou cargo CEO.`);
+ save();render();toast(pend?'Conta criada. Aguardando aprovação.':'Conta criada e ativada.')}
+
+// ---------- componentes ----------
+const TONES={red:['#dc2626','#fdecec'],orange:['#d97706','#fff3dc'],violet:['#7c3aed','#f1ebff'],blue:['#2563eb','#e8efff'],green:['#16a34a','#e5f6ea']};
+function kpis(arr){return `<div class="grid g4" style="margin-bottom:20px">${arr.map(([l,v,s,o])=>{if(!o)return `<div class="card kpi"><small>${l}</small><strong>${v}</strong>${s?`<small>${s}</small>`:''}</div>`;
+ const zero=o.alert&&!Number(v),[c,bg]=TONES[zero?'green':o.k],e=zero?'✅':o.e;
+ return `<div class="card kpi tone" style="background:${bg};box-shadow:inset 0 0 0 1px ${c}22${o.click?';cursor:pointer':''}" ${o.click?`onclick="${o.click}"`:''}><div class="row between" style="align-items:flex-start;flex-wrap:nowrap;gap:8px"><small style="color:${c};font-weight:600;text-transform:uppercase;letter-spacing:.04em;font-size:11px">${l}</small></div>
+ <div class="row" style="gap:10px;align-items:center"><strong style="color:${c};font-size:36px;line-height:1.1">${v}</strong>${o.alert&&!zero?`<span class="kflag" style="background:${c}">Requer atenção</span>`:''}</div><small style="color:#444">${zero?(o.ok||'Tudo em dia'):(s||'')}</small></div>`}).join('')}</div>`}
+function sectorIcon(sec){return `<span class="ic" style="background:${SECT_BG[sec]||'#eee'};color:${SECT_FG[sec]||'#333'}">${sec?sec[0]:'?'}</span>`}
+function doneAt(t,uid_){const l=S.logs.find(l=>l.by===uid_&&l.obj.startsWith(t.code)&&l.action.endsWith('→ Concluída'));return l?l.at.slice(0,5):''}
+function dueText(due,done){if(done)return'Concluída';const n=daysTo(due);return n<0?`Atrasada há ${-n} dia${n<-1?'s':''}`:n===0?'Vence hoje':n===1?'Vence amanhã':`Faltam ${n} dias`}
+function handoff(t,s,i){let prev,next;
+ if(i>0){const y=s.steps[i-1],ok=y.status==='Concluída';prev={who:U(y.user).name,sub:ok?`concluiu${doneAt(t,y.user)?' '+doneAt(t,y.user):''}`:'ainda executando',ok}}
+ else{const before=t.stages.filter(o=>o.phase<s.phase);if(before.length){const ok=before.every(stageDone);prev={who:before.map(o=>o.sector).join(' / '),sub:ok?'etapa anterior concluída':'etapa anterior em andamento',ok}}
+  else prev={who:U(t.creator).name,sub:'criou a tarefa',ok:true}}
+ if(i<s.steps.length-1){const y=s.steps[i+1];next={who:U(y.user).name,sub:'aguarda você'}}
+ else{const ph=t.stages.filter(o=>o.phase>s.phase).map(o=>o.phase);if(ph.length){const nx=t.stages.filter(o=>o.phase===Math.min(...ph));next={who:nx.map(o=>o.sector+(o.steps[0]?` (${U(o.steps[0].user).name.split(' ')[0]})`:'')).join(' / '),sub:'aguarda sua etapa'}}
+  else next={who:'Entrega final',sub:`para ${U(t.creator).name}`}}
+ return {prev,next}}
+function blockModal(tid,sid,i){openM(`<h2>Informar bloqueio</h2><p class="sub">A justificativa é obrigatória e o Gestor será notificado. O prazo continua correndo.</p><textarea class="inp" id="blk"></textarea><div class="row" style="margin-top:14px"><button class="btn" onclick="const r=val('blk');if(!r)return toast('Informe o motivo.');closeM();setStatus('${tid}','${sid}',${i},'Bloqueado',r)">Confirmar bloqueio</button><button class="btn ghost" onclick="closeM()">Cancelar</button></div>`)}
+function quickConclude(tid,sid,i){const t=Tk(tid),s=t.stages.find(z=>z.id===sid),nx=s.steps[i+1];if(confirm(`Concluir sua parte em "${t.name}"?${nx?`\n${U(nx.user).name} recebe a etapa em seguida.`:''}`))setStatus(tid,sid,i,'Concluída')}
+function taskCard(a){const {t,s,i,x,p}=a,f=farol(a.d,x.status!=='Não iniciada',x.status==='Concluída'||t.cancelled),v=stepView(t,s,i),g=gestorOf(s.sector),{prev,next}=handoff(t,s,i),args=`'${t.id}','${s.id}',${i}`;
+ const node=(n,cls)=>`<div class="hnode ${cls}"><span class="hdot"></span><div class="hwho">${esc(n.who)}</div><div class="hsub">${esc(n.sub)}</div></div>`;
+ const act=v==='Não iniciada'?`<button class="btn" onclick="setStatus(${args},'Em andamento')">Iniciar</button>`
+  :v==='Em andamento'?`<button class="btn" onclick="quickConclude(${args})">Concluir minha parte</button><button class="btn ghost" onclick="blockModal(${args})">Informar bloqueio</button>`
+  :v==='Bloqueado'?`<button class="btn" onclick="setStatus(${args},'Em andamento')">Retomar</button>`
+  :`<button class="btn" disabled>Iniciar</button><span class="s" style="color:var(--muted)">Liberada quando ${esc(prev.who)} concluir</span>`;
+ return `<div class="card info"><div class="row between" style="align-items:flex-start"><div class="grow"><span class="lbl">${esc(p.name)}</span><div class="val" style="font-size:16px">${esc(t.name)}</div>
+ <div class="s" style="color:#555;margin-top:2px">${x.desc?`<b style="font-weight:500">Sua parte:</b> ${esc(x.desc)}`:esc(t.desc)}</div></div>${pill(v)}</div>
+ ${v==='Bloqueado'?`<div class="note" style="margin-top:12px;background:#fff">Motivo do bloqueio: ${esc(x.reason)}</div>`:''}
+ <div class="handoff">${node(prev,prev.ok?'ok':'')}<div class="hline"></div><div class="hnode me"><span class="hdot">${ic('pin',14)}</span><div class="hwho">Você</div><div class="hsub">entrega ${fmtS(a.d)}</div></div><div class="hline"></div>${node(next,'')}</div>
+ <div class="row between wrap" style="gap:10px"><span class="pill" style="border-color:${FAROL[f][0]};font-size:12px;padding:4px 10px"><i style="background:${FAROL[f][0]}"></i>${dueText(a.d,x.status==='Concluída')}</span><span class="s" style="color:var(--muted)">${s.sector} · ${s.steps.length===1?'único responsável':`${i+1}º de ${s.steps.length} responsáveis`}</span></div><div class="sep"></div>
+ <div class="row wrap" style="gap:10px">${act}<span class="grow"></span><button class="btn ghost sm" onclick="taskModal('${t.id}')">Ver detalhes</button></div>
+ <div class="row" style="margin-top:14px">${g?av(g.id,1):''}<span class="s" style="color:var(--muted)">Gestor do setor: <b style="color:var(--ink);font-weight:500">${esc(g?.name||'—')}</b></span></div></div>`}
+function taskRowList(items){return items.length?`<div class="list">${items.map(a=>`<div class="it" style="cursor:pointer" onclick="taskModal('${a.t.id}')">${sectorIcon(a.s.sector)}<div class="grow"><div class="t">${esc(a.t.name)}</div><div class="s">${esc(a.p.name)} → ${fmtS(a.d)}</div></div>${pill(stepView(a.t,a.s,a.i))}</div>`).join('')}</div>`:'<div class="empty">Nada por aqui.</div>'}
+
+// ---------- Funcionário ----------
+function funcHome(){const m=me(),all=myAssign(m.id).filter(a=>match(a.t.name,a.p.name)),open=all.filter(a=>a.x.status!=='Concluída'&&!a.t.cancelled);
+ const late=open.filter(a=>daysTo(a.d)<0).length,today=open.filter(a=>daysTo(a.d)===0).length,done=all.filter(a=>a.x.status==='Concluída').length;
+ const pri=a=>(a.x.status==='Bloqueado'?0:1);
+ const actionable=open.filter(a=>stepView(a.t,a.s,a.i)!=='Aguardando vez').sort((a,b)=>a.d.localeCompare(b.d)||pri(a)-pri(b));
+ const waiting=open.filter(a=>stepView(a.t,a.s,a.i)==='Aguardando vez').sort((a,b)=>a.d.localeCompare(b.d));
+ const queue=actionable.length?actionable:waiting;UI.nx=Math.min(Math.max(UI.nx||0,0),Math.max(queue.length-1,0));
+ const pl=(n,s,p)=>`${n} ${n===1?s:p}`;
+ const parts=[pl(actionable.length,'etapa liberada','etapas liberadas')];if(late)parts.push(pl(late,'atrasada','atrasadas'));if(waiting.length)parts.push(pl(waiting.length,'aguardando vez','aguardando vez'));
+ const summary=open.length?`Você tem ${parts.length>1?parts.slice(0,-1).join(', ')+' e '+parts.at(-1):parts[0]}.`:'Você não tem etapas em aberto.';
+ KPI_SETS={f_open:open,f_late:open.filter(a=>daysTo(a.d)<0),f_today:open.filter(a=>daysTo(a.d)===0),f_done:all.filter(a=>a.x.status==='Concluída')};
+ return kpis([['Em aberto',open.length,'Atribuídas a você',{k:'blue',e:'📋',click:"openKpi('f_open')"}],['Atrasadas',late,'Passaram do prazo',{k:'red',e:'🚨',alert:1,ok:'Nenhuma atrasada',click:"openKpi('f_late')"}],['Vencem hoje',today,'Entregar até o fim do dia',{k:'orange',e:'⏰',alert:1,ok:'Nada vence hoje',click:"openKpi('f_today')"}],['Concluídas',done,'Histórico pessoal',{k:'green',e:'🏁',click:"openKpi('f_done')"}]])+
+ mineView()}
+const MF0={project:'Todos',status:'Todos',farol:'Todos',prazo:'Todos',done:'mostrar'};
+UI.mf={...MF0};
+function mfSet(k,v){UI.mf[k]=v;renderBody()}
+const myFarol=a=>a.t.cancelled||a.x.status==='Concluída'?'neutro':farol(a.d,a.x.status!=='Não iniciada',false);
+function mineView(){const m=me(),F=UI.mf,base=myAssign(m.id).filter(a=>match(a.t.name,a.p.name)).sort((a,b)=>a.d.localeCompare(b.d));
+ const all=base.filter(a=>{const v=stepView(a.t,a.s,a.i),n=daysTo(a.d),open=a.x.status!=='Concluída'&&!a.t.cancelled;
+  return (F.project==='Todos'||a.p.id===F.project)&&(F.status==='Todos'||v===F.status)&&(F.farol==='Todos'||myFarol(a)===F.farol)&&(F.done==='mostrar'||open)
+   &&(F.prazo==='Todos'||(F.prazo==='atrasadas'&&open&&n<0)||(F.prazo==='hoje'&&n===0)||(F.prazo==='7'&&n>=0&&n<=7)||(F.prazo==='30'&&n>=0&&n<=30))});
+ let sel=null;if(UI.sel){const[tid,sid,i]=UI.sel.split('|');sel=base.find(a=>a.t.id===tid&&a.s.id===sid&&a.i==i)}
+ const projs=[...new Map(base.map(a=>[a.p.id,a.p])).values()];
+ const fs=(k,opts,label)=>`<label class="field" style="margin:0;min-width:140px;flex:1"><span style="font-size:11px;color:var(--muted)">${label}</span><select class="inp" onchange="mfSet('${k}',this.value)">${opts.map(([v,l])=>`<option value="${esc(v)}" ${F[k]===v?'selected':''}>${esc(l)}</option>`).join('')}</select></label>`;
+ const active=Object.keys(MF0).filter(k=>F[k]!==MF0[k]).length;
+ return `<div class="grid ${sel?'g32':''}"><div class="card" data-exp="mine"><div class="row between wrap" style="gap:10px"><h2>Minhas tarefas</h2>${expBtn("exportCard('mine','Minhas tarefas')")}</div><p class="sub">Clique em uma linha para ver os detalhes e atualizar sua etapa.</p>
+ <div class="row wrap" style="align-items:flex-end;gap:10px;margin-bottom:12px;padding:14px;border-radius:16px;background:var(--g1)">
+ ${fs('project',[['Todos','Todos os projetos'],...projs.map(p=>[p.id,p.name])],'Projeto')}
+ ${fs('status',[['Todos','Todos os status'],...['Não iniciada','Em andamento','Bloqueado','Aguardando vez','Concluída','Cancelada'].map(s=>[s,s])],'Status')}
+ ${fs('farol',[['Todos','Todos'],['vermelho','Crítico'],['amarelo','Prazo próximo'],['verde','No prazo'],['neutro','Finalizada']],'Farol')}
+ ${fs('prazo',[['Todos','Qualquer prazo'],['atrasadas','Atrasadas'],['hoje','Vence hoje'],['7','Próximos 7 dias'],['30','Próximos 30 dias']],'Prazo')}
+ ${fs('done',[['mostrar','Mostrar concluídas'],['ocultar','Ocultar concluídas']],'Concluídas')}
+ <button class="btn ghost" ${active?'':'disabled'} onclick="UI.mf={...MF0};renderBody()">Limpar filtros${active?` (${active})`:''}</button></div>
+ <p class="s" style="color:var(--muted);margin:0 0 6px">${all.length===base.length?`${base.length} tarefa(s)`:`${all.length} de ${base.length} tarefa(s)`}</p>
+ <div style="overflow:auto"><table><tr><th>Projeto</th><th>Tarefa</th><th>Setor</th><th>Prazo</th><th>Status</th><th>Farol</th></tr>
+ ${all.map(a=>`<tr class="click" onclick="UI.sel='${a.t.id}|${a.s.id}|${a.i}';renderBody()"><td>${esc(a.p.name)}</td><td>${esc(a.t.name)}</td><td>${a.s.sector}</td><td>${fmtS(a.d)}</td><td>${pill(stepView(a.t,a.s,a.i))}</td><td>${farolPill(myFarol(a))}</td></tr>`).join('')||'<tr><td colspan=6 class="empty">Nenhuma tarefa com estes filtros.</td></tr>'}</table></div></div>
+ ${sel?detailPanel(sel):''}</div>`}
+function detailPanel(a){const {t,s,i,x,p}=a,v=stepView(t,s,i),can=v!=='Aguardando vez'&&v!=='Cancelada'&&x.status!=='Concluída';
+ const opts=['Não iniciada','Em andamento','Bloqueado','Concluída'].filter(o=>!(x.status==='Em andamento'&&o==='Não iniciada')&&!(x.status==='Bloqueado'&&o==='Não iniciada'));
+ return `<div class="card"><div class="row between"><h2>Detalhes da tarefa</h2><button class="btn ghost sm" onclick="UI.sel=null;renderBody()">✕</button></div><p class="sub">${esc(p.name)}</p>
+ <div class="field"><label>Descrição</label><div class="note">${esc(t.desc)}</div></div>
+ ${x.desc?`<div class="field"><label>Sua atividade</label><div class="note">${esc(x.desc)}</div></div>`:''}<div class="field"><label>Responsáveis (${s.sector}, em ordem)</label><div class="row wrap">${s.steps.map((y,j)=>`<span class="chip">${j+1}. ${esc(U(y.user).name)} · ${stepView(t,s,j)}</span>`).join('')}</div></div>
+ <div class="row"><div class="field grow"><label>${x.due?'Seu prazo de encerramento':'Entrega da etapa'}</label><div class="note">${fmt(x.due||s.due)}</div></div><div class="field grow"><label>Prazo final</label><div class="note">${fmt(t.due)}</div></div></div>
+ <div class="field"><label>Status</label>${can?`<select class="inp" id="st_sel">${opts.map(o=>`<option ${o===x.status?'selected':''}>${o}</option>`).join('')}</select>`:`<div>${pill(v)}</div>`}</div>
+ ${x.status==='Bloqueado'?`<div class="note" style="margin-bottom:12px">Motivo do bloqueio: ${esc(x.reason)}</div>`:''}
+ <div class="field"><label>Links</label><input class="inp" id="st_links" value="${esc(x.links)}" ${t.cancelled?'disabled':''}></div>
+ <div class="field"><label>Observações gerais</label><textarea class="inp" id="st_notes" ${t.cancelled?'disabled':''}>${esc(x.notes)}</textarea></div>
+ <button class="btn" onclick="saveStep('${t.id}','${s.id}',${i})" ${t.cancelled?'disabled':''}>Salvar</button>
+ ${v==='Aguardando vez'?'<p class="note" style="margin-top:12px">Sua etapa é liberada quando o responsável anterior ou o setor anterior concluir.</p>':''}</div>`}
+function saveStep(tid,sid,i){const t=Tk(tid),s=t.stages.find(z=>z.id===sid),x=s.steps[i];x.links=val('st_links');x.notes=val('st_notes');
+ const ns=document.getElementById('st_sel')?.value;
+ if(ns&&ns!==x.status){if(ns==='Bloqueado'){save();return openM(`<h2>Informar bloqueio</h2><p class="sub">A justificativa é obrigatória e o Gestor será notificado. O prazo continua correndo.</p><textarea class="inp" id="blk"></textarea><div class="row" style="margin-top:14px"><button class="btn" onclick="const r=val('blk');if(!r)return toast('Informe o motivo.');closeM();setStatus('${tid}','${sid}',${i},'Bloqueado',r)">Confirmar bloqueio</button><button class="btn ghost" onclick="closeM()">Cancelar</button></div>`)}
+  return setStatus(tid,sid,i,ns)}
+ save();toast('Informações salvas')}
+
+// ---------- calendário ----------
+const CALF0={view:'mes',ref:iso(T0),sector:'Todos',project:'Todos',origin:'Todos',status:'Todos',resp:'Todos'};
+UI.cal={...CALF0};
+const CAL_DAY={};
+const MONTHS=['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'],WD=['Dom','Seg','Ter','Qua','Qui','Sex','Sáb'];
+function dayModal(ds,top=0){const de=CAL_DAY[ds]||[];openM(`<div class="row between"><div><span class="lbl">${de.length} etapa(s)</span><h2>${fmt(ds)}</h2></div>${expBtn(`exportItems('Entregas de ${fmt(ds)}',CAL_DAY['${ds}'])`)}<button class="btn ghost sm" onclick="closeM()">✕</button></div><div class="list scroll" style="max-height:520px">${de.map(e=>`<div class="it" style="cursor:pointer" onclick="openFromDay('${e.t.id}','${ds}',this)">${sectorIcon(e.s.sector)}<div class="grow"><div class="t">${esc(e.t.name)}</div><div class="s">${esc(e.p.name)} · ${e.s.sector} · ${e.s.steps.map(x=>esc(U(x.user).name)).join(' → ')||'sem equipe'}</div></div>${pill(e.st)}</div>`).join('')}</div>`)};
+function openFromDay(tid,ds,el){const top=el.closest('.scroll').scrollTop;taskModal(tid,()=>{dayModal(ds);document.querySelector('#modal .scroll').scrollTop=top})}
+function calSet(k,v){UI.cal[k]=v;if(k==='sector')UI.cal.resp='Todos';renderBody()}
+function calNav(dir){const F=UI.cal,d=new Date(F.ref+'T00:00');if(dir===0)F.ref=iso(T0);else{if(F.view==='mes'){d.setDate(1);d.setMonth(d.getMonth()+dir)}else d.setDate(d.getDate()+dir*(F.view==='semana'?7:1));F.ref=iso(d)}renderBody()}
+function openDay(ds){UI.cal.view='dia';UI.cal.ref=ds;renderBody()}
+function calView(){const m=me(),ceo=m.role==='ceo',F=UI.cal,R=new Date(F.ref+'T00:00'),Y=R.getFullYear(),M=R.getMonth();
+ const stOf=(t,s)=>t.cancelled?'Cancelada':stageDone(s)?'Concluída':s.steps.some(x=>x.status==='Bloqueado')?'Bloqueado':stageStarted(s)?'Em andamento':s.part!=='Distribuída'?'Aguardando acordo':'Não iniciada';
+ const scope=[];S.tasks.forEach(t=>{const p=P(t.project);if(p.archived)return;t.stages.forEach(s=>{if(!ceo&&s.sector!==m.sector)return;scope.push({date:s.due,t,s,p,st:stOf(t,s),label:`${s.sector} · ${t.name}`})})});
+ const evs=scope.filter(e=>(!ceo||F.sector==='Todos'||e.s.sector===F.sector)&&(F.project==='Todos'||e.p.id===F.project)&&(F.status==='Todos'||e.st===F.status)
+  &&(F.resp==='Todos'||e.s.steps.some(x=>x.user===F.resp))&&(F.origin==='Todos'||(F.origin==='meu'?e.p.sector===m.sector:e.p.sector!==m.sector))&&match(e.t.name,e.p.name));
+ for(const k in CAL_DAY)delete CAL_DAY[k];
+ const on=ds=>{const de=evs.filter(e=>e.date===ds);CAL_DAY[ds]=de;return de};
+ const evBtn=e=>`<button class="ev" style="background:${SECT_BG[e.s.sector]};border-left:3px solid ${STC[e.st]}" onclick="taskModal('${e.t.id}')" title="${esc(e.label)} — ${e.st}">${esc(e.label)}</button>`;
+ const evCard=e=>`<button class="evc" style="border-left:4px solid ${STC[e.st]}" onclick="taskModal('${e.t.id}')"><span class="t">${esc(e.t.name)}</span><span class="s">${esc(e.p.name)}</span><span class="s">${e.s.sector} · ${e.s.steps.map(x=>esc(U(x.user).name.split(' ')[0])).join(' → ')||'sem equipe'}</span>${pill(e.st)}</button>`;
+ const dnum=(ds,label)=>`<button class="dn" onclick="openDay('${ds}')" title="Ver o dia">${label}</button>`;
+ let title,body,count,unit;
+ if(F.view==='mes'){const start=new Date(Y,M,1).getDay(),days=new Date(Y,M+1,0).getDate(),cells=[];for(let k=0;k<start;k++)cells.push('<div class="d off"></div>');
+  for(let n=1;n<=days;n++){const ds=iso(new Date(Y,M,n)),de=on(ds);cells.push(`<div class="d ${ds===iso(T0)?'today':''}">${dnum(ds,n)}${de.slice(0,3).map(evBtn).join('')}${de.length>3?`<button class="ev more" onclick="dayModal('${ds}')">+${de.length-3} mais</button>`:''}</div>`)}
+  title=`${MONTHS[M]} ${Y}`;unit='neste mês';count=evs.filter(e=>e.date.slice(0,7)===F.ref.slice(0,7)).length;
+  body=`<div class="cal">${WD.map(d=>`<div class="h">${d}</div>`).join('')}${cells.join('')}</div>`}
+ else if(F.view==='semana'){const s0=new Date(R);s0.setDate(R.getDate()-R.getDay());const ds7=[...Array(7)].map((_,k)=>{const d=new Date(s0);d.setDate(s0.getDate()+k);return d});
+  const e7=ds7.map(d=>on(iso(d)));count=e7.flat().length;unit='nesta semana';
+  const a=ds7[0],b=ds7[6];title=a.getMonth()===b.getMonth()?`${a.getDate()} – ${b.getDate()} de ${MONTHS[b.getMonth()].toLowerCase()} de ${b.getFullYear()}`:`${a.getDate()} ${MONTHS[a.getMonth()].slice(0,3).toLowerCase()} – ${b.getDate()} ${MONTHS[b.getMonth()].slice(0,3).toLowerCase()} de ${b.getFullYear()}`;
+  body=`<div class="week">${ds7.map((d,k)=>`<div class="wcol ${iso(d)===iso(T0)?'today':''}"><div class="wh">${WD[k]} ${dnum(iso(d),d.getDate())}<span class="s">${e7[k].length||''}</span></div>${e7[k].map(evCard).join('')||'<div class="empty" style="font-size:11px;text-align:center">—</div>'}</div>`).join('')}</div>`}
+ else{const de=on(F.ref);count=de.length;unit='neste dia';title=`${WD[R.getDay()]}, ${R.getDate()} de ${MONTHS[M].toLowerCase()} de ${Y}`;
+  const grp=['Bloqueado','Em andamento','Aguardando acordo','Não iniciada','Concluída','Cancelada'].map(s=>[s,de.filter(e=>e.st===s)]).filter(g=>g[1].length);
+  body=grp.length?grp.map(([s,l])=>`<div style="margin-bottom:18px"><div class="row" style="margin-bottom:8px">${pill(s)}<span class="s" style="color:var(--muted)">${l.length}</span></div><div class="dayg">${l.map(evCard).join('')}</div></div>`).join(''):'<div class="empty">Nenhuma etapa com entrega neste dia.</div>'}
+ const projs=[...new Map(scope.map(e=>[e.p.id,e.p])).values()];
+ const people=S.users.filter(u=>['func','gestor'].includes(u.role)&&u.status==='ativo'&&(ceo?(F.sector==='Todos'||u.sector===F.sector):u.sector===m.sector));
+ const sel=(k,opts,label)=>`<label class="field" style="margin:0;min-width:150px;flex:1"><span style="font-size:11px;color:var(--muted)">${label}</span><select class="inp" onchange="calSet('${k}',this.value)">${opts.map(([v,l])=>`<option value="${esc(v)}" ${String(F[k])===String(v)?'selected':''}>${esc(l)}</option>`).join('')}</select></label>`;
+ const active=['sector','project','origin','status','resp'].filter(k=>F[k]!==CALF0[k]).length;
+ const STS=['Não iniciada','Em andamento','Bloqueado','Aguardando acordo','Concluída','Cancelada'];
+ const NV={mes:'mês',semana:'semana',dia:'dia'};
+ return `<div class="card" data-exp="cal"><div class="row between wrap" style="margin-bottom:16px;gap:14px"><div><h2>${title}</h2><p class="sub" style="margin:0">${ceo?'Todos os setores, visão de acompanhamento.':`Etapas que envolvem ${m.sector}, inclusive projetos de outros setores.`}</p></div>
+ <div class="row wrap">${expBtn("exportCal()")}<div class="tabs" style="margin:0" role="group" aria-label="Visualização">${Object.entries({mes:'Mês',semana:'Semana',dia:'Dia'}).map(([k,l])=>`<button class="${F.view===k?'on':''}" onclick="calSet('view','${k}')">${l}</button>`).join('')}</div>
+ <div class="row"><button class="btn ghost sm" onclick="calNav(-1)" aria-label="${NV[F.view]} anterior">◀</button><button class="btn ghost sm" onclick="calNav(0)">Hoje</button><button class="btn ghost sm" onclick="calNav(1)" aria-label="Próximo ${NV[F.view]}">▶</button></div></div></div>
+ <div class="row wrap" style="align-items:flex-end;gap:10px;margin-bottom:12px;padding:14px;border-radius:16px;background:var(--g1)">
+ ${ceo?sel('sector',[['Todos','Todos os setores'],...S.sectors.map(s=>[s,s])],'Setor'):sel('origin',[['Todos','Todas'],['meu','Criados por '+m.sector],['outros','De outros setores']],'Origem do projeto')}
+ ${sel('project',[['Todos','Todos os projetos'],...projs.map(p=>[p.id,p.name])],'Projeto')}
+ ${sel('status',[['Todos','Todos os status'],...STS.map(s=>[s,s])],'Status da etapa')}
+ ${sel('resp',[['Todos','Todos'],...people.map(u=>[u.id,u.name+(u.id===m.id?' (você)':'')])],'Responsável')}
+ <button class="btn ghost" ${active?'':'disabled'} onclick="UI.cal={...CALF0,view:UI.cal.view,ref:UI.cal.ref};renderBody()">Limpar filtros${active?` (${active})`:''}</button></div>
+ <p class="s" style="color:var(--muted);margin:0 0 10px">${count} etapa(s) ${unit}${evs.length!==count?` · ${evs.length} no total com estes filtros`:''}</p>
+ ${body}
+ <div class="row wrap" style="margin-top:14px">${STS.map(s=>`<button style="border:0;background:none;padding:0;cursor:pointer;opacity:${F.status==='Todos'||F.status===s?1:.4}" onclick="calSet('status',UI.cal.status==='${s}'?'Todos':'${s}')" title="Filtrar por ${s}">${pill(s)}</button>`).join('')}</div></div>`}
+
+// ---------- detalhe da tarefa (modal) ----------
+function taskModal(tid,back){BACK=back||null;const t=Tk(tid),p=P(t.project),hist=S.logs.filter(l=>l.obj.startsWith(t.code));
+ const cl=[...hist].reverse().find(l=>l.action==='Tarefa criada'),created=cl?cl.at.slice(0,10):(t.created?fmt(t.created):'—');
+ const ord=[...t.stages].sort((a,b)=>a.phase-b.phase),people=ord.flatMap(s=>s.steps.map((x,i)=>({s,x,i}))),pend=ord.filter(s=>!s.steps.length);
+ const multi=t.stages.length>1;
+ openM(`<div class="row" style="gap:12px;padding:12px 14px;border-radius:16px;background:var(--g1);margin-bottom:18px">${sectorIcon(p.sector)}<div class="grow"><span class="lbl">Projeto · ${p.sector}</span><div class="val" style="font-size:17px">${esc(p.name)}</div></div><div style="text-align:right"><span class="lbl">Prazo do projeto</span><div class="val">${fmt(p.due)}</div></div></div>
+ <div class="row between" style="align-items:flex-start"><div><span class="lbl">Tarefa</span><h2>${esc(t.name)}</h2></div><div class="row">${pill(tStatus(t))}${farolPill(tFarol(t))}</div></div>
+ <div style="margin:14px 0"><span class="lbl">Descrição</span><div>${esc(t.desc)}</div></div>
+ <div class="row wrap" style="gap:28px;margin-bottom:18px"><div><span class="lbl">Criador</span><div class="val">${esc(U(t.creator).name)}</div></div><div><span class="lbl">Data de criação</span><div class="val">${created}</div></div><div><span class="lbl">Prazo final</span><div class="val">${fmt(t.due)}</div></div></div>
+ <span class="lbl" style="margin-bottom:6px">Responsáveis</span>
+ <div class="list" style="border:1px solid var(--line);border-radius:16px;padding:2px 14px">${people.map(({s,x,i})=>`<div class="it">${av(x.user)}<div class="grow"><div class="t">${esc(U(x.user).name)}${multi?` <span class="chip" style="margin-left:4px">${s.sector}</span>`:''}</div><div class="s">${x.desc?esc(x.desc):'Sem descrição da etapa'}</div><div class="s" style="color:#555">Prazo de encerramento: ${fmt(x.due||s.due)}</div>${x.reason?`<div class="s" style="color:var(--red)">Bloqueio: ${esc(x.reason)}</div>`:''}</div>${pill(stepView(t,s,i))}</div>`).join('')||'<div class="empty">Nenhum responsável definido.</div>'}
+ ${pend.map(s=>`<div class="it">${sectorIcon(s.sector)}<div class="grow"><div class="t">${s.sector}</div><div class="s">Equipe ainda não definida pelo Gestor do setor</div></div>${pill(s.part)}</div>`).join('')}</div>
+ <h2 style="margin-top:18px">Histórico</h2><div class="list scroll" style="max-height:180px">${hist.map(l=>`<div class="it"><div class="grow"><div>${esc(l.action)}${l.detail?` — <span class="s">${esc(l.detail)}</span>`:''}</div><div class="s">${esc(U(l.by).name)} · ${l.at}</div></div></div>`).join('')||'<div class="empty">Sem eventos registrados.</div>'}</div>
+ <div class="row" style="margin-top:16px"><button class="btn ghost" onclick="closeM()">${back?'← Voltar':'Fechar'}</button></div>`,true)}
+
+// ---------- Gestor ----------
+function gestHome(){const m=me(),sec=m.sector;
+ const mine=S.tasks.filter(t=>involvesSector(t,sec)&&!tDone(t));
+ const invites=[];S.tasks.forEach(t=>t.stages.forEach(s=>{if(s.sector===sec&&['Aguardando resposta','Reenviada'].includes(s.part)&&!t.cancelled)invites.push({t,s})}));
+ const toDistribute=[];S.tasks.forEach(t=>t.stages.forEach(s=>{if(s.sector===sec&&s.part==='Aceita')toDistribute.push({t,s})}));
+ const adjust=[];S.tasks.filter(t=>t.creator===m.id&&!t.cancelled).forEach(t=>t.stages.forEach(s=>{if(s.part==='Ajustes solicitados')adjust.push({t,s})}));
+ const dreq=S.deadlineReqs.filter(d=>d.status==='Pendente'&&Tk(d.task).creator===m.id);
+ const blocks=[];S.tasks.forEach(t=>t.stages.forEach(s=>s.steps.forEach((x,i)=>{if(s.sector===sec&&x.status==='Bloqueado'&&!t.cancelled)blocks.push({t,s,x})})));
+ const risk=mine.filter(t=>tFarol(t)==='vermelho').length;
+ const alerts=mine.filter(t=>match(t.name)).map(t=>({t,s:t.stages.find(z=>z.sector===sec)})).map(x=>({...x,f:stFarol(x.t,x.s)})).filter(x=>x.f==='vermelho'||x.f==='amarelo').sort((a,b)=>(a.f===b.f?0:a.f==='vermelho'?-1:1)||a.s.due.localeCompare(b.s.due));
+ const stg=t=>t.stages.find(z=>z.sector===sec)||t.stages[0];KPI_SETS={g_act:mine.map(t=>({t,s:stg(t)})),g_blk:blocks,g_risk:mine.filter(t=>tFarol(t)==='vermelho').map(t=>({t,s:stg(t)})),g_dec:[...invites,...toDistribute,...adjust,...dreq.map(d=>{const t=Tk(d.task);return {t,s:t.stages.find(z=>z.id===d.stage)}})]};
+ const __k=kpis([['Tarefas ativas do setor',mine.length,'Em execução ou aguardando',{k:'blue',e:'📋',click:"openKpi('g_act')"}],['Bloqueadas',blocks.length,'Funcionários impedidos',{k:'red',e:'⛔',alert:1,ok:'Nenhum bloqueio',click:"openKpi('g_blk')"}],['Em risco',risk,'Farol vermelho',{k:'orange',e:'⚠️',alert:1,ok:'Nenhuma em risco',click:"openKpi('g_risk')"}],['Decisões pendentes',invites.length+adjust.length+dreq.length+toDistribute.length,'Aceites, ajustes e prazos',{k:'violet',e:'📥',alert:1,ok:'Nada aguardando você',click:"openKpi('g_dec')"}]]);if(VIEW!=='approvals')return __k+sectorView();return `<div class="grid g2" style="align-items:start">${projApprovalsCard()}
+ <div class="card hero"><h2>Solicitações de participação</h2><p class="sub">Outros setores pedindo a participação de ${sec}.</p>${invites.length?`<div class="list">${invites.map(({t,s})=>`<div class="it">${sectorIcon(P(t.project).sector)}<div class="grow"><div class="t">${esc(t.name)}</div><div class="s">${esc(U(t.creator).name)} · ${esc(P(t.project).name)} · etapa ${s.phase} · entrega ${fmtS(s.due)}</div>${s.desc?`<div class="s" style="color:#555">${esc(s.desc)}</div>`:''}</div><button class="btn sm" onclick="distModal('${t.id}','${s.id}')">Aceitar</button><button class="btn ghost sm" onclick="adjustModal('${t.id}','${s.id}')">Ajustes</button></div>`).join('')}</div>`:'<div class="empty">Nenhuma solicitação aguardando.</div>'}
+ ${toDistribute.map(({t,s})=>`<div class="it row"><div class="grow">${esc(t.name)} · aceita, aguardando distribuição</div><button class="btn sm" onclick="distModal('${t.id}','${s.id}')">Distribuir</button></div>`).join('')}</div>
+ <div class="card"><h2>Ajustes pedidos nas suas tarefas</h2><p class="sub">Negociação direta, sem arbitragem do CEO.</p>${adjust.length?`<div class="list">${adjust.map(({t,s})=>`<div class="it">${sectorIcon(s.sector)}<div class="grow"><div class="t">${esc(t.name)} · ${s.sector}</div><div class="s">${esc(s.partNote)}</div></div><button class="btn sm" onclick="resendModal('${t.id}','${s.id}')">Revisar e reenviar</button></div>`).join('')}</div>`:'<div class="empty">Nenhum ajuste pendente.</div>'}</div>
+ <div class="card"><h2>Pedidos de alteração de prazo</h2><p class="sub">O prazo original vale até a sua decisão.</p>${dreq.length?`<div class="list">${dreq.map(d=>{const t=Tk(d.task),s=t.stages.find(z=>z.id===d.stage);return `<div class="it">${sectorIcon(s.sector)}<div class="grow"><div class="t">${esc(t.name)} · ${s.sector}</div><div class="s">${fmtS(d.from)} → ${fmtS(d.to)} · ${esc(d.reason)}${d.to>t.due?' · ⚠ ultrapassa o prazo final':''}</div></div><button class="btn sm" onclick="decideDeadline('${d.id}',true)">Aprovar</button><button class="btn ghost sm" onclick="decideDeadline('${d.id}',false)">Rejeitar</button></div>`}).join('')}</div>`:'<div class="empty">Nenhum pedido.</div>'}</div></div>`}
+
+function distModal(tid,sid){const t=Tk(tid),s=t.stages.find(z=>z.id===sid),team=S.users.filter(u=>u.sector===s.sector&&u.status==='ativo'&&['func','gestor'].includes(u.role));
+ openM(`<h2>Distribuir equipe · ${s.sector}</h2><p class="sub">${esc(t.name)} — defina os responsáveis em ordem de execução e a entrega da etapa.</p>
+ <div id="dist_rows">${(s.steps.length?s.steps:[{user:team[0]?.id}]).map(x=>respRow(team,x.user,x.desc,x.due)).join('')}</div>
+ <button class="btn ghost sm" onclick="addResp('dist_rows','${s.sector}')">+ Adicionar próximo responsável</button>
+ <div class="field" style="margin-top:14px"><label>Entrega da etapa (prazo final da tarefa: ${fmt(t.due)})</label><input type="date" class="inp" id="dist_due" value="${s.due}" max="${t.due}"></div>
+ <div class="row"><button class="btn" onclick="distribute('${tid}','${sid}')">Aceitar e distribuir</button><button class="btn ghost" onclick="closeM()">Cancelar</button></div>`)}
+function respRow(team,sel,desc='',due=''){return `<div class="resp" style="margin-bottom:12px;padding:10px;border:1px solid var(--line);border-radius:14px;background:#fff"><div class="row"><span class="chip rn"></span><select class="inp">${team.map(u=>`<option value="${u.id}" ${u.id===sel?'selected':''}>${esc(u.name)}${u.role==='gestor'?' (Gestor)':''}</option>`).join('')}</select><button class="btn ghost sm" onclick="const b=this.closest('.resp').parentNode;this.closest('.resp').remove();numberResp(b)">✕</button></div>
+ <input class="inp" style="margin-top:8px" maxlength="200" placeholder="Descrição da atividade deste responsável (opcional)" value="${esc(desc)}"><label class="field rdue" style="margin:8px 0 0"><span style="font-size:11px;color:var(--muted)">Prazo de encerramento deste responsável *</span><input type="date" class="inp rd" value="${esc(due)}"></label></div>`}
+function numberResp(){}
+function addResp(boxId,sector){const box=document.getElementById(boxId),team=S.users.filter(u=>u.sector===sector&&u.status==='ativo'&&['func','gestor'].includes(u.role)),used=[...box.querySelectorAll('.resp select')].map(x=>x.value);
+ box.insertAdjacentHTML('beforeend',respRow(team,(team.find(u=>!used.includes(u.id))||team[0])?.id));numberResp(box);box.querySelector('.resp:last-child input').focus()}
+const readResp=box=>{const rows=[...document.querySelectorAll(box+' .resp')];return rows.map(r=>({user:r.querySelector('select').value,desc:r.querySelector('input').value.trim(),due:rows.length>1?r.querySelector('.rd').value:''}))};
+function checkStepDues(rs,limit){if(rs.length<2)return '';if(rs.some(r=>!r.due))return 'Informe o prazo de encerramento de cada responsável.';if(rs.some(r=>r.due>limit))return 'O prazo de um responsável passa do prazo da etapa ('+fmt(limit)+').';for(let k=1;k<rs.length;k++)if(rs[k].due<rs[k-1].due)return 'Os prazos devem seguir a ordem de execução: '+U(rs[k].user).name+' não pode encerrar antes de '+U(rs[k-1].user).name+'.';return ''}
+function distribute(tid,sid){const t=Tk(tid),s=t.stages.find(z=>z.id===sid),rs=readResp('#dist_rows'),ids=rs.map(r=>r.user),due=val('dist_due');
+ if(!ids.length)return toast('Defina ao menos um responsável.');if(new Set(ids).size!==ids.length)return toast('Responsável repetido.');if(due>t.due)return toast('A etapa não pode passar do prazo final.');{const er=checkStepDues(rs,due);if(er)return toast(er)}
+ if(stageStarted(s))return toast('Etapa já iniciada: alteração não permitida.');
+ const prev=s.part;s.part='Distribuída';s.partNote='';s.due=due;s.steps=rs.map(r=>({user:r.user,desc:r.desc,due:r.due||undefined,status:'Não iniciada',reason:'',links:'',notes:''}));
+ log('Participação',prev==='Distribuída'?'Responsáveis alterados':'Participação aceita e distribuída',`${t.code} ${t.name}`,`${s.sector}: ${ids.map(i=>U(i).name).join(' → ')}`);
+ notify([t.creator,...ids],`${s.sector} distribuiu sua etapa em "${t.name}".`);save();closeM();render();toast('Etapa distribuída')}
+function adjustModal(tid,sid){openM(`<h2>Solicitar ajustes</h2><p class="sub">Não é recusa definitiva: o Gestor criador revisa e reenvia.</p><textarea class="inp" id="adj"></textarea><div class="row" style="margin-top:14px"><button class="btn" onclick="reqAdjust('${tid}','${sid}')">Enviar</button><button class="btn ghost" onclick="closeM()">Cancelar</button></div>`)}
+function reqAdjust(tid,sid){const r=val('adj');if(!r)return toast('Descreva o ajuste.');const t=Tk(tid),s=t.stages.find(z=>z.id===sid);s.part='Ajustes solicitados';s.partNote=r;
+ log('Participação','Ajustes solicitados',`${t.code} ${t.name}`,r);notify([t.creator],`${s.sector} pediu ajustes em "${t.name}".`);save();closeM();render()}
+function resendModal(tid,sid){const t=Tk(tid),s=t.stages.find(z=>z.id===sid);openM(`<h2>Revisar proposta · ${s.sector}</h2><div class="note" style="margin-bottom:14px">Pedido: ${esc(s.partNote)}</div>
+ <div class="field"><label>Nova data de entrega da etapa</label><input type="date" class="inp" id="rs_due" value="${s.due}" max="${t.due}"></div><div class="field"><label>Resposta ao Gestor</label><textarea class="inp" id="rs_note"></textarea></div>
+ <div class="row"><button class="btn" onclick="resend('${tid}','${sid}')">Reenviar</button><button class="btn ghost" onclick="closeM()">Cancelar</button></div>`)}
+function resend(tid,sid){const t=Tk(tid),s=t.stages.find(z=>z.id===sid);s.due=val('rs_due')||s.due;s.part='Reenviada';s.partNote=val('rs_note');
+ log('Participação','Proposta reenviada',`${t.code} ${t.name}`,`${s.sector} · entrega ${fmt(s.due)}`);notify([gestorOf(s.sector)?.id],`Proposta de "${t.name}" reenviada.`);save();closeM();render()}
+function decideDeadline(id,ok){const d=S.deadlineReqs.find(x=>x.id===id),t=Tk(d.task),s=t.stages.find(z=>z.id===d.stage);d.status=ok?'Aprovada':'Rejeitada';if(ok)s.due=d.to;
+ log('Prazo',ok?'Alteração de prazo aprovada':'Alteração de prazo rejeitada',`${t.code} ${t.name}`,`${s.sector}: ${fmt(d.from)} → ${fmt(d.to)}`);notify([d.by,...s.steps.map(x=>x.user)],`Pedido de prazo em "${t.name}" ${ok?'aprovado':'rejeitado'}.`);save();render()}
+
+const SF0={rel:'Todos',project:'Todos',status:'Todos',farol:'Todos',resp:'Todos',prazo:'Todos',arch:'nao'};
+UI.sf={...SF0};
+function sfSet(k,v){UI.sf[k]=v;renderBody()}
+function sfAll(c){S.projects.forEach(p=>UI.collapsed[p.id]=c);renderBody()}
+function sectorView(){const m=me(),sec=m.sector,F=UI.sf;
+ const allP=S.projects.filter(p=>p.creator===m.id||p.sector===sec||S.tasks.some(t=>t.project===p.id&&involvesSector(t,sec)));
+ const taskF=['status','farol','resp','prazo'].some(k=>F[k]!==SF0[k]);
+ const tf=t=>{const n=daysTo(t.due);return (F.status==='Todos'||tStatus(t)===F.status)&&(F.farol==='Todos'||tFarol(t)===F.farol)
+  &&(F.resp==='Todos'||t.stages.some(s=>s.sector===sec&&s.steps.some(x=>x.user===F.resp)))
+  &&(F.prazo==='Todos'||(F.prazo==='atrasadas'&&n<0&&!tDone(t))||(F.prazo==='hoje'&&n===0)||(F.prazo==='7'&&n>=0&&n<=7)||(F.prazo==='30'&&n>=0&&n<=30))};
+ const projs=allP.filter(p=>(F.rel==='Todos'||(F.rel==='meus'?p.creator===m.id:p.creator!==m.id))&&(F.project==='Todos'||p.id===F.project)&&(F.arch==='sim'||!p.archived));
+ let shown=0,total=0;
+ const rows=projs.map(p=>{const all=S.tasks.filter(t=>t.project===p.id&&(p.creator===m.id||involvesSector(t,sec))&&match(t.name,p.name));const ts=all.filter(tf);total+=all.length;shown+=ts.length;
+  if((UI.q||taskF)&&!ts.length&&!(UI.q&&!taskF&&match(p.name)))return'';const c=UI.collapsed[p.id],ps=pStatus(p);
+  return `<tr class="proj"><td><button class="btn ghost sm" style="padding:2px 8px" onclick="UI.collapsed['${p.id}']=!UI.collapsed['${p.id}'];renderBody()">${c?'▸':'▾'}</button> ${esc(p.name)} ${p.rec?'<span class="chip">↻ '+esc(p.rec.freq)+'</span>':''}</td><td>${p.creator===m.id?'Criado por você':'Participação do setor'}</td><td>${p.sector} · ${fmtS(p.due)}</td><td>${ts.length} tarefas</td><td>${pill(ps)}</td><td>${p.creator===m.id?`<button class="btn ghost sm" onclick="projMenu('${p.id}')">${ic('dots',16)}</button>`:''}</td></tr>`+
+  (c?'':ts.map(t=>`<tr><td style="padding-left:40px">↳ ${esc(t.name)}</td><td>${esc(flowLabel(t))}</td><td>${fmtS(t.due)}</td><td>${farolPill(tFarol(t))}</td><td>${pill(tStatus(t))}</td><td><button class="btn ghost sm" onclick="taskMenu('${t.id}')">${ic('dots',16)}</button></td></tr>`).join(''))}).join('');
+ const team=S.users.filter(u=>u.sector===sec&&u.status==='ativo'&&['func','gestor'].includes(u.role));
+ const sel=(k,opts,label)=>`<label class="field" style="margin:0;min-width:140px;flex:1"><span style="font-size:11px;color:var(--muted)">${label}</span><select class="inp" onchange="sfSet('${k}',this.value)">${opts.map(([v,l])=>`<option value="${esc(v)}" ${F[k]===v?'selected':''}>${esc(l)}</option>`).join('')}</select></label>`;
+ const active=Object.keys(SF0).filter(k=>F[k]!==SF0[k]).length;
+ return `<div class="card" data-exp="setor"><div class="row between wrap" style="gap:12px"><div><h2>Projetos e tarefas do setor</h2><p class="sub" style="margin:0">Projetos criados por você e com participação em outros setores.</p></div><div class="row"><button class="btn ghost sm" onclick="sfAll(false)">Expandir tudo</button><button class="btn ghost sm" onclick="sfAll(true)">Recolher tudo</button>${expBtn("exportCard('setor','Projetos e tarefas do setor')")}</div></div>
+ <div class="row wrap" style="align-items:flex-end;gap:10px;margin:16px 0 12px;padding:14px;border-radius:16px;background:var(--g1)">
+ ${sel('rel',[['Todos','Todos'],['meus','Criados por você'],['part','Participação do setor']],'Relação')}
+ ${sel('project',[['Todos','Todos os projetos'],...allP.map(p=>[p.id,p.name])],'Projeto')}
+ ${sel('status',[['Todos','Todos os status'],...['Não iniciada','Em andamento','Bloqueada','Aguardando acordo','Concluída','Cancelada'].map(s=>[s,s])],'Status da tarefa')}
+ ${sel('farol',[['Todos','Todos'],['vermelho','Crítico'],['amarelo','Prazo próximo'],['verde','No prazo'],['neutro','Finalizada']],'Farol')}
+ ${sel('resp',[['Todos','Todos'],...team.map(u=>[u.id,u.name+(u.id===m.id?' (você)':'')])],'Responsável')}
+ ${sel('prazo',[['Todos','Qualquer prazo'],['atrasadas','Atrasadas'],['hoje','Vence hoje'],['7','Próximos 7 dias'],['30','Próximos 30 dias']],'Prazo')}
+ ${sel('arch',[['nao','Ocultar arquivados'],['sim','Mostrar arquivados']],'Arquivados')}
+ <button class="btn ghost" ${active?'':'disabled'} onclick="UI.sf={...SF0};renderBody()">Limpar filtros${active?` (${active})`:''}</button></div>
+ <p class="s" style="color:var(--muted);margin:0 0 6px">${shown===total?`${total} tarefa(s)`:`${shown} de ${total} tarefa(s)`} em ${rows?rows.split('class="proj"').length-1:0} projeto(s)</p><div style="overflow:auto"><table><tr><th>Projeto / Tarefa</th><th>Relação / Fluxo</th><th>Setor / Prazo</th><th>Tarefas / Farol</th><th>Status</th><th></th></tr>${rows||'<tr><td colspan=6 class="empty">Nenhum projeto ou tarefa com estes filtros.</td></tr>'}</table></div></div>`}
+function menu(title,items){openM(`<h2>${esc(title)}</h2><p class="sub">Opções indisponíveis ficam desabilitadas.</p><div class="list">${items.map(([l,fn,ok,why])=>`<div class="it"><div class="grow"><div class="t">${l}</div>${!ok&&why?`<div class="s">${why}</div>`:''}</div><button class="btn sm" ${ok?'':'disabled'} onclick="${fn}">Selecionar</button></div>`).join('')}</div><div class="row" style="margin-top:14px"><button class="btn ghost" onclick="closeM()">Fechar</button></div>`)}
+function taskMenu(tid){const t=Tk(tid),m=me(),creator=t.creator===m.id,my=t.stages.find(s=>s.sector===m.sector),act=!tDone(t),pc=P(t.project).concluded;
+ menu(t.name,[['Ver detalhes e histórico',`taskModal('${tid}')`,true],
+  ['Gerenciar setores e etapas',`sectorsModal('${tid}')`,creator&&act&&!pc,'Somente o Gestor criador, em tarefa ativa.'],
+  ['Alterar responsáveis do meu setor',`closeM();distModal('${tid}','${my?.id}')`,!!my&&act&&my.part==='Distribuída'&&!stageStarted(my),'Somente antes da etapa do seu setor começar.'],
+  ['Solicitar alteração de prazo da etapa',`deadlineModal('${tid}')`,!!my&&!creator&&act&&!stageDone(my),'Para Gestores participantes.'],
+  ['Alterar prazo final',`dueModal('${tid}')`,creator&&act,'Somente o Gestor criador.'],
+  ['Cancelar tarefa',`cancelModal('${tid}')`,creator&&act,'Somente o Gestor criador, em tarefa ativa.']])}
+function deadlineModal(tid){const t=Tk(tid),s=t.stages.find(z=>z.sector===me().sector);openM(`<h2>Solicitar novo prazo · ${s.sector}</h2><p class="sub">O prazo atual (${fmt(s.due)}) continua valendo até a decisão do Gestor criador.</p>
+ <div class="field"><label>Nova data</label><input type="date" class="inp" id="dl_to"></div><div class="field"><label>Justificativa</label><textarea class="inp" id="dl_r"></textarea></div>
+ <div class="row"><button class="btn" onclick="reqDeadline('${tid}','${s.id}')">Enviar solicitação</button><button class="btn ghost" onclick="closeM()">Cancelar</button></div>`)}
+function reqDeadline(tid,sid){const t=Tk(tid),s=t.stages.find(z=>z.id===sid),to=val('dl_to'),r=val('dl_r');if(!to||!r)return toast('Informe data e justificativa.');
+ if(S.deadlineReqs.some(d=>d.stage===sid&&d.status==='Pendente'))return toast('Já existe um pedido pendente.');
+ S.deadlineReqs.push({id:uid(),task:tid,stage:sid,by:S.session,from:s.due,to,reason:r,status:'Pendente'});log('Prazo','Alteração de prazo solicitada',`${t.code} ${t.name}`,`${fmt(s.due)} → ${fmt(to)}: ${r}`);
+ notify([t.creator],`${s.sector} pediu novo prazo em "${t.name}".`);save();closeM();render();toast('Solicitação enviada')}
+function dueModal(tid){const t=Tk(tid);openM(`<h2>Alterar prazo final</h2><div class="field"><label>Novo prazo</label><input type="date" class="inp" id="du" value="${t.due}"></div><div class="field"><label>Justificativa</label><textarea class="inp" id="du_r"></textarea></div><div class="row"><button class="btn" onclick="setDue('${tid}')">Salvar</button><button class="btn ghost" onclick="closeM()">Cancelar</button></div>`)}
+function setDue(tid){const t=Tk(tid),d=val('du'),r=val('du_r');if(!d||!r)return toast('Informe data e justificativa.');if(t.stages.some(s=>s.due>d))return toast('Há etapas com entrega posterior a essa data.');
+ log('Prazo','Prazo final alterado',`${t.code} ${t.name}`,`${fmt(t.due)} → ${fmt(d)}: ${r}`);t.due=d;notify(t.stages.flatMap(s=>[gestorOf(s.sector)?.id,...s.steps.map(x=>x.user)]),`Prazo final de "${t.name}" alterado para ${fmt(d)}.`);save();closeM();render()}
+function cancelModal(tid){openM(`<h2>Cancelar tarefa</h2><p class="sub">Interrompe a execução, nenhuma etapa futura é liberada e todos os envolvidos são notificados. O histórico é preservado.</p><textarea class="inp" id="cn" placeholder="Motivo do cancelamento (obrigatório)"></textarea><div class="row" style="margin-top:14px"><button class="btn" onclick="cancelTask('${tid}')">Confirmar cancelamento</button><button class="btn ghost" onclick="closeM()">Voltar</button></div>`)}
+function cancelTask(tid){const r=val('cn');if(!r)return toast('Justificativa obrigatória.');const t=Tk(tid);t.cancelled=true;t.cancelReason=r;log('Tarefa','Tarefa cancelada',`${t.code} ${t.name}`,r);
+ notify(t.stages.flatMap(s=>[gestorOf(s.sector)?.id,...s.steps.map(x=>x.user)]),`Tarefa "${t.name}" foi cancelada: ${r}`);save();closeM();render();toast('Tarefa cancelada')}
+function sectorsModal(tid){const t=Tk(tid),maxPh=Math.max(...t.stages.map(s=>s.phase));const free=S.sectors.filter(s=>!involvesSector(t,s)&&gestorOf(s));
+ openM(`<h2>Gerenciar setores e etapas</h2><p class="sub">Fluxo atual: ${esc(flowLabel(t))}</p><div class="list">${t.stages.map(s=>`<div class="it">${sectorIcon(s.sector)}<div class="grow"><div class="t">${s.sector} · etapa ${s.phase}</div><div class="s">${s.part}${stageStarted(s)?' · em execução (protegida)':''}</div></div>${s.sector!==P(t.project).sector||t.stages.length>1?`<button class="btn ghost sm" ${stageStarted(s)||stageDone(s)||s.sector===me().sector?'disabled':''} onclick="removeSector('${tid}','${s.id}')">Remover</button>`:''}</div>`).join('')}</div>
+ <div class="sep"></div><h2>Adicionar setor</h2><p class="sub">O novo setor precisa aceitar antes da distribuição.</p>${free.length?`<div class="row wrap"><select class="inp" id="as_sec" style="flex:1">${free.map(s=>`<option>${s}</option>`).join('')}</select><select class="inp" id="as_ph" style="flex:1">${Array.from({length:maxPh+1},(_,k)=>`<option value="${k+1}">${k<maxPh?`Em paralelo com a etapa ${k+1}`:`Nova etapa ${k+1} (depois das demais)`}</option>`).join('')}</select><input type="date" class="inp" id="as_due" style="flex:1" value="${t.due}" max="${t.due}"></div>
+ <div class="field" style="margin-top:10px"><label>Justificativa</label><input class="inp" id="as_r"></div><button class="btn" onclick="addSector('${tid}')">Solicitar participação</button>`:'<div class="empty">Todos os setores com Gestor já participam.</div>'}`)}
+function addSector(tid){const t=Tk(tid),sec=val('as_sec'),ph=+val('as_ph'),r=val('as_r');if(!r)return toast('Justificativa obrigatória.');
+ if(t.stages.some(s=>s.phase>=ph&&stageStarted(s))&&ph<=Math.max(...t.stages.filter(stageStarted).map(s=>s.phase)))return toast('Não é possível inserir antes de uma etapa já iniciada.');
+ t.stages.push({id:uid(),sector:sec,phase:ph,part:'Aguardando resposta',steps:[],due:val('as_due'),partNote:''});log('Participação','Setor adicionado',`${t.code} ${t.name}`,`${sec}: ${r}`);notify([gestorOf(sec)?.id],`Nova solicitação de participação em "${t.name}".`);save();closeM();render();toast('Solicitação enviada a '+sec)}
+function removeSector(tid,sid){const r=prompt('Justificativa para remover o setor (obrigatória):');if(!r)return;const t=Tk(tid),s=t.stages.find(z=>z.id===sid);if(stageStarted(s))return toast('Etapa em execução é protegida.');
+ t.stages=t.stages.filter(z=>z.id!==sid);log('Participação','Setor removido',`${t.code} ${t.name}`,`${s.sector}: ${r}`);notify([gestorOf(s.sector)?.id],`${s.sector} foi removido de "${t.name}".`);save();sectorsModal(tid);render()}
+function projMenu(pid){const p=P(pid),ps=pStatus(p);menu(p.name,[
+ ['Concluir projeto',`concludeProj('${pid}')`,ps==='Pronto para concluir','Disponível quando todas as tarefas estão concluídas ou canceladas.'],
+ ['Reabrir projeto',`reopenModal('${pid}')`,ps==='Concluído','Somente projetos concluídos e não arquivados.'],
+ ['Arquivar projeto',`archive('${pid}',true)`,ps==='Concluído','Somente projetos concluídos.'],
+ ['Desarquivar projeto',`archive('${pid}',false)`,ps==='Arquivado'],
+ ['Gerar próxima ocorrência',`genOcc('${pid}')`,!!p.rec&&!p.archived,'Somente projetos recorrentes.'],
+ ['Pausar / encerrar recorrência',`stopRec('${pid}')`,!!p.rec,'Somente projetos recorrentes.']])}
+function concludeProj(pid){const p=P(pid);if(!confirm('Confirmar a conclusão de "'+p.name+'"? O projeto ficará somente leitura.'))return;p.concluded=true;p.cycles++;log('Projeto','Projeto concluído',p.name,'Ciclo '+p.cycles);save();closeM();render();toast('Projeto concluído')}
+function reopenModal(pid){openM(`<h2>Reabrir projeto</h2><p class="sub">Tarefas concluídas permanecem concluídas. Correções exigem novas tarefas.</p><textarea class="inp" id="ro" placeholder="Justificativa obrigatória"></textarea><div class="row" style="margin-top:14px"><button class="btn" onclick="reopen('${pid}')">Confirmar reabertura</button><button class="btn ghost" onclick="closeM()">Cancelar</button></div>`)}
+function reopen(pid){const r=val('ro');if(!r)return toast('Justificativa obrigatória.');const p=P(pid);p.concluded=false;log('Projeto','Projeto reaberto',p.name,r);save();closeM();render()}
+function archive(pid,on){const p=P(pid);p.archived=on;log('Projeto',on?'Projeto arquivado':'Projeto desarquivado',p.name);save();closeM();render()}
+function stopRec(pid){const p=P(pid);log('Projeto','Recorrência encerrada',p.name,p.rec.freq);p.rec=null;save();closeM();render()}
+const FREQ={Semanal:7,Quinzenal:14,Mensal:30,Bimestral:61,Trimestral:91,Semestral:182,Anual:365};
+function genOcc(pid){const p=P(pid),k=FREQ[p.rec.freq]||30,sh=d=>{const x=new Date(d+'T00:00');x.setDate(x.getDate()+k);return iso(x)};
+ const n={...p,id:'p'+uid(),name:p.name.replace(/ \(#\d+\)$/,'')+' (#'+((p.occ||1)+1)+')',due:sh(p.due),concluded:false,archived:false,cycles:0,occ:(p.occ||1)+1,draft:p.rec.mode==='rascunho'};
+ p.rec=null;S.projects.push(n);
+ if(n.rec.struct==='tarefas')S.tasks.filter(t=>t.project===pid&&!t.cancelled).forEach(t=>{S.tasks.push({...t,id:'t'+uid(),code:'TK-'+(S.seq++),project:n.id,due:sh(t.due),cancelled:false,
+  stages:t.stages.map(s=>({id:uid(),sector:s.sector,phase:s.phase,due:sh(s.due),partNote:'',part:s.sector===p.sector?'Distribuída':'Aguardando resposta',steps:s.sector===p.sector?s.steps.map(x=>({user:x.user,desc:x.desc,status:'Não iniciada',reason:'',links:'',notes:''})):[]}))});
+  t.stages.filter(s=>s.sector!==p.sector).forEach(s=>notify([gestorOf(s.sector)?.id],`Nova ocorrência de "${n.name}" requer seu aceite.`))});
+ log('Projeto','Ocorrência gerada',n.name,n.draft?'Rascunho para revisão':'Automática');save();closeM();render();toast('Ocorrência criada: '+n.name)}
+
+function createView(){const m=me(),projs=S.projects.filter(p=>(m.role==='func'?p.sector===m.sector:p.creator===m.id)&&!p.approval&&!p.concluded&&!p.archived),others=S.sectors.filter(s=>s!==m.sector&&gestorOf(s));
+ const team=S.users.filter(u=>u.sector===m.sector&&u.status==='ativo'&&['func','gestor'].includes(u.role));
+ return `<div class="grid g2"><div class="card hero"><h2>Criar projeto</h2><p class="sub">Dados essenciais. Ações avançadas ficam no menu ··· depois.</p>
+ <div class="field"><label>Nome do projeto *</label><input class="inp" id="np_name" placeholder="Ex.: Campanha de novembro"></div>
+ <div class="row"><div class="field grow"><label>Setor responsável</label><input class="inp" value="${m.sector}" disabled></div><div class="field grow"><label>Prioridade</label><select class="inp" id="np_pri"><option>Alta</option><option selected>Média</option><option>Baixa</option></select></div></div>
+ <div class="field"><label>Descrição / objetivo *</label><textarea class="inp" id="np_desc"></textarea></div>
+ <div class="field"><label>Prazo final *</label><input type="date" class="inp" id="np_due" min="${iso(T0)}"></div>
+ <div class="field"><label>Projeto recorrente?</label><select class="inp" id="np_rec" onchange="document.getElementById('recbox').style.display=this.value==='sim'?'block':'none'"><option value="nao">Não, projeto único</option><option value="sim">Sim, projeto recorrente</option></select></div>
+ <div id="recbox" style="display:none"><div class="row"><div class="field grow"><label>Frequência</label><select class="inp" id="np_freq">${Object.keys(FREQ).map(f=>`<option ${f==='Mensal'?'selected':''}>${f}</option>`).join('')}</select></div><div class="field grow"><label>Repetir</label><select class="inp" id="np_struct"><option value="tarefas">Projeto + tarefas modelo</option><option value="projeto">Somente projeto</option></select></div></div>
+ <div class="field"><label>Geração</label><select class="inp" id="np_mode"><option value="rascunho">Rascunho para revisão</option><option value="auto">Automática</option></select></div><p class="note">Cada ocorrência é um projeto independente. Participações de outros setores exigem novo aceite.</p></div>
+ <div class="row"><button class="btn" onclick="createProj(false)">Salvar projeto</button><button class="btn ghost" onclick="createProj(true)">Salvar e criar tarefa</button></div></div>
+ <div class="card info" id="taskform"><h2>Criar tarefa</h2><p class="sub">Por padrão a tarefa é do seu setor. Envolva outros setores só se necessário.</p>
+ <span class="lbl">1. Dados da tarefa</span>
+ <div class="field"><label>Projeto *</label><select class="inp" id="nt_proj">${projs.map(p=>`<option value="${p.id}" ${UI.newProj===p.id?'selected':''}>${esc(p.name)} · até ${fmtS(p.due)}</option>`).join('')||'<option value="">Crie um projeto primeiro</option>'}</select></div>
+ <div class="field"><label>Nome da tarefa *</label><input class="inp" id="nt_name"></div>
+ <div class="field"><label>Descrição / entrega esperada *</label><textarea class="inp" id="nt_desc"></textarea></div>
+ <div class="row"><div class="field grow"><label>Prazo final *</label><input type="date" class="inp" id="nt_due" min="${iso(T0)}"></div><div class="field grow"><label>Etapa do meu setor</label><input type="number" class="inp" id="nt_ph" min="1" max="99" step="1" value="1" title="Número da etapa"></div></div>
+ <span class="lbl">2. Responsáveis de ${m.sector} (em ordem)</span><div id="nt_resp" style="margin-top:6px">${respRow(team,team.find(u=>u.role==='func')?.id)}</div>
+ <button class="btn ghost sm" onclick="addResp('nt_resp','${m.sector}')">+ Adicionar próximo responsável</button>
+ <div id="nt_sec" style="margin-top:12px"></div>
+ ${others.length?`<button class="btn ghost sm" onclick="addSecRow()">+ Envolver outro setor</button>`:''}
+ <p class="note" style="margin-top:12px">Setores na mesma etapa trabalham em paralelo; uma etapa só começa quando as anteriores concluem.</p>
+ <span class="lbl" style="margin-top:12px">3. Revisar e criar</span><button class="btn" style="margin-top:8px" onclick="createTask()">Criar tarefa ${ic('arrow',18)}</button></div></div>`}
+function nextPhase(){const v=[+val('nt_ph')||1,...[...document.querySelectorAll('#nt_sec .sec input[type=number]')].map(x=>+x.value||1)];return Math.max(...v)+1}
+function addSecRow(){const m=me(),others=S.sectors.filter(s=>s!==m.sector&&gestorOf(s)),used=[...document.querySelectorAll('#nt_sec .sec select')].map(x=>x.value),def=others.find(s=>!used.includes(s))||others[0],lab=t=>`<span style="font-size:11px;color:var(--muted)">${t}</span>`;document.getElementById('nt_sec').insertAdjacentHTML('beforeend',`<div class="sec" style="margin-bottom:12px;padding:10px;border:1px solid var(--line);border-radius:14px;background:#fff"><div class="row" style="align-items:flex-end;gap:10px"><label class="field" style="margin:0;flex:2;min-width:0">${lab('Setor')}<select class="inp">${others.map(s=>`<option ${s===def?'selected':''}>${s}</option>`).join('')}</select></label><label class="field" style="margin:0;flex:0 0 96px">${lab('Etapa')}<input type="number" class="inp" min="1" max="99" step="1" value="${nextPhase()}" title="Setores com o mesmo número trabalham em paralelo"></label><label class="field" style="margin:0;flex:2;min-width:0">${lab('Prazo da etapa')}<input type="date" class="inp" value="${val('nt_due')}" max="${val('nt_due')}"></label><button class="btn ghost sm" style="margin-bottom:6px" onclick="this.closest('.sec').remove()" aria-label="Remover setor">✕</button></div><label class="field" style="margin:10px 0 0">${lab('Descrição')}<input class="inp" maxlength="240" placeholder="O que este setor deve entregar nesta etapa (opcional)"></label></div>`)}
+function createProj(thenTask){const m=me(),name=val('np_name'),desc=val('np_desc'),due=val('np_due');if(!name||!desc||!due)return toast('Preencha os campos obrigatórios.');
+ const p={id:'p'+uid(),name,sector:m.sector,desc,due,priority:val('np_pri'),creator:m.id,concluded:false,archived:false,cycles:0,rec:val('np_rec')==='sim'?{freq:val('np_freq'),struct:val('np_struct'),mode:val('np_mode')}:null};
+ if(m.role==='func'){p.approval='pendente';S.projects.push(p);log('Projeto','Projeto criado (aguardando aprovação)',name);notify([gestorOf(m.sector)?.id],m.name+' criou o projeto "'+name+'" e aguarda sua aprovação.');save();renderBody();return toast('Projeto enviado para aprovação do Gestor')}
+ S.projects.push(p);log('Projeto','Projeto criado',name,p.rec?'Recorrente: '+p.rec.freq:'');save();UI.newProj=p.id;renderBody();toast('Projeto criado · Não iniciado');if(thenTask)document.getElementById('nt_name').focus()}
+function createTask(){const m=me(),pid=val('nt_proj'),name=val('nt_name'),desc=val('nt_desc'),due=val('nt_due'),rs=readResp('#nt_resp'),ids=rs.map(r=>r.user),ph=+val('nt_ph');
+ if(!pid)return toast('A tarefa precisa de um projeto.');if(!name||!desc||!due)return toast('Preencha os campos obrigatórios.');if(!ids.length)return toast('Responsável obrigatório.');if(new Set(ids).size!==ids.length)return toast('Responsável repetido.');
+ const p=P(pid);if(due>p.due)return toast('O prazo passa do prazo final do projeto ('+fmt(p.due)+').');{const er=checkStepDues(rs,due);if(er)return toast(er)}
+ const secs=[...document.querySelectorAll('#nt_sec .sec')].map(r=>{const [a,b,c,d]=r.querySelectorAll('select,input');return {sector:a.value,phase:+b.value,due:c.value||due,desc:d.value.trim()}});
+ if(new Set(secs.map(s=>s.sector)).size!==secs.length)return toast('Setor repetido.');
+ const phases=[ph,...secs.map(s=>s.phase)];if(phases.some(v=>!Number.isInteger(v)||v<1))return toast('Informe números de etapa inteiros a partir de 1.');const used=[...new Set(phases)].sort((a,b)=>a-b);if(used.some((v,k)=>v!==k+1))return toast('As etapas devem ser sequenciais a partir da 1 (sem pular números).');
+ const t={id:'t'+uid(),code:'TK-'+(S.seq++),project:pid,name,desc,due,created:iso(new Date()),creator:m.id,cancelled:false,stages:[{id:uid(),sector:m.sector,phase:ph,part:'Distribuída',partNote:'',due,steps:rs.map(r=>({user:r.user,desc:r.desc,due:r.due||undefined,status:'Não iniciada',reason:'',links:'',notes:''}))},
+  ...secs.map(s=>({id:uid(),sector:s.sector,phase:s.phase,desc:s.desc,part:'Aguardando resposta',partNote:'',due:s.due>due?due:s.due,steps:[]}))]};
+ S.tasks.push(t);log('Tarefa','Tarefa criada',`${t.code} ${t.name}`,flowLabel(t));notify(ids,`Nova tarefa atribuída: "${name}".`);secs.forEach(s=>notify([gestorOf(s.sector)?.id],`${m.name} solicitou participação de ${s.sector} em "${name}".`));
+ save();renderBody();toast(secs.length?'Tarefa criada · solicitações enviadas':'Tarefa interna criada')}
+
+// ---------- CEO ----------
+function ceoHome(){const act=S.tasks.filter(t=>!tDone(t)&&!P(t.project).archived);
+ const late=act.filter(t=>daysTo(t.due)<0),blocked=act.filter(t=>tStatus(t)==='Bloqueada'),risk=act.filter(t=>tFarol(t)!=='verde'&&daysTo(t.due)>=0),neg=act.filter(t=>t.stages.some(s=>s.part!=='Distribuída'));
+ const pend=S.users.filter(u=>u.status==='pendente'&&u.declared==='gestor');
+ const crit=[...new Set([...late,...blocked,...risk,...neg])].filter(t=>match(t.name,P(t.project).name));
+ const CF=UI.cf||(UI.cf={sector:'Todos',project:'Todos',status:'Todos',resp:'Todos',farol:'Todos'});
+ const pool=S.tasks.filter(t=>!P(t.project).archived);
+ const FR={vermelho:0,amarelo:1,verde:2,neutro:3};
+ const all=pool.filter(t=>(CF.sector==='Todos'||involvesSector(t,CF.sector))&&(CF.project==='Todos'||t.project===CF.project)&&(CF.status==='Todos'||tStatus(t)===CF.status)
+  &&(CF.resp==='Todos'||t.stages.some(s=>s.steps.some(x=>x.user===CF.resp)))&&(CF.farol==='Todos'||tFarol(t)===CF.farol)&&match(t.name,P(t.project).name)).sort((a,b)=>FR[tFarol(a)]-FR[tFarol(b)]||a.due.localeCompare(b.due));
+ const people=S.users.filter(u=>['func','gestor'].includes(u.role)&&u.status==='ativo'&&(CF.sector==='Todos'||u.sector===CF.sector));
+ const projs=S.projects.filter(p=>!p.archived&&(CF.sector==='Todos'||pool.some(t=>t.project===p.id&&involvesSector(t,CF.sector))));
+ const fs=(k,opts,label)=>`<label class="field" style="margin:0;min-width:150px;flex:1"><span style="font-size:11px;color:var(--muted)">${label}</span><select class="inp" onchange="UI.cf.${k}=this.value;${k==='sector'?"UI.cf.resp='Todos';UI.cf.project='Todos';":''}renderBody()">${opts.map(([v,l])=>`<option value="${esc(v)}" ${CF[k]===v?'selected':''}>${esc(l)}</option>`).join('')}</select></label>`;
+ const active=['sector','project','status','resp','farol'].filter(k=>CF[k]!=='Todos').length;
+ const names=t=>[...new Set(t.stages.flatMap(s=>s.steps.map(x=>U(x.user).name.split(' ')[0])))].join(', ')||'—';
+ const pk=(t,f)=>({t,s:t.stages.find(f)||[...t.stages].sort((a,b)=>b.phase-a.phase)[0]});KPI_SETS={c_late:late.map(t=>pk(t,s=>!stageDone(s)&&daysTo(s.due)<0)),c_blk:blocked.map(t=>pk(t,s=>s.steps.some(x=>x.status==='Bloqueado'))),c_risk:risk.map(t=>pk(t,s=>!stageDone(s))),c_neg:neg.map(t=>pk(t,s=>s.part!=='Distribuída'))};
+ return kpis([['Tarefas atrasadas',late.length,'Passaram do prazo final',{k:'red',e:'🚨',alert:1,ok:'Nenhuma atrasada',click:"openKpi('c_late')"}],['Bloqueios ativos',blocked.length,'Tarefas com etapa travada',{k:'red',e:'⛔',alert:1,ok:'Nenhum bloqueio',click:"openKpi('c_blk')"}],['Prazos em risco',risk.length,'Vencem nos próximos 3 dias',{k:'orange',e:'⚠️',alert:1,ok:'Nenhum prazo em risco',click:"openKpi('c_risk')"}],['Em negociação',neg.length,'Setores aguardando acordo',{k:'violet',e:'🤝',alert:1,ok:'Nenhuma negociação aberta',click:"openKpi('c_neg')"}]])+
+ `<div class="card" data-exp="ceo"><div class="row between wrap" style="gap:10px"><h2>Tarefas de todos os setores</h2>${expBtn("exportCard('ceo','Tarefas de todos os setores')")}</div><p class="sub">Visão de acompanhamento, com as críticas no topo. O CEO não cria nem distribui tarefas.</p>
+ <div class="row wrap" style="align-items:flex-end;gap:10px;margin-bottom:12px;padding:14px;border-radius:16px;background:var(--g1)">
+ ${fs('sector',[['Todos','Todos os setores'],...S.sectors.map(s=>[s,s])],'Setor')}
+ ${fs('project',[['Todos','Todos os projetos'],...projs.map(p=>[p.id,p.name])],'Projeto')}
+ ${fs('status',[['Todos','Todos os status'],...['Não iniciada','Em andamento','Bloqueada','Aguardando acordo','Concluída','Cancelada'].map(s=>[s,s])],'Status')}
+ ${fs('resp',[['Todos','Todos'],...people.map(u=>[u.id,u.name])],'Responsável')}
+ ${fs('farol',[['Todos','Todos'],['vermelho','Crítico'],['amarelo','Prazo próximo'],['verde','No prazo'],['neutro','Finalizada']],'Farol')}
+ <button class="btn ghost" ${active?'':'disabled'} onclick="UI.cf={sector:'Todos',project:'Todos',status:'Todos',resp:'Todos',farol:'Todos'};renderBody()">Limpar filtros${active?` (${active})`:''}</button></div>
+ <p class="s" style="color:var(--muted);margin:0 0 6px">${all.length===pool.length?`${pool.length} tarefa(s)`:`${all.length} de ${pool.length} tarefa(s)`}</p>
+ <div style="overflow:auto"><table><tr><th>Projeto / Tarefa</th><th>Setores</th><th>Responsáveis</th><th>Prazo</th><th>Status</th><th>Farol</th></tr>
+ ${all.map(t=>`<tr class="click" onclick="taskModal('${t.id}')"><td>${esc(P(t.project).name)} / ${esc(t.name)}</td><td>${esc(flowLabel(t))}</td><td>${esc(names(t))}</td><td>${fmtS(t.due)}</td><td>${pill(tStatus(t))}</td><td>${farolPill(tFarol(t))}</td></tr>`).join('')||'<tr><td colspan=6 class="empty">Nenhuma tarefa com estes filtros.</td></tr>'}</table></div></div>`}
+function projApprovalsCard(){const m=me(),pend=S.projects.filter(p=>p.approval==='pendente'&&p.sector===m.sector);
+ return `<div class="card hero"><div class="row between"><h2>Projetos aguardando aprovação</h2><span class="chip">${pend.length}</span></div><p class="sub">Projetos criados por funcionários do seu setor. As tarefas não precisam de aprovação.</p>
+ ${pend.length?`<div class="list">${pend.map(p=>`<div class="it">${av(p.creator)}<div class="grow"><div class="t">${esc(p.name)}</div><div class="s">${esc(U(p.creator).name)} · prazo ${fmtS(p.due)} · prioridade ${esc(p.priority)}</div><div class="s" style="color:#555">${esc(p.desc)}</div></div><button class="btn sm" onclick="approveProj('${p.id}',true)">Aprovar</button><button class="btn ghost sm" onclick="rejectProjModal('${p.id}')">Recusar</button></div>`).join('')}</div>`:'<div class="empty">Nenhum projeto aguardando.</div>'}</div>`}
+function approveProj(id,ok,reason){const p=P(id);if(ok){delete p.approval;p.rejectReason=''}else{p.approval='recusado';p.rejectReason=reason}
+ log('Projeto',ok?'Projeto aprovado':'Projeto recusado',p.name,reason||'');notify([p.creator],`Seu projeto "${p.name}" foi ${ok?'aprovado. Você já pode criar tarefas nele.':'recusado: '+reason}`);save();closeM();render();toast(ok?'Projeto aprovado':'Projeto recusado')}
+function rejectProjModal(id){openM(`<h2>Recusar projeto</h2><p class="sub">Explique o motivo para o funcionário.</p><textarea class="inp" id="rj"></textarea><div class="row" style="margin-top:14px"><button class="btn" onclick="const r=val('rj');if(!r)return toast('Informe o motivo.');approveProj('${id}',false,r)">Confirmar recusa</button><button class="btn ghost" onclick="closeM()">Cancelar</button></div>`)}
+function myProjStatus(){const m=me(),mine=S.projects.filter(p=>p.creator===m.id);if(!mine.length)return'';
+ return `<div class="card" style="margin-top:20px"><h2>Meus projetos</h2><p class="sub">Projetos que você criou. Depois de aprovados pelo Gestor, você pode criar tarefas neles.</p><div class="list">${mine.map(p=>`<div class="it">${sectorIcon(p.sector)}<div class="grow"><div class="t">${esc(p.name)}</div><div class="s">Prazo ${fmtS(p.due)}${p.rejectReason?` · Motivo: ${esc(p.rejectReason)}`:''}</div></div>${pill(pStatus(p))}</div>`).join('')}</div></div>`}
+function ceoApprovals(){const pend=S.users.filter(u=>u.status==='pendente'&&u.declared==='gestor');
+ const hist=S.logs.filter(l=>l.action==='Perfil Gestor aprovado'||l.action==='Perfil Gestor recusado');
+ return `<div class="grid g2"><div class="card hero"><div class="row between"><h2>Aguardando sua aprovação</h2><span class="chip">${pend.length}</span></div><p class="sub">Pessoas que se cadastraram como Gestor. O cargo declarado só vale depois da sua aprovação.</p>
+ ${pend.length?`<div class="list">${pend.map(u=>`<div class="it">${av(u.id)}<div class="grow"><div class="t">${esc(u.name)}</div><div class="s">${esc(u.email)} · Setor ${esc(u.sector||'—')}${gestorOf(u.sector)?` · <span style="color:var(--red)">o setor já tem Gestor (${esc(gestorOf(u.sector).name)})</span>`:''}</div></div><button class="btn sm" onclick="approveG('${u.id}',true)">Aprovar</button><button class="btn ghost sm" onclick="approveG('${u.id}',false)">Recusar</button></div>`).join('')}</div>`:'<div class="empty">Nenhuma aprovação pendente.</div>'}</div>
+ <div class="card"><h2>Histórico de decisões</h2><p class="sub">Aprovações e recusas registradas.</p><div class="list scroll" style="max-height:420px">${hist.map(l=>`<div class="it"><div class="grow"><div class="t">${esc(l.obj)}</div><div class="s">${esc(U(l.by).name)} · ${l.at}</div></div>${pill(l.action.endsWith('aprovado')?'Aprovada':'Rejeitada')}</div>`).join('')||'<div class="empty">Nenhuma decisão registrada.</div>'}</div></div></div>`}
+function approveG(id,ok){const u=U(id);if(ok){if(gestorOf(u.sector))return toast('O setor já possui Gestor ativo.');u.role='gestor';u.status='ativo'}else{u.status='ativo';u.declared='func'}
+ log('Acesso',ok?'Perfil Gestor aprovado':'Perfil Gestor recusado',u.name,ok?'Funcionário → Gestor':'Mantido como Funcionário');save();render()}
+// Histórico simulado (protótipo): 12 semanas, da mais antiga para a mais recente
+const HIST={weeks:[{c:9,d:7,p:71,late:3.6,rp:22},{c:11,d:8,p:74,late:3.4,rp:20},{c:10,d:10,p:70,late:3.9,rp:24},{c:12,d:9,p:76,late:3.1,rp:19},{c:14,d:11,p:75,late:3.2,rp:21},{c:13,d:12,p:78,late:3.0,rp:18},
+ {c:15,d:12,p:77,late:3.3,rp:20},{c:12,d:13,p:80,late:2.8,rp:17},{c:16,d:13,p:82,late:2.6,rp:16},{c:14,d:15,p:83,late:2.5,rp:15},{c:18,d:14,p:85,late:2.3,rp:14},{c:17,d:15,p:86,late:2.2,rp:13}],
+ time:{Design:[2.1,3.4,1.2],Marketing:[1.8,0.9,0.3],Tecnologia:[3.2,1.4,0.6],Financeiro:[1.5,0.6,0.2]},
+ accept:{Design:2.8,Marketing:1.1,Tecnologia:1.6,Financeiro:0.9},adjust:{Design:18,Marketing:8,Tecnologia:27,Financeiro:5},
+ blockCat:[['Dependência de outro setor',38],['Informação faltando',24],['Aguardando cliente',20],['Ferramenta / acesso',10],['Outro',8]],
+ blockers:[['Design','Comercial',5],['Tecnologia','Design',3],['Marketing','Design',2],['Financeiro','Tecnologia',1]]};
+UI.an={weeks:8};
+let KPI_SETS={};
+const KPI_INFO={f_open:['Em aberto','Etapas atribuídas a você que ainda não foram concluídas.'],f_late:['Atrasadas','Suas etapas que passaram do prazo.'],f_today:['Vencem hoje','Suas etapas com entrega hoje.'],f_done:['Concluídas','Etapas que você já finalizou.'],
+ g_act:['Tarefas ativas do setor','Tarefas em execução ou aguardando que envolvem o seu setor.'],g_blk:['Bloqueadas','Etapas do setor com funcionário impedido. O prazo continua correndo.'],g_risk:['Em risco','Tarefas do setor com farol vermelho.'],g_dec:['Decisões pendentes','Pedidos de participação, distribuições, ajustes e pedidos de prazo aguardando você.'],
+ c_late:['Tarefas atrasadas','Tarefas que passaram do prazo final.'],c_blk:['Bloqueios ativos','Tarefas com alguma etapa bloqueada.'],c_risk:['Prazos em risco','Tarefas com entrega nos próximos 3 dias.'],c_neg:['Em negociação','Tarefas com setor ainda sem acordo ou sem equipe distribuída.']};
+function openKpi(k){const [title,note]=KPI_INFO[k]||[k,''];listModal(title,KPI_SETS[k]||[],note)}
+function listModal(title,items,note){openM(`<div class="row between"><div><span class="lbl">${items.length} etapa(s)</span><h2>${esc(title)}</h2></div>${expBtn(`exportItems(${esc(JSON.stringify(title))},AN_LAST)`)}<button class="btn ghost sm" onclick="closeM()">✕</button></div>${note?`<p class="sub">${note}</p>`:''}<div class="list scroll" style="max-height:520px">${items.map(({t,s})=>`<div class="it" style="cursor:pointer" onclick="taskModal('${t.id}',()=>listModal(${esc(JSON.stringify(title))},AN_LAST,${esc(JSON.stringify(note||''))}))">${sectorIcon(s.sector)}<div class="grow"><div class="t">${esc(t.name)}</div><div class="s">${esc(P(t.project).name)} · ${s.sector} · entrega ${fmtS(s.due)}</div></div>${farolPill(stFarol(t,s))}</div>`).join('')||'<div class="empty">Nada por aqui.</div>'}</div>`,true);AN_LAST=items}
+let AN_LAST=[],AN_SETS={};
+const openSet=(k,title,note)=>listModal(title,AN_SETS[k]||[],note);
+const delta=(v,good)=>{if(!v)return'<span class="s" style="color:var(--muted)">= estável</span>';const up=v>0,ok=good==='up'?up:!up;return `<span class="s" style="color:${ok?'var(--green)':'var(--red)'}">${up?'▲':'▼'} ${Math.abs(v).toLocaleString('pt-BR',{maximumFractionDigits:1})}</span>`};
+function lineChart(vals,labels,{min=0,max=100,suffix='%'}={}){const W=560,H=170,pl=34,pr=10,pt=12,pb=24,n=vals.length,x=i=>pl+(W-pl-pr)*(n===1?0:i/(n-1)),y=v=>pt+(H-pt-pb)*(1-(v-min)/(max-min));
+ const grid=[min,(min+max)/2,max].map(g=>`<line x1="${pl}" x2="${W-pr}" y1="${y(g)}" y2="${y(g)}" stroke="#ececf0"/><text x="${pl-6}" y="${y(g)+4}" font-size="10" text-anchor="end" fill="#8a8a92">${g}${suffix}</text>`).join('');
+ const pts=vals.map((v,i)=>`${x(i)},${y(v)}`).join(' ');
+ return `<svg viewBox="0 0 ${W} ${H}" width="100%" role="img" aria-label="Tendência">${grid}<polyline points="${pts}" fill="none" stroke="#111" stroke-width="2.5" stroke-linejoin="round"/>${vals.map((v,i)=>`<circle cx="${x(i)}" cy="${y(v)}" r="${i===n-1?4.5:3}" fill="${i===n-1?'#111':'#fff'}" stroke="#111" stroke-width="2"><title>${labels[i]}: ${v}${suffix}</title></circle>`).join('')}
+ ${labels.map((l,i)=>i%Math.ceil(n/6)===0||i===n-1?`<text x="${x(i)}" y="${H-6}" font-size="10" text-anchor="middle" fill="#8a8a92">${l}</text>`:'').join('')}<text x="${x(n-1)}" y="${y(vals[n-1])-10}" font-size="11" font-weight="600" text-anchor="end">${vals[n-1]}${suffix}</text></svg>`}
+function statsView(){const ME=me(),G=ME.role==='gestor',SEC=ME.sector,SH={Design:[.42,2],Marketing:[.22,-1],Tecnologia:[.24,-4],Financeiro:[.12,3],Comercial:[.08,0],'Atacado Online':[.5,1]}[SEC]||[.3,0];
+ const scW=w=>G?{...w,c:Math.max(1,Math.round(w.c*SH[0])),d:Math.max(1,Math.round(w.d*SH[0])),p:Math.min(99,w.p+SH[1]),late:Math.max(.5,+(w.late+SH[1]*-.1).toFixed(1))}:w;
+ const N=UI.an.weeks,W=HIST.weeks.slice(-N).map(scW),Wp=HIST.weeks.slice(-2*N,-N).map(scW),avg=(a,k)=>a.length?a.reduce((s,x)=>s+x[k],0)/a.length:0,r1=v=>Math.round(v*10)/10;
+ const pont=Math.round(avg(W,'p')),pontD=Wp.length?Math.round(avg(W,'p')-avg(Wp,'p')):0,late=r1(avg(W,'late')),lateD=Wp.length?r1(avg(W,'late')-avg(Wp,'late')):0,rp=Math.round(avg(W,'rp'));
+ const live=[];S.tasks.forEach(t=>{if(t.cancelled||P(t.project).archived)return;t.stages.forEach(s=>{if(!G||s.sector===SEC)live.push({t,s})})});
+ const open=live.filter(x=>!stageDone(x.s));
+ AN_SETS.blocked=open.filter(x=>x.s.steps.some(y=>y.status==='Bloqueado'));
+ AN_SETS.late=open.filter(x=>daysTo(x.s.due)<0);
+ const w0=open.filter(x=>{const n=daysTo(x.s.due);return n>=0&&n<=6}),w1=open.filter(x=>{const n=daysTo(x.s.due);return n>=7&&n<=13});
+ AN_SETS.w0=w0;AN_SETS.w1=w1;AN_SETS.risk=[...AN_SETS.late,...w0,...w1].filter(x=>stFarol(x.t,x.s)!=='verde');
+ const fcount=l=>({vermelho:l.filter(x=>stFarol(x.t,x.s)==='vermelho').length,amarelo:l.filter(x=>stFarol(x.t,x.s)==='amarelo').length,verde:l.filter(x=>stFarol(x.t,x.s)==='verde').length});
+ const neg=open.filter(x=>x.s.part!=='Distribuída');AN_SETS.neg=neg;
+ // projetos: progresso x tempo decorrido
+ const projRows=S.projects.filter(p=>!p.concluded&&!p.archived).map(p=>{const ts=S.tasks.filter(t=>t.project===p.id&&!t.cancelled),st=ts.flatMap(t=>t.stages),done=st.filter(stageDone).length;
+  const cl=S.logs.find(l=>l.action==='Projeto criado'&&l.obj===p.name),start=cl?new Date(cl.at.slice(6,10)+'-'+cl.at.slice(3,5)+'-'+cl.at.slice(0,2)+'T00:00'):new Date(new Date(p.due+'T00:00')-21*864e5);
+  const tot=Math.max(1,(new Date(p.due+'T00:00')-start)/864e5),el=Math.min(100,Math.max(0,Math.round(100*(T0-start)/864e5/tot))),pg=st.length?Math.round(100*done/st.length):0;return {p,el,pg,gap:el-pg}}).sort((a,b)=>b.gap-a.gap);
+ // carga por pessoa
+ const people=S.users.filter(u=>['func','gestor'].includes(u.role)&&u.status==='ativo'&&(!G||u.sector===SEC)).map(u=>{const it=open.filter(x=>daysTo(x.s.due)<=14&&x.s.steps.some(y=>y.user===u.id&&y.status!=='Concluída'));AN_SETS['u_'+u.id]=it;return {u,n:it.length}}).filter(x=>x.n||x.u.role==='func').sort((a,b)=>b.n-a.n);
+ const maxN=Math.max(6,...people.map(x=>x.n)),LIM=5;
+ const secs=S.sectors.filter(s=>HIST.time[s]&&live.some(x=>x.s.sector===s)),noData=G?[]:S.sectors.filter(s=>!secs.includes(s));
+ const maxT=Math.max(...secs.map(s=>HIST.time[s].reduce((a,b)=>a+b,0)));
+ const worst=secs.map(s=>{const [e,w,b]=HIST.time[s];return {s,share:Math.round(100*w/(e+w+b))}}).sort((a,b)=>b.share-a.share)[0];
+ const kpi=(l,v,d,sub,click)=>`<div class="card kpi" ${click?`style="cursor:pointer" onclick="${click}" title="Ver lista"`:''}><small>${l}</small><div class="row" style="gap:8px;align-items:baseline"><strong>${v}</strong>${d||''}</div><small>${sub}</small></div>`;
+ const legend=(c,l)=>`<span class="row" style="gap:6px;font-size:11px;color:#555"><i class="dot" style="background:${c};width:9px;height:9px;border-radius:3px"></i>${l}</span>`;
+ const fbar=(f,label,key)=>{const tot=f.vermelho+f.amarelo+f.verde;return `<div style="margin-bottom:14px;cursor:pointer" onclick="openSet('${key}','${label}')"><div class="row between"><span>${label}</span><span class="s">${tot} entrega(s)</span></div><div class="stack">${tot?['vermelho','amarelo','verde'].map(k=>f[k]?`<i style="width:${100*f[k]/tot}%;background:${FAROL[k][0]}" title="${FAROL[k][1]}: ${f[k]}"></i>`:'').join(''):'<i style="width:100%;background:#efeff3"></i>'}</div><div class="s" style="color:var(--muted);margin-top:4px">${f.vermelho} crítica(s) · ${f.amarelo} prazo próximo · ${f.verde} no prazo</div></div>`};
+ const wl=HIST.weeks.map((_,i)=>{const d=new Date(T0);d.setDate(d.getDate()-7*(HIST.weeks.length-1-i));return fmtS(iso(d))}).slice(-N);
+ const maxCD=Math.max(...W.map(w=>Math.max(w.c,w.d)));const cSum=W.reduce((a,w)=>a+w.c,0),dSum=W.reduce((a,w)=>a+w.d,0);
+ AN_DATA={G,sec:SEC,N,pont,pontD:Wp.length?pontD:0,late,lateD:Wp.length?lateD:0,rp,blocked:AN_SETS.blocked,risk:AN_SETS.risk,lateNow:AN_SETS.late.length,neg,time:secs.map(s=>{const [e,w,b]=HIST.time[s];return {s,e,w,b}}),worst,blockCat:HIST.blockCat,blockers:HIST.blockers.filter(([a,b])=>!G||a===SEC||b===SEC),bands:[['Já atrasadas',fcount(AN_SETS.late)],['Próximos 7 dias',fcount(w0)],['De 8 a 14 dias',fcount(w1)]],people,LIM,accept:HIST.accept,adjust:HIST.adjust,W,wl,cSum,dSum};
+ return `<div class="row between wrap" style="margin-bottom:16px;gap:10px"><p class="s" style="color:var(--muted);margin:0">${G?`<b style="color:var(--ink)">Setor ${esc(SEC)}.</b> `:''}Tendências usam histórico simulado do protótipo. Situação atual, riscos e carga usam os dados reais do sistema.</p>
+ <div class="row" style="gap:10px" data-noexp="1"><button class="btn ghost sm" onclick="exportStats()">${ic('doc',15)} Exportar PDF</button><div class="tabs" style="margin:0">${[4,8,12].map(n=>`<button class="${N===n?'on':''}" onclick="UI.an.weeks=${n};renderBody()">${n} semanas</button>`).join('')}</div></div></div>
+ <div class="grid g4" style="margin-bottom:20px">
+ ${kpi('Pontualidade das entregas',pont+'%',Wp.length?delta(pontD,'up')+'<span class="s" style="color:var(--muted)">p.p.</span>':'',`Tarefas concluídas até o prazo final · últimas ${N} semanas`)}
+ ${kpi('Atraso médio',String(late).replace('.',',')+' dias',Wp.length?delta(lateD,'down'):'',`Entre as entregas atrasadas · ${rp}% tiveram prazo replanejado`)}
+ ${kpi('Etapas bloqueadas agora',AN_SETS.blocked.length,'','O prazo continua correndo · clique para ver',"openSet('blocked','Etapas bloqueadas agora')")}
+ ${kpi('Entregas em risco · 14 dias',AN_SETS.risk.length,'',`${AN_SETS.late.length} já atrasada(s) · clique para ver`,"openSet('risk','Entregas em risco nos próximos 14 dias','Etapas atrasadas, críticas ou com prazo próximo.')")}</div>
+ <div class="grid g2" style="margin-bottom:20px">
+ <div class="card"><h2>Onde o trabalho trava</h2><p class="sub">Tempo médio de uma etapa em cada setor, em dias.</p>
+  <div class="row wrap" style="gap:14px;margin-bottom:14px">${legend('#111','Executando')}${legend('#c9c9d3','Esperando a vez')}${legend('var(--red)','Bloqueada')}</div>
+  ${secs.map(s=>{const [e,w,b]=HIST.time[s],t=e+w+b;return `<div style="margin-bottom:14px"><div class="row between"><span>${s}</span><span class="s">${String(r1(t)).replace('.',',')} dias</span></div><div class="stack" style="width:${100*t/maxT}%"><i style="width:${100*e/t}%;background:#111" title="Executando: ${e} d"></i><i style="width:${100*w/t}%;background:#c9c9d3" title="Esperando a vez: ${w} d"></i><i style="width:${100*b/t}%;background:var(--red)" title="Bloqueada: ${b} d"></i></div></div>`}).join('')}
+  ${noData.length?`<p class="s" style="color:var(--muted)">Sem dados no período: ${noData.join(', ')}.</p>`:''}
+  <div class="note">${worst.s} passa ${worst.share}% do tempo de cada etapa <b>esperando a vez</b>: o gargalo é fila, não execução.</div></div>
+ <div class="card"><h2>Por que trava</h2><p class="sub">Categorias de bloqueio no período.</p>
+  ${HIST.blockCat.map(([l,v],i)=>`<div style="margin-bottom:12px"><div class="row between"><span>${l}</span><span class="s">${v}%</span></div><div class="bar"><i style="width:${v/HIST.blockCat[0][1]*100}%;background:${i===0?'var(--red)':'#111'}"></i></div></div>`).join('')}
+  <div class="sep"></div><span class="lbl" style="margin-bottom:6px">Quem espera quem (bloqueios por dependência)</span>
+  <div class="list">${HIST.blockers.filter(([a,b])=>!G||a===SEC||b===SEC).map(([a,b,n])=>`<div class="it" style="padding:8px 0">${sectorIcon(a)}<div class="grow"><b style="font-weight:500">${a}</b> <span class="s" style="color:var(--muted)">esperou</span> <b style="font-weight:500">${b}</b></div><span class="chip">${n} bloqueio(s)</span></div>`).join('')}</div></div></div>
+ <div class="grid g2" style="margin-bottom:20px">
+ <div class="card"><h2>O que vem aí</h2><p class="sub">Entregas de etapas por farol. Clique para ver a lista.</p>
+  ${fbar(fcount(AN_SETS.late),'Já atrasadas','late')}${fbar(fcount(w0),'Próximos 7 dias','w0')}${fbar(fcount(w1),'De 8 a 14 dias','w1')}
+</div>
+ <div class="card"><h2>Carga da equipe</h2><p class="sub">Etapas abertas por pessoa com entrega nos próximos 14 dias. Referência: até ${LIM}.</p>
+  <div class="scroll" style="max-height:330px;padding-right:6px">${people.map(({u,n})=>`<div class="row" style="gap:10px;margin-bottom:10px;cursor:pointer" onclick="openSet('u_${u.id}','Carga de ${esc(u.name)}')">${av(u.id,1)}<div class="grow"><div class="row between"><span>${esc(u.name)} <span class="s" style="color:var(--muted)">· ${u.sector}</span></span><span class="s" style="${n>LIM?'color:var(--red);font-weight:600':''}">${n}${n>LIM?' · sobrecarga':n===0?' · livre':''}</span></div>
+   <div class="bar" style="position:relative"><i style="width:${100*n/maxN}%;background:${n>LIM?'var(--red)':'#111'}"></i><span style="position:absolute;left:${100*LIM/maxN}%;top:-3px;bottom:-3px;border-left:2px dashed #8a8a92"></span></div></div></div>`).join('')}</div>
+  <div class="sep"></div><span class="lbl" style="margin-bottom:8px">Colaboração entre setores</span>
+  <table><tr><th>Setor</th><th>Tempo de aceite</th><th>Pedidos de ajuste</th></tr>${secs.map(s=>`<tr><td>${s}</td><td>${String(HIST.accept[s]).replace('.',',')} dias</td><td>${HIST.adjust[s]}%${HIST.adjust[s]>=20?' <span class="pill" style="border-color:var(--orange);margin-left:4px"><i style="background:var(--orange)"></i>alto</span>':''}</td></tr>`).join('')}</table>
+  <p class="s" style="margin:10px 0 0;cursor:pointer" onclick="openSet('neg','Negociações em aberto','Participações aguardando resposta, ajustes ou distribuição.')"><b>${neg.length}</b> participação(ões) aguardando acordo ou distribuição agora →</p></div></div>
+ <div class="grid g2">
+ <div class="card"><h2>Pontualidade semana a semana</h2><p class="sub">% de tarefas concluídas até o prazo final.</p>${lineChart(W.map(w=>w.p),wl,{min:60,max:100})}</div>
+ <div class="card"><h2>Fluxo: criadas × concluídas</h2><p class="sub">Se criamos mais do que concluímos, a fila cresce. No período: ${cSum} criadas, ${dSum} concluídas (${cSum>dSum?`<b style="color:var(--red)">fila +${cSum-dSum}</b>`:'<b style="color:var(--green)">fila estável</b>'}).</p>
+  <div class="row" style="gap:14px;margin-bottom:10px">${legend('#c9c9d3','Criadas')}${legend('#111','Concluídas')}</div>
+  <div class="cols">${W.map((w,i)=>`<div class="colw" title="${wl[i]}: ${w.c} criadas, ${w.d} concluídas"><div class="cpair"><i style="height:${100*w.c/maxCD}%;background:#c9c9d3"></i><i style="height:${100*w.d/maxCD}%;background:#111"></i></div><span>${i%Math.ceil(N/6)===0||i===N-1?wl[i]:''}</span></div>`).join('')}</div></div></div>`}
+function ticketModal(id,admin){const k=S.tickets.find(x=>x.id===id);openM(`<div class="row between"><div><span class="lbl">#${k.id} · ${esc(k.cat)}</span><h2>${esc(k.subject)}</h2></div>${pill(k.status)}</div>
+ <div class="list scroll" style="max-height:260px">${k.msgs.map(m=>`<div class="it">${av(m.by,1)}<div class="grow"><div class="s">${esc(U(m.by).name)} · ${m.at}</div><div>${esc(m.text)}</div></div></div>`).join('')}</div>
+ ${k.status!=='Resolvido'||admin?`<textarea class="inp" id="tk_msg" placeholder="Escreva sua mensagem"></textarea>`:''}
+ <div class="row wrap" style="margin-top:12px">${admin?`<select class="inp" id="tk_st" style="width:auto">${['Aberto','Em análise','Aguardando cliente','Resolvido'].map(s=>`<option ${s===k.status?'selected':''}>${s}</option>`).join('')}</select>`:''}
+ ${k.status!=='Resolvido'||admin?`<button class="btn" onclick="replyTicket('${id}',${admin})">Enviar</button>`:''}<button class="btn ghost" onclick="closeM()">Fechar</button></div>`)}
+function replyTicket(id,admin){const k=S.tickets.find(x=>x.id===id),t=val('tk_msg'),st=admin?val('tk_st'):(k.status==='Aguardando cliente'?'Em análise':k.status);
+ if(t)k.msgs.push({by:S.session,text:t,at:now()});if(st!==k.status){log('Suporte',`Status: ${k.status} → ${st}`,'#'+k.id);k.status=st}
+ notify(admin?[k.by]:['u0'],`Chamado #${k.id} atualizado.`);save();closeM();render()}
+function ceoSupport(){return `<div class="grid g2"><div class="card hero"><h2>Abrir chamado</h2><p class="sub">Solicitação de suporte ao Super Admin.</p>
+ <div class="field"><label>Assunto</label><input class="inp" id="tk_sub"></div><div class="field"><label>Categoria</label><select class="inp" id="tk_cat"><option>Acessos</option><option>Plano</option><option>Relatórios</option><option>Erro no sistema</option><option>Outro</option></select></div>
+ <div class="field"><label>Descrição</label><textarea class="inp" id="tk_desc"></textarea></div><button class="btn" onclick="openTicket()">Enviar chamado ${ic('arrow',18)}</button></div>
+ <div class="card"><h2>Meus chamados</h2><p class="sub">Clique para ver a conversa.</p><table><tr><th>Nº</th><th>Assunto</th><th>Data</th><th>Status</th></tr>${S.tickets.filter(k=>k.by===S.session).map(k=>`<tr class="click" onclick="ticketModal('${k.id}',false)"><td>#${k.id}</td><td>${esc(k.subject)}</td><td>${k.created}</td><td>${pill(k.status)}</td></tr>`).join('')||'<tr><td colspan=4 class="empty">Nenhum chamado.</td></tr>'}</table></div></div>`}
+function openTicket(){const s=val('tk_sub'),d=val('tk_desc');if(!s||!d)return toast('Preencha assunto e descrição.');const id='SUP-'+String(S.tickets.length+1).padStart(3,'0');
+ S.tickets.unshift({id,subject:s,cat:val('tk_cat'),status:'Aberto',created:fmt(iso(T0)),by:S.session,msgs:[{by:S.session,text:d,at:now()}]});log('Suporte','Chamado aberto','#'+id,s);notify(['u0'],`Novo chamado #${id}: ${s}`);save();render();toast('Chamado #'+id+' enviado')}
+
+// ---------- Super Admin ----------
+function adminHome(){const pend=S.users.filter(u=>u.status==='pendente'),open=S.tickets.filter(k=>k.status!=='Resolvido');
+ return kpis([['Empresas cadastradas',1,'Ambiente de demonstração'],['Usuários ativos',S.users.filter(u=>u.status==='ativo'&&u.role!=='admin').length],['Chamados abertos',open.length],['Acessos pendentes',pend.length]])+
+ `<div class="grid g2"><div class="card info"><span class="lbl">Empresa</span><div class="row between"><h2>${esc(S.company.name)}</h2>${pill(S.company.status==='Ativa'?'ativo':'bloqueado')}</div><div class="sep"></div>
+ <div class="row between wrap"><div><span class="lbl">Identificador</span><div class="val">${S.company.slug}</div></div><div><span class="lbl">Projetos</span><div class="val">${S.projects.length}</div></div><div><span class="lbl">Tarefas</span><div class="val">${S.tasks.length}</div></div><div><span class="lbl">Limite</span><div class="val">${S.users.length}/${S.company.limit}</div></div></div><div class="sep"></div>
+ <div class="row">${av('u1')}<div class="grow"><span class="lbl">CEO autorizado</span><div class="val">${esc(U('u1').name)}</div></div><button class="btn icon" onclick="go('company')">${ic('arrow')}</button></div></div>
+ <div class="card"><h2>Chamados que exigem atenção</h2><div class="list">${open.map(k=>`<div class="it" style="cursor:pointer" onclick="ticketModal('${k.id}',true)"><span class="ic" style="background:#f1e4fb">?</span><div class="grow"><div class="t">#${k.id} · ${esc(k.subject)}</div><div class="s">${esc(U(k.by).name)} · ${k.created}</div></div>${pill(k.status)}</div>`).join('')||'<div class="empty">Nenhum chamado aberto.</div>'}</div></div></div>`}
+function companyView(){return `<div class="card"><h2>${esc(S.company.name)} · Equipe e acessos</h2><p class="sub">Cargo declarado é diferente do acesso efetivo. Alterações são registradas com valor anterior e novo.</p><div style="overflow:auto"><table><tr><th>Nome</th><th>E-mail</th><th>Setor</th><th>Cargo declarado</th><th>Acesso efetivo</th><th>Situação</th><th>Ações</th></tr>
+ ${S.users.filter(u=>u.role!=='admin'&&match(u.name,u.email)).map(u=>`<tr><td><div class="row">${av(u.id,1)}${esc(u.name)}</div></td><td>${u.email}</td><td>${u.sector||'—'}</td><td>${ROLE[u.declared]}</td><td><select class="inp" style="width:auto;padding:5px 36px 5px 10px;background-position:right 12px center" onchange="setRole('${u.id}',this.value)">${['func','gestor','ceo'].map(r=>`<option value="${r}" ${u.role===r?'selected':''}>${ROLE[r]}</option>`).join('')}</select></td><td>${pill(u.status)}</td>
+ <td class="row">${u.status==='pendente'&&u.declared==='ceo'?`<button class="btn sm" onclick="setRole('${u.id}','ceo')">Validar CEO</button>`:''}${u.status==='pendente'?`<button class="btn ghost sm" onclick="setStatusU('${u.id}','ativo')">Validar vínculo</button>`:''}<button class="btn ghost sm" onclick="setStatusU('${u.id}','${u.status==='bloqueado'?'ativo':'bloqueado'}')">${u.status==='bloqueado'?'Desbloquear':'Bloquear'}</button></td></tr>`).join('')}</table></div></div>`}
+function setRole(id,r){const u=U(id),prev=u.role;if(r==='gestor'){if(!u.sector)return toast('Usuário sem setor.');const g=gestorOf(u.sector);if(g&&g.id!==id){render();return toast('O setor '+u.sector+' já tem Gestor ('+g.name+').')}}
+ u.role=r;u.status='ativo';log('Acesso','Perfil alterado',u.name,`${ROLE[prev]} → ${ROLE[r]}`);save();render();toast('Perfil atualizado')}
+function setStatusU(id,s){const u=U(id),prev=u.status;u.status=s;log('Acesso','Situação da conta alterada',u.name,`${prev} → ${s}`);save();render()}
+function adminSupport(){const c=st=>S.tickets.filter(k=>k.status===st).length;return kpis([['Abertos',c('Aberto')],['Em análise',c('Em análise')],['Aguardando cliente',c('Aguardando cliente')],['Resolvidos',c('Resolvido')]])+
+ `<div class="card"><h2>Solicitações recebidas</h2><p class="sub">Chamados abertos pelo CEO.</p><table><tr><th>Ticket</th><th>Assunto</th><th>Empresa</th><th>Solicitante</th><th>Data</th><th>Status</th></tr>${S.tickets.filter(k=>match(k.subject,k.id)).map(k=>`<tr class="click" onclick="ticketModal('${k.id}',true)"><td>#${k.id}</td><td>${esc(k.subject)}</td><td>${esc(S.company.name)}</td><td>${esc(U(k.by).name)}</td><td>${k.created}</td><td>${pill(k.status)}</td></tr>`).join('')}</table></div>`}
+function logsView(){const types=['Todos',...new Set(S.logs.map(l=>l.type))],L=S.logs.filter(l=>(UI.logType==='Todos'||l.type===UI.logType)&&match(l.action,l.obj,l.detail,U(l.by).name));
+ return `<div class="card"><div class="row between wrap"><div><h2>Logs e auditoria</h2><p class="sub">Autor, data, objeto e valores antes/depois.</p></div><select class="inp" style="width:auto" onchange="UI.logType=this.value;renderBody()">${types.map(t=>`<option ${t===UI.logType?'selected':''}>${t}</option>`).join('')}</select></div>
+ <div style="overflow:auto"><table><tr><th>Data</th><th>Autor</th><th>Tipo</th><th>Ação</th><th>Objeto</th><th>Detalhe</th></tr>${L.map(l=>`<tr><td>${l.at}</td><td>${esc(U(l.by).name)}</td><td><span class="chip">${l.type}</span></td><td>${esc(l.action)}</td><td>${esc(objLabel(l.obj))}</td><td class="s">${esc(l.detail)}</td></tr>`).join('')}</table></div></div>`}
+function configView(){const c=S.company;return `<div class="grid g2"><div class="card hero"><h2>Autocadastro · ${esc(c.name)}</h2><p class="sub">Regras desta empresa.</p>
+ <div class="field"><label>Permitir novos cadastros</label><select class="inp" id="cf_allow"><option value="1" ${c.allowSignup?'selected':''}>Habilitado</option><option value="0" ${!c.allowSignup?'selected':''}>Desabilitado</option></select></div>
+ <div class="field"><label>Domínio corporativo autorizado</label><input class="inp" id="cf_dom" value="${esc(c.domain)}"></div>
+ <div class="field"><label>Exigir aprovação do CEO para Gestor</label><select class="inp" id="cf_appr"><option value="1" ${c.gestorApproval?'selected':''}>Sim</option><option value="0" ${!c.gestorApproval?'selected':''}>Não</option></select></div>
+ <div class="field"><label>Limite de usuários</label><input type="number" class="inp" id="cf_lim" value="${c.limit}"></div><button class="btn" onclick="saveCfg()">Salvar alterações</button></div>
+ <div class="card"><h2>Perfis da plataforma</h2><p class="sub">Regras fixas de produto.</p><div class="list">${[['CEO','Acompanha todos os setores e abre chamados. Não cria tarefas.'],['Gestor','Um por setor. Único perfil que cria projetos e tarefas.'],['Funcionário','Executa e atualiza as próprias etapas.']].map(([a,b])=>`<div class="it"><div class="grow"><div class="t">${a}</div><div class="s">${b}</div></div></div>`).join('')}</div>
+ <div class="sep"></div><button class="btn ghost" onclick="if(confirm('Restaurar todos os dados de demonstração?')){const s=S.session;S=seed();S.session=s;save();render()}">Restaurar dados de demonstração</button></div></div>`}
+function saveCfg(){const c=S.company,prev=JSON.stringify({a:c.allowSignup,d:c.domain,g:c.gestorApproval,l:c.limit});c.allowSignup=val('cf_allow')==='1';c.domain=val('cf_dom');c.gestorApproval=val('cf_appr')==='1';c.limit=+val('cf_lim');
+ log('Configuração','Configurações de autocadastro alteradas',c.name,prev+' → '+JSON.stringify({a:c.allowSignup,d:c.domain,g:c.gestorApproval,l:c.limit}));save();toast('Configurações salvas')}
+
+// ---------- exportação em PDF ----------
+const expBtn=on=>`<button class="btn ghost sm" onclick="${on}">${ic('doc',15)} Exportar PDF</button>`;
+const pdfClean=s=>String(s??'').replace(/\s+/g,' ').replace(/→/g,'>').replace(/↳\s*/g,'').replace(/[▾▸↻]/g,'').replace(/[^\x00-\xFF—–•…“”‘’]/g,'').trim();
+function pdfFilters(root){const f=[...root.querySelectorAll('label.field')].map(l=>{const s=l.querySelector('select');return s&&s.selectedIndex>0?`${l.querySelector('span')?.textContent}: ${s.options[s.selectedIndex].text}`:''}).filter(Boolean);if(UI.q)f.push(`Busca: "${UI.q}"`);return f}
+function pdfSave(title,filters,head,rows,bold){
+ if(!window.jspdf||!window.jspdf.jsPDF)return toast('O gerador de PDF ainda está carregando. Tente de novo em instantes.');
+ const doc=new window.jspdf.jsPDF({orientation:'landscape',unit:'pt',format:'a4'}),W=doc.internal.pageSize.getWidth();
+ doc.addImage(LOGO,'PNG',36,24,38,38);doc.setFont('helvetica','bold');
+ doc.setTextColor(20,20,20);doc.setFontSize(16);doc.text(pdfClean(title),80,44);
+ doc.setFont('helvetica','normal');doc.setFontSize(9);doc.setTextColor(110,110,120);
+ doc.text(pdfClean(`Kraften Task · ${S.company.name} · gerado em ${now()} por ${me().name}`),80,58);
+ doc.text(pdfClean('Filtros aplicados: '+(filters.length?filters.join(' · '):'nenhum')),40,80,{maxWidth:W-80});
+ doc.autoTable({startY:94,head:[head.map(pdfClean)],body:rows.map(r=>r.map(pdfClean)),margin:{left:40,right:40},
+  styles:{font:'helvetica',fontSize:8.5,cellPadding:5,textColor:[30,30,36],lineColor:[230,230,236],lineWidth:.5},
+  headStyles:{fillColor:[17,17,17],textColor:255,fontStyle:'bold'},alternateRowStyles:{fillColor:[248,248,251]},
+  didParseCell:d=>{if(d.section==='body'&&bold&&bold[d.row.index]){d.cell.styles.fontStyle='bold';d.cell.styles.fillColor=[238,241,255]}},
+  didDrawPage:()=>{doc.setFontSize(8);doc.setTextColor(140,140,150);doc.text(`Página ${doc.internal.getNumberOfPages()}`,W-40,doc.internal.pageSize.getHeight()-20,{align:'right'})}});
+ const y=doc.lastAutoTable.finalY+16;doc.setFontSize(9);doc.setTextColor(110,110,120);doc.text(`${rows.filter((r,i)=>!(bold&&bold[i])).length} linha(s) exportada(s)`,40,y);
+ const slug=pdfClean(title).toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'');
+ doc.save(`kraften-${slug}-${iso(new Date())}.pdf`);toast('PDF exportado')}
+// Exporta a tabela de um card exatamente como os filtros a deixaram (projetos recolhidos entram expandidos)
+function exportCard(key,title){
+ const saved={...UI.collapsed};const hadCollapsed=Object.values(saved).some(Boolean);if(hadCollapsed){UI.collapsed={};renderBody()}
+ const card=document.querySelector(`[data-exp="${key}"]`);if(!card)return;
+ const ths=[...card.querySelectorAll('table tr:first-child th')].map(th=>th.textContent.trim());const keep=ths.map((h,i)=>h!=='');
+ const head=ths.filter((h,i)=>keep[i]);const rows=[],bold=[];
+ card.querySelectorAll('table tr').forEach((tr,ri)=>{if(ri===0)return;const tds=[...tr.querySelectorAll('td')];if(tds.length<2)return;rows.push(tds.filter((td,i)=>keep[i]).map(td=>td.innerText));bold.push(tr.classList.contains('proj'))});
+ const filters=pdfFilters(card);
+ if(hadCollapsed){UI.collapsed=saved;renderBody()}
+ pdfSave(title,filters,head,rows,bold.some(Boolean)?bold:null)}
+function exportItems(title,items,filters){
+ const rows=items.map(({t,s})=>[P(t.project).name,t.name,s.sector,s.steps.map(x=>U(x.user).name).join(' > ')||'—',fmt(s.due),FAROL[stFarol(t,s)][1],tStatus(t)]);
+ pdfSave(title,filters||[],['Projeto','Tarefa','Setor','Responsáveis','Entrega','Farol','Status'],rows)}
+// ---------- relatório de análises em PDF (gerado a partir dos dados, não da tela) ----------
+let AN_DATA=null;
+const REPORT_SECTIONS=[
+ ['resumo','Resumo dos indicadores','Pontualidade, atraso médio, bloqueios e riscos'],
+ ['trava','Onde o trabalho trava','Tempo de execução, espera e bloqueio por setor'],
+ ['porque','Por que trava','Categorias de bloqueio e dependências entre setores'],
+ ['vem','O que vem aí','Entregas por farol nas próximas 2 semanas'],
+ ['risco','Lista de entregas em risco','Detalhe de cada etapa atrasada, crítica ou com prazo próximo'],
+ ['carga','Carga da equipe','Etapas abertas por pessoa nos próximos 14 dias'],
+ ['colab','Colaboração entre setores','Tempo de aceite e pedidos de ajuste'],
+ ['tend','Tendências semanais','Pontualidade e tarefas criadas × concluídas por semana']];
+function exportStats(){
+ const saved=(()=>{try{return JSON.parse(localStorage.getItem('kt-report')||'null')}catch(e){return null}})()||REPORT_SECTIONS.map(s=>s[0]);
+ openM(`<h2>Exportar relatório</h2><p class="sub">Escolha o que entra no PDF. O relatório é organizado em seções com tabelas, pensado para leitura e impressão.</p>
+ <div class="row" style="gap:8px;margin-bottom:10px"><button class="btn ghost sm" onclick="document.querySelectorAll('#rep input').forEach(i=>i.checked=true)">Marcar todos</button><button class="btn ghost sm" onclick="document.querySelectorAll('#rep input').forEach(i=>i.checked=false)">Desmarcar todos</button></div>
+ <div id="rep" class="list" style="border:1px solid var(--line);border-radius:16px;padding:2px 14px">${REPORT_SECTIONS.map(([k,l,d])=>`<label class="it" style="cursor:pointer"><input type="checkbox" id="rep_${k}" value="${k}" ${saved.includes(k)?'checked':''} style="width:18px;height:18px;accent-color:#111"><div class="grow"><div class="t">${l}</div><div class="s">${d}</div></div></label>`).join('')}</div>
+ <p class="s" style="color:var(--muted);margin-top:10px">Período: últimas ${UI.an.weeks} semanas${me().role==='gestor'?` · Setor ${esc(me().sector)}`:' · Todos os setores'}.</p>
+ <div class="row" style="margin-top:14px"><button class="btn" onclick="runReport()">Exportar PDF</button><button class="btn ghost" onclick="closeM()">Cancelar</button></div>`)}
+function runReport(){
+ const pick=[...document.querySelectorAll('#rep input:checked')].map(i=>i.value);if(!pick.length)return toast('Marque ao menos uma seção.');
+ try{localStorage.setItem('kt-report',JSON.stringify(pick))}catch(e){}
+ if(!window.jspdf||!window.jspdf.jsPDF)return toast('O gerador de PDF ainda está carregando. Tente de novo em instantes.');
+ if(!AN_DATA)return toast('Abra a tela de análises antes de exportar.');
+ closeM();buildReport(pick);}
+function buildReport(pick){
+ const D=AN_DATA,doc=new window.jspdf.jsPDF({orientation:'portrait',unit:'pt',format:'a4'}),W=doc.internal.pageSize.getWidth(),H=doc.internal.pageSize.getHeight(),M=42,CW=W-2*M;
+ const C={ink:[20,20,24],muted:[110,110,122],line:[226,226,234],soft:[246,246,250],green:[22,163,74],orange:[217,119,6],red:[220,38,38],violet:[124,58,237],gray:[200,200,210],black:[17,17,17]};
+ const T=s=>pdfClean(s);let y=0,secN=0;
+ const ensure=h=>{if(y+h>H-50){doc.addPage();y=50}};
+ const txt=(s,x,yy,o={})=>{doc.setFont('helvetica',o.b?'bold':'normal');doc.setFontSize(o.s||10);doc.setTextColor(...(o.c||C.ink));doc.text(T(s),x,yy,o.opt||{})};
+ const section=(title,sub)=>{ensure(70);secN++;y+=8;doc.setFillColor(...C.black);doc.roundedRect(M,y,20,20,5,5,'F');txt(String(secN),M+10,y+14,{b:1,s:10,c:[255,255,255],opt:{align:'center'}});
+  txt(title,M+30,y+14,{b:1,s:14});y+=26;if(sub){txt(sub,M,y+4,{s:9,c:C.muted});y+=14}doc.setDrawColor(...C.line);doc.setLineWidth(.8);doc.line(M,y,W-M,y);y+=14};
+ const table=(head,body,opts={})=>{doc.autoTable({startY:y,head:[head.map(T)],body:body.map(r=>r.map(T)),margin:{left:M,right:M},theme:'plain',
+  styles:{font:'helvetica',fontSize:9,cellPadding:{top:5,bottom:5,left:6,right:6},textColor:C.ink,lineColor:C.line,lineWidth:{bottom:.6}},
+  headStyles:{fontStyle:'bold',textColor:C.muted,fontSize:8,fillColor:C.soft},columnStyles:opts.cols||{},didParseCell:opts.cell});y=doc.lastAutoTable.finalY+16};
+ const note=s=>{const lines=doc.splitTextToSize(T(s),CW-20);ensure(lines.length*12+14);doc.setFillColor(...C.soft);doc.roundedRect(M,y,CW,lines.length*12+12,6,6,'F');doc.setFont('helvetica','normal');doc.setFontSize(9);doc.setTextColor(...C.ink);doc.text(lines,M+10,y+15);y+=lines.length*12+24};
+ const n1=v=>String(v).replace('.',',');
+ // capa / cabeçalho
+ doc.addImage(LOGO,'PNG',M-4,30,46,46);txt('Relatório de análises e desempenho',M+52,50,{b:1,s:17});
+ txt(`${S.company.name}${D.G?' · Setor '+D.sec:' · Todos os setores'} · últimas ${D.N} semanas`,M+52,66,{s:9.5,c:C.muted});
+ txt(`Gerado em ${now()} por ${me().name}`,M+52,79,{s:9,c:C.muted});y=100;
+ doc.setFontSize(8.5);doc.setTextColor(...C.muted);const disc=doc.splitTextToSize(T('Observação: tendências, tempos por setor, categorias de bloqueio e colaboração usam histórico simulado do protótipo. Situação atual, riscos e carga usam os dados do sistema.'),CW);doc.text(disc,M,y);y+=disc.length*11+6;
+ if(pick.includes('resumo')){section('Resumo dos indicadores','Comparação com as '+D.N+' semanas anteriores.');
+  const boxes=[['Pontualidade das entregas',D.pont+'%',D.pontD?(D.pontD>0?'+':'')+D.pontD+' p.p.':'estável',D.pontD>=0?C.green:C.red],['Atraso médio',n1(D.late)+' dias',D.lateD?(D.lateD>0?'+':'')+n1(D.lateD)+' dia(s)':'estável',D.lateD<=0?C.green:C.red],['Etapas bloqueadas agora',String(D.blocked.length),'prazo continua correndo',D.blocked.length?C.red:C.green],['Entregas em risco (14 dias)',String(D.risk.length),D.lateNow+' já atrasada(s)',D.risk.length?C.orange:C.green]];
+  const bw=(CW-18)/4;ensure(78);boxes.forEach((b,i)=>{const x=M+i*(bw+6);doc.setFillColor(...C.soft);doc.roundedRect(x,y,bw,68,8,8,'F');txt(b[0],x+10,y+16,{s:7.8,c:C.muted});txt(b[1],x+10,y+42,{b:1,s:19});txt(b[2],x+10,y+58,{s:8,c:b[3]})});y+=82;
+  table(['Indicador','Valor','Leitura'],[['Pontualidade das entregas',D.pont+'%','Tarefas concluídas até o prazo final'],['Atraso médio',n1(D.late)+' dias','Entre as entregas que atrasaram'],['Prazos replanejados',D.rp+'%','Tarefas que tiveram o prazo alterado'],['Etapas bloqueadas agora',String(D.blocked.length),'Etapas com funcionário impedido'],['Entregas em risco',String(D.risk.length),'Atrasadas, críticas ou com prazo próximo em 14 dias'],['Negociações em aberto',String(D.neg.length),'Setores sem acordo ou sem equipe distribuída']],{cols:{0:{fontStyle:'bold',cellWidth:170},1:{cellWidth:80}}})}
+ if(pick.includes('trava')&&D.time.length){section('Onde o trabalho trava','Tempo médio de uma etapa em cada setor, em dias.');
+  const max=Math.max(...D.time.map(r=>r.e+r.w+r.b)),lw=90,bwid=CW-lw-60;
+  D.time.forEach(r=>{ensure(22);const tot=r.e+r.w+r.b,sc=bwid/max;txt(r.s,M,y+9,{s:9.5,b:1});let x=M+lw;[[r.e,C.black],[r.w,C.gray],[r.b,C.red]].forEach(([v,c])=>{doc.setFillColor(...c);doc.rect(x,y,v*sc,11,'F');x+=v*sc});txt(n1(tot.toFixed(1))+' d',M+lw+tot*sc+6,y+9,{s:8.5,c:C.muted});y+=20});
+  ensure(16);[[C.black,'Executando'],[C.gray,'Esperando a vez'],[C.red,'Bloqueada']].forEach(([c,l],i)=>{const x=M+lw+i*110;doc.setFillColor(...c);doc.rect(x,y,9,9,'F');txt(l,x+14,y+8,{s:8.5,c:C.muted})});y+=20;
+  table(['Setor','Executando','Esperando a vez','Bloqueada','Total','% esperando'],D.time.map(r=>{const t=r.e+r.w+r.b;return [r.s,n1(r.e)+' d',n1(r.w)+' d',n1(r.b)+' d',n1(t.toFixed(1))+' d',Math.round(100*r.w/t)+'%']}));
+  if(D.worst)note(`${D.worst.s} passa ${D.worst.share}% do tempo de cada etapa esperando a vez. O gargalo é fila, não execução.`)}
+ if(pick.includes('porque')){section('Por que trava','Categorias de bloqueio no período e dependências entre setores.');
+  table(['Categoria de bloqueio','Participação'],D.blockCat.map(([l,v])=>[l,v+'%']),{cols:{1:{cellWidth:90,halign:'right'}}});
+  if(D.blockers.length)table(['Setor bloqueado','Esperou por','Bloqueios'],D.blockers.map(([a,b,n])=>[a,b,String(n)]),{cols:{2:{cellWidth:90,halign:'right'}}})}
+ if(pick.includes('vem')){section('O que vem aí','Entregas de etapas por faixa de prazo e farol.');
+  table(['Faixa','Total','Críticas','Prazo próximo','No prazo'],D.bands.map(([l,f])=>[l,String(f.vermelho+f.amarelo+f.verde),String(f.vermelho),String(f.amarelo),String(f.verde)]),{cols:{0:{fontStyle:'bold'}},cell:d=>{if(d.section==='body'&&d.column.index===2&&d.cell.raw!=='0')d.cell.styles.textColor=C.red}})}
+ if(pick.includes('risco')){section('Lista de entregas em risco','Etapas atrasadas, críticas ou com prazo próximo nas próximas 2 semanas.');
+  if(D.risk.length)table(['Projeto','Tarefa','Setor','Responsáveis','Entrega','Situação'],D.risk.map(({t,s})=>[P(t.project).name,t.name,s.sector,s.steps.map(x=>U(x.user).name).join(' > ')||'Sem equipe',fmt(s.due),daysTo(s.due)<0?`Atrasada ${-daysTo(s.due)} dia(s)`:FAROL[stFarol(t,s)][1]]),{cols:{4:{cellWidth:62},5:{cellWidth:86}},cell:d=>{if(d.section==='body'&&d.column.index===5&&/Atrasada|Crítico/.test(d.cell.raw))d.cell.styles.textColor=C.red}});else note('Nenhuma entrega em risco no momento.')}
+ if(pick.includes('carga')){section('Carga da equipe',`Etapas abertas por pessoa com entrega nos próximos 14 dias. Referência: até ${D.LIM}.`);
+  table(['Pessoa','Setor','Etapas abertas','Situação'],D.people.map(({u,n})=>[u.name,u.sector||'—',String(n),n>D.LIM?'Sobrecarga':n===0?'Livre':'Adequada']),{cols:{2:{halign:'right',cellWidth:90},3:{cellWidth:90}},cell:d=>{if(d.section==='body'&&d.column.index===3){if(d.cell.raw==='Sobrecarga'){d.cell.styles.textColor=C.red;d.cell.styles.fontStyle='bold'}else if(d.cell.raw==='Livre')d.cell.styles.textColor=C.muted}}})}
+ if(pick.includes('colab')&&D.time.length){section('Colaboração entre setores','Quanto tempo cada setor leva para aceitar participações e quantos pedidos de ajuste faz.');
+  table(['Setor','Tempo médio de aceite','Pedidos de ajuste','Leitura'],D.time.map(r=>[r.s,n1(D.accept[r.s])+' dias',D.adjust[r.s]+'%',D.adjust[r.s]>=20?'Alto: pedidos chegam pouco definidos':'Normal']),{cell:d=>{if(d.section==='body'&&d.column.index===3&&/Alto/.test(d.cell.raw))d.cell.styles.textColor=C.orange}});
+  note(`${D.neg.length} participação(ões) aguardando acordo ou distribuição agora.`)}
+ if(pick.includes('tend')){section('Tendências semanais',`Últimas ${D.N} semanas. No período: ${D.cSum} tarefas criadas e ${D.dSum} concluídas (${D.cSum>D.dSum?'fila cresceu '+(D.cSum-D.dSum):'fila estável'}).`);
+  const ch=110,cx=M+30,cw=CW-40,mn=Math.min(...D.W.map(w=>w.p))-5,mx=100,pts=D.W.map((w,i)=>[cx+cw*(D.W.length===1?0:i/(D.W.length-1)),y+ch-(w.p-mn)/(mx-mn)*ch]);ensure(ch+30);
+  doc.setDrawColor(...C.line);doc.setLineWidth(.5);[mn,(mn+mx)/2,mx].forEach(g=>{const gy=y+ch-(g-mn)/(mx-mn)*ch;doc.line(cx,gy,cx+cw,gy);txt(Math.round(g)+'%',cx-6,gy+3,{s:7.5,c:C.muted,opt:{align:'right'}})});
+  doc.setDrawColor(...C.black);doc.setLineWidth(1.6);for(let i=1;i<pts.length;i++)doc.line(pts[i-1][0],pts[i-1][1],pts[i][0],pts[i][1]);pts.forEach(([px,py])=>{doc.setFillColor(...C.black);doc.circle(px,py,2.2,'F')});
+  D.wl.forEach((l,i)=>txt(l,pts[i][0],y+ch+12,{s:7,c:C.muted,opt:{align:'center'}}));y+=ch+26;
+  table(['Semana de','Pontualidade','Criadas','Concluídas','Saldo'],D.W.map((w,i)=>[D.wl[i],w.p+'%',String(w.c),String(w.d),(w.c-w.d>0?'+':'')+(w.c-w.d)]),{cols:{1:{halign:'right'},2:{halign:'right'},3:{halign:'right'},4:{halign:'right'}}})}
+ const pages=doc.internal.getNumberOfPages();for(let i=1;i<=pages;i++){doc.setPage(i);doc.setFontSize(8);doc.setTextColor(...C.muted);doc.text(T(`Kraften Task · Relatório de análises${D.G?' · '+D.sec:''}`),M,H-22);doc.text(`Página ${i} de ${pages}`,W-M,H-22,{align:'right'})}
+ doc.save(`kraften-relatorio-analises${D.G?'-'+D.sec.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/[^a-z0-9]+/g,'-'):''}-${iso(new Date())}.pdf`);toast('Relatório exportado')}
+
+// Exporta o calendário em formato de calendário; o que não cabe em cada quadro vai para uma lista ao final
+const ST_RGB={'Não iniciada':[163,163,170],'Em andamento':[245,166,35],'Bloqueado':[239,68,68],'Aguardando acordo':[139,92,246],'Concluída':[34,197,94],'Cancelada':[85,85,85]};
+const hexRgb=h=>{h=(h||'#eeeeee').replace('#','');return [0,2,4].map(i=>parseInt(h.substr(i,2),16))};
+function exportCal(){
+ if(!window.jspdf||!window.jspdf.jsPDF)return toast('O gerador de PDF ainda está carregando. Tente de novo em instantes.');
+ const F=UI.cal,card=document.querySelector('[data-exp="cal"]'),filters=card?pdfFilters(card):[],title='Calendário · '+(card?.querySelector('h2')?.textContent||'');
+ const doc=new window.jspdf.jsPDF({orientation:'landscape',unit:'pt',format:'a4'}),W=doc.internal.pageSize.getWidth(),H=doc.internal.pageSize.getHeight(),M=30;
+ doc.addImage(LOGO,'PNG',M-4,18,34,34);doc.setFont('helvetica','bold');doc.setFontSize(15);doc.setTextColor(20,20,24);doc.text(pdfClean(title),M+38,34);
+ doc.setFont('helvetica','normal');doc.setFontSize(8.5);doc.setTextColor(110,110,122);
+ doc.text(pdfClean(`Kraften Task · ${S.company.name} · gerado em ${now()} por ${me().name} · Filtros: ${filters.length?filters.join(' · '):'nenhum'}`),M+38,47,{maxWidth:W-M*2-40});
+ const R=new Date(F.ref+'T00:00');let days=[],lead=0;
+ if(F.view==='mes'){const Y=R.getFullYear(),Mo=R.getMonth();lead=new Date(Y,Mo,1).getDay();const n=new Date(Y,Mo+1,0).getDate();for(let d=1;d<=n;d++)days.push(iso(new Date(Y,Mo,d)))}
+ else if(F.view==='semana'){const s0=new Date(R);s0.setDate(R.getDate()-R.getDay());for(let k=0;k<7;k++){const d=new Date(s0);d.setDate(s0.getDate()+k);days.push(iso(d))}}
+ const overflow=[];
+ if(F.view==='dia'){(CAL_DAY[F.ref]||[]).forEach(e=>overflow.push([F.ref,e]))}
+ else{
+  const top=64,hdr=16,cols=7,cw=(W-2*M)/cols,rows=Math.ceil((lead+days.length)/7),ch=(H-top-hdr-28)/rows,lineH=12.5;
+  ['Dom','Seg','Ter','Qua','Qui','Sex','Sáb'].forEach((d,i)=>{doc.setFont('helvetica','bold');doc.setFontSize(8);doc.setTextColor(110,110,122);doc.text(pdfClean(d),M+i*cw+cw/2,top+10,{align:'center'})});
+  const today=iso(T0);
+  for(let i=0;i<rows*7;i++){const r=Math.floor(i/7),c=i%7,x=M+c*cw,y=top+hdr+r*ch,di=i-lead,ds=days[di];
+   doc.setDrawColor(226,226,234);doc.setLineWidth(.6);
+   if(!ds){doc.setFillColor(248,248,251);doc.rect(x,y,cw,ch,'FD');continue}
+   doc.setFillColor(255,255,255);doc.rect(x,y,cw,ch,'FD');if(ds===today){doc.setDrawColor(17,17,17);doc.setLineWidth(1.4);doc.rect(x+.7,y+.7,cw-1.4,ch-1.4,'S')}
+   doc.setFont('helvetica','bold');doc.setFontSize(8.5);doc.setTextColor(60,60,70);doc.text(String(+ds.slice(8,10)),x+5,y+11);
+   const ev=CAL_DAY[ds]||[],cap=Math.max(0,Math.floor((ch-18)/lineH)),fits=ev.length>cap?Math.max(0,cap-1):ev.length;
+   ev.slice(0,fits).forEach((e,k)=>{const ey=y+16+k*lineH;doc.setFillColor(...hexRgb(SECT_BG[e.s.sector]));doc.rect(x+4,ey,cw-8,lineH-2,'F');doc.setFillColor(...(ST_RGB[e.st]||[150,150,150]));doc.rect(x+4,ey,2.4,lineH-2,'F');
+    doc.setFont('helvetica','normal');doc.setFontSize(6.8);doc.setTextColor(30,30,36);let s=pdfClean(e.s.sector+' · '+e.t.name);while(doc.getTextWidth(s)>cw-16&&s.length>3)s=s.slice(0,-2);if(s!==pdfClean(e.s.sector+' · '+e.t.name))s=s.replace(/.$/,'…');doc.text(s,x+9,ey+7.6)});
+   if(ev.length>fits){ev.slice(fits).forEach(e=>overflow.push([ds,e]));const ey=y+16+fits*lineH;doc.setFillColor(17,17,17);doc.roundedRect(x+4,ey,cw-8,lineH-2,2,2,'F');doc.setFont('helvetica','bold');doc.setFontSize(6.8);doc.setTextColor(255,255,255);doc.text(`+${ev.length-fits} na lista abaixo`,x+cw/2,ey+7.6,{align:'center'})}}
+  const ly=H-14;let lx=M;Object.entries(ST_RGB).forEach(([l,c])=>{doc.setFillColor(...c);doc.rect(lx,ly-6,7,7,'F');doc.setFont('helvetica','normal');doc.setFontSize(7.5);doc.setTextColor(110,110,122);doc.text(pdfClean(l),lx+10,ly);lx+=doc.getTextWidth(pdfClean(l))+24});
+ }
+ if(overflow.length){
+  if(F.view!=='dia')doc.addPage();
+  const y0=F.view==='dia'?66:40;doc.setFont('helvetica','bold');doc.setFontSize(13);doc.setTextColor(20,20,24);
+  doc.text(pdfClean(F.view==='dia'?'Entregas do dia':'Entregas que não couberam nos quadros do calendário'),M,y0);
+  doc.autoTable({startY:y0+12,head:[['Data','Setor','Projeto','Tarefa','Responsáveis','Status']],body:overflow.map(([ds,e])=>[fmt(ds),e.s.sector,P(e.t.project).name,e.t.name,e.s.steps.map(x=>U(x.user).name).join(' > ')||'Sem equipe',e.st].map(pdfClean)),margin:{left:M,right:M},theme:'plain',
+   styles:{font:'helvetica',fontSize:8.5,cellPadding:5,textColor:[30,30,36],lineColor:[226,226,234],lineWidth:{bottom:.6}},headStyles:{fontStyle:'bold',textColor:[110,110,122],fillColor:[246,246,250],fontSize:8},
+   didParseCell:d=>{if(d.section==='body'&&d.column.index===5){const c=ST_RGB[overflow[d.row.index][1].st];if(c)d.cell.styles.textColor=c}}});
+ }
+ const pages=doc.internal.getNumberOfPages();for(let i=1;i<=pages;i++){doc.setPage(i);doc.setFontSize(7.5);doc.setTextColor(140,140,150);doc.text(`Página ${i} de ${pages}`,W-M,H-14,{align:'right'})}
+ const slug=pdfClean(title).toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'');
+ doc.save(`kraften-${slug}.pdf`);toast('PDF exportado')}
+
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closeM()});
+render();
+</script>
+</body>
+</html>
