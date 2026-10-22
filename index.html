@@ -182,6 +182,8 @@ const farolPill=f=>`<span class="pill" style="border-color:var(--bd)"><i style="
 function farol(due,started,done){if(done)return'neutro';const n=daysTo(due);if(n<=0)return'vermelho';if(n===1)return started?'amarelo':'vermelho';if(n<=3)return'amarelo';return'verde'}
 const toast=m=>{const t=document.getElementById('toast');t.textContent=m;t.classList.add('show');clearTimeout(t._h);t._h=setTimeout(()=>t.classList.remove('show'),2400)};
 function openM(html,wide){const m=document.getElementById('modal');m.className='modal'+(wide?' wide':'');html=html.replace(/<button class="btn ghost sm" onclick="closeM\(\)">✕<\/button>/g,'');m.innerHTML='<button class="mclose" onclick="closeAll()" aria-label="Fechar" title="Fechar">✕</button>'+html;document.getElementById('panel').classList.add('open')}
+let ASK_FN=null;
+function ask(msg,fn,label='Confirmar'){ASK_FN=fn;openM('<h2>Confirmar ação</h2><p class="sub" style="white-space:pre-line">'+esc(msg)+'</p><div class="row"><button class="btn" onclick="const f=ASK_FN;ASK_FN=null;closeM();f&&f()">'+esc(label)+'</button><button class="btn ghost" onclick="ASK_FN=null;closeM()">Cancelar</button></div>')}
 function closeAll(){BACK=null;closeM()}
 let BACK=null;function closeM(){if(BACK){const b=BACK;BACK=null;return b()}document.getElementById('panel').classList.remove('open')}
 const val=id=>(document.getElementById(id)?.value||'').trim();
@@ -383,7 +385,7 @@ function loginView(){
  return `<div class="shell"><aside class="side"><div class="logo"><img src="${isDark()?LOGO_DARK:LOGO}" alt="Kraften Task"></div></aside><main class="main login">
  <div class="grid g32"><div class="card hero"><div class="row between"><h2 style="font-size:22px">Kraften Task</h2><button class="theme" onclick="toggleTheme()" aria-label="Alternar tema claro e escuro">${ic(isDark()?'sun':'moon',20)}</button></div><p class="sub">Projetos, tarefas e setores de ${esc(S.company.name)}. Escolha um usuário para entrar (ambiente de demonstração).</p>
  ${groups.map(r=>`<div style="margin-top:14px"><span class="lbl">${ROLE[r]}</span><div class="row wrap" style="margin-top:6px">${S.users.filter(u=>u.role===r).map(u=>`<button class="btn ghost sm" ${u.status!=='ativo'?'disabled title="Aguardando aprovação"':''} onclick="login('${u.id}')">${av(u.id,1)} ${esc(u.name)}${u.sector?` <span class="chip">${u.sector}</span>`:''}</button>`).join('')}</div></div>`).join('')}
- <div class="sep"></div><button class="btn ghost sm" onclick="if(confirm('Restaurar os dados de demonstração?')){S=seed();save();render()}">Restaurar dados de demonstração</button></div>
+ <div class="sep"></div><button class="btn ghost sm" onclick="ask('Restaurar os dados de demonstração? O que foi alterado neste navegador será perdido.',()=>{S=seed();save();render()},'Restaurar')">Restaurar dados de demonstração</button></div>
  <div class="card info"><h2>Criar minha conta</h2><p class="sub">Cargo declarado não é acesso autorizado.</p>
  <div class="field"><label>Nome completo</label><input class="inp" id="su_name"></div>
  <div class="field"><label>E-mail corporativo</label><input class="inp" id="su_mail" placeholder="voce@${esc(S.company.domain)}"></div>
@@ -423,7 +425,7 @@ function handoff(t,s,i){let prev,next;
   else next={who:'Entrega final',sub:`para ${U(t.creator).name}`}}
  return {prev,next}}
 function blockModal(tid,sid,i){openM(`<h2>Informar bloqueio</h2><p class="sub">A justificativa é obrigatória e o Gestor será notificado. O prazo continua correndo.</p><textarea class="inp" id="blk"></textarea><div class="row" style="margin-top:14px"><button class="btn" onclick="const r=val('blk');if(!r)return toast('Informe o motivo.');closeM();setStatus('${tid}','${sid}',${i},'Bloqueado',r)">Confirmar bloqueio</button><button class="btn ghost" onclick="closeM()">Cancelar</button></div>`)}
-function quickConclude(tid,sid,i){const t=Tk(tid),s=t.stages.find(z=>z.id===sid),nx=s.steps[i+1];if(confirm(`Concluir sua parte em "${t.name}"?${nx?`\n${U(nx.user).name} recebe a etapa em seguida.`:''}`))setStatus(tid,sid,i,'Concluída')}
+function quickConclude(tid,sid,i){const t=Tk(tid),s=t.stages.find(z=>z.id===sid),nx=s.steps[i+1];ask(`Concluir sua parte em "${t.name}"?${nx?`\n${U(nx.user).name} recebe a etapa em seguida.`:''}`,()=>setStatus(tid,sid,i,'Concluída'),'Concluir')}
 function taskCard(a){const {t,s,i,x,p}=a,f=farol(a.d,x.status!=='Não iniciada',x.status==='Concluída'||t.cancelled),v=stepView(t,s,i),g=gestorOf(s.sector),{prev,next}=handoff(t,s,i),args=`'${t.id}','${s.id}',${i}`;
  const node=(n,cls)=>`<div class="hnode ${cls}"><span class="hdot"></span><div class="hwho">${esc(n.who)}</div><div class="hsub">${esc(n.sub)}</div></div>`;
  const act=v==='Não iniciada'?`<button class="btn" onclick="setStatus(${args},'Em andamento')">Iniciar</button>`
@@ -665,7 +667,7 @@ function sectorsModal(tid){const t=Tk(tid),maxPh=Math.max(...t.stages.map(s=>s.p
 function addSector(tid){const t=Tk(tid),sec=val('as_sec'),ph=+val('as_ph'),r=val('as_r');if(!r)return toast('Justificativa obrigatória.');
  if(t.stages.some(s=>s.phase>=ph&&stageStarted(s))&&ph<=Math.max(...t.stages.filter(stageStarted).map(s=>s.phase)))return toast('Não é possível inserir antes de uma etapa já iniciada.');
  t.stages.push({id:uid(),sector:sec,phase:ph,part:'Aguardando resposta',steps:[],due:val('as_due'),partNote:''});log('Participação','Setor adicionado',`${t.code} ${t.name}`,`${sec}: ${r}`);notify([gestorOf(sec)?.id],`Nova solicitação de participação em "${t.name}".`);save();closeM();render();toast('Solicitação enviada a '+sec)}
-function removeSector(tid,sid){const r=prompt('Justificativa para remover o setor (obrigatória):');if(!r)return;const t=Tk(tid),s=t.stages.find(z=>z.id===sid);if(stageStarted(s))return toast('Etapa em execução é protegida.');
+function removeSector(tid,sid,r){if(r===undefined)return openM(`<h2>Remover setor</h2><p class="sub">A justificativa é obrigatória e o Gestor do setor será avisado.</p><textarea class="inp" id="rm_r"></textarea><div class="row" style="margin-top:14px"><button class="btn" onclick="removeSector('${tid}','${sid}',val('rm_r'))">Remover setor</button><button class="btn ghost" onclick="sectorsModal('${tid}')">Voltar</button></div>`);if(!r)return toast('Informe a justificativa.');const t=Tk(tid),s=t.stages.find(z=>z.id===sid);if(stageStarted(s))return toast('Etapa em execução é protegida.');
  t.stages=t.stages.filter(z=>z.id!==sid);log('Participação','Setor removido',`${t.code} ${t.name}`,`${s.sector}: ${r}`);notify([gestorOf(s.sector)?.id],`${s.sector} foi removido de "${t.name}".`);save();sectorsModal(tid);render()}
 function projMenu(pid){const p=P(pid),ps=pStatus(p);menu(p.name,[
  ['Concluir projeto',`concludeProj('${pid}')`,ps==='Pronto para concluir','Disponível quando todas as tarefas estão concluídas ou canceladas.'],
@@ -674,7 +676,7 @@ function projMenu(pid){const p=P(pid),ps=pStatus(p);menu(p.name,[
  ['Desarquivar projeto',`archive('${pid}',false)`,ps==='Arquivado'],
  ['Gerar próxima ocorrência',`genOcc('${pid}')`,!!p.rec&&!p.archived,'Somente projetos recorrentes.'],
  ['Pausar / encerrar recorrência',`stopRec('${pid}')`,!!p.rec,'Somente projetos recorrentes.']])}
-function concludeProj(pid){const p=P(pid);if(!confirm('Confirmar a conclusão de "'+p.name+'"? O projeto ficará somente leitura.'))return;p.concluded=true;p.cycles++;log('Projeto','Projeto concluído',p.name,'Ciclo '+p.cycles);save();closeM();render();toast('Projeto concluído')}
+function concludeProj(pid){const p=P(pid);ask('Concluir "'+p.name+'"? O projeto ficará somente leitura até ser reaberto.',()=>{p.concluded=true;p.cycles++;log('Projeto','Projeto concluído',p.name,'Ciclo '+p.cycles);save();closeM();render();toast('Projeto concluído')},'Concluir projeto')}
 function reopenModal(pid){openM(`<h2>Reabrir projeto</h2><p class="sub">Tarefas concluídas permanecem concluídas. Correções exigem novas tarefas.</p><textarea class="inp" id="ro" placeholder="Justificativa obrigatória"></textarea><div class="row" style="margin-top:14px"><button class="btn" onclick="reopen('${pid}')">Confirmar reabertura</button><button class="btn ghost" onclick="closeM()">Cancelar</button></div>`)}
 function reopen(pid){const r=val('ro');if(!r)return toast('Justificativa obrigatória.');const p=P(pid);p.concluded=false;log('Projeto','Projeto reaberto',p.name,r);save();closeM();render()}
 function archive(pid,on){const p=P(pid);p.archived=on;log('Projeto',on?'Projeto arquivado':'Projeto desarquivado',p.name);save();closeM();render()}
@@ -929,7 +931,7 @@ function configView(){const c=S.company;return `<div class="grid g2"><div class=
  <div class="field"><label>Exigir aprovação do CEO para Gestor</label><select class="inp" id="cf_appr"><option value="1" ${c.gestorApproval?'selected':''}>Sim</option><option value="0" ${!c.gestorApproval?'selected':''}>Não</option></select></div>
  <div class="field"><label>Limite de usuários</label><input type="number" class="inp" id="cf_lim" value="${c.limit}"></div><button class="btn" onclick="saveCfg()">Salvar alterações</button></div>
  <div class="card"><h2>Perfis da plataforma</h2><p class="sub">Regras fixas de produto.</p><div class="list">${[['CEO','Acompanha todos os setores e abre chamados. Não cria tarefas.'],['Gestor','Um por setor. Único perfil que cria projetos e tarefas.'],['Funcionário','Executa e atualiza as próprias etapas.']].map(([a,b])=>`<div class="it"><div class="grow"><div class="t">${a}</div><div class="s">${b}</div></div></div>`).join('')}</div>
- <div class="sep"></div><button class="btn ghost" onclick="if(confirm('Restaurar todos os dados de demonstração?')){const s=S.session;S=seed();S.session=s;save();render()}">Restaurar dados de demonstração</button></div></div>`}
+ <div class="sep"></div><button class="btn ghost" onclick="ask('Restaurar todos os dados de demonstração? O que foi alterado neste navegador será perdido.',()=>{const s=S.session;S=seed();S.session=s;save();render()},'Restaurar')">Restaurar dados de demonstração</button></div></div>`}
 function saveCfg(){const c=S.company,prev=JSON.stringify({a:c.allowSignup,d:c.domain,g:c.gestorApproval,l:c.limit});c.allowSignup=val('cf_allow')==='1';c.domain=val('cf_dom');c.gestorApproval=val('cf_appr')==='1';c.limit=+val('cf_lim');
  log('Configuração','Configurações de autocadastro alteradas',c.name,prev+' → '+JSON.stringify({a:c.allowSignup,d:c.domain,g:c.gestorApproval,l:c.limit}));save();toast('Configurações salvas')}
 
