@@ -200,8 +200,7 @@ function seed(){
   const stage=(sector,phase,part,steps,due)=>({id:uid(),sector,phase,part,steps,due,partNote:''});
   const tg=(id,name,sector,color,creator,status='aprovada')=>({id,name,sector,color,creator,status,archived:false});
   const projects=[tg('p1','Campanha de novembro','Marketing','#2563eb','u3'),tg('p2','Site institucional','Design','#7c3aed','u2'),tg('p3','Identidade visual','Design','#db2777','u2'),tg('p4','Fechamento mensal','Financeiro','#d97706','u5'),
-   tg('p6','feira inovacao','Design','#0891b2','u6','pendente'),
-   ...['Design','Marketing','Tecnologia','Financeiro','Comercial'].map(s=>({...tg('g-'+s,'Geral',s,'#6b7280',null),geral:true}))];
+   tg('p6','feira inovacao','Design','#0891b2','u6','pendente')];
   const tasks=[
    {id:'t1',code:'TK-101',project:'p1',name:'Peças para redes sociais',desc:'Criar e publicar o pacote de peças da campanha.',due:dd(8),creator:'u3',cancelled:false,
     stages:[stage('Marketing',1,'Distribuída',[st('u8','Em andamento')],dd(4)),stage('Design',1,'Aguardando resposta',[],dd(5)),stage('Tecnologia',2,'Distribuída',[st('u9')],dd(7))]},
@@ -236,7 +235,7 @@ function seed(){
    stages:sts.map(([sec,ph,steps])=>steps==='pend'?stage(sec,ph,'Aguardando resposta',[],D):stage(sec,ph,'Distribuída',steps.map(([u,s,r])=>st(u,s,r)),D))}));
   tasks.push({id:'tx13',code:'TK-123',project:'p6',name:'Arte do convite da feira',desc:'Convite digital para clientes e parceiros.',due:D,creator:'u6',cancelled:false,
    stages:[stage('Design',1,'Distribuída',[{...st('u6','Concluída'),desc:'Criar a arte',due:dd(3)},{...st('u7'),desc:'Aprovar a arte',kind:'aprovacao',due:dd(5)},{...st('u6'),desc:'Aplicar ajustes e exportar',due:D}],D)]});
-  return {v:6,session:null,sectors:['Design','Marketing','Tecnologia','Financeiro','Comercial'],users,projects,tasks,seq:106,
+  return {v:7,session:null,sectors:['Design','Marketing','Tecnologia','Financeiro','Comercial'],users,projects,tasks,seq:106,
    company:{name:'Acme Tecnologia',slug:'acme-tecnologia',status:'Ativa',limit:300,allowSignup:true,gestorApproval:true,domain:'acme.com'},
    deadlineReqs:[{id:'d1',task:'t1',stage:tasks[0].stages[2].id,by:'u4',from:dd(7),to:dd(9),reason:'Aguardando entrega das peças do Design.',status:'Pendente'}],
    tickets:[{id:'SUP-001',subject:'Erro ao exportar relatório',cat:'Relatórios',status:'Aberto',created:fmt(dd(-1)),by:'u1',msgs:[{by:'u1',text:'O relatório de desempenho não gera o PDF.',at:fmt(dd(-1))}]},
@@ -295,7 +294,7 @@ function seedLogs(tasks){const o=Object.fromEntries(tasks.map(t=>[t.id,`${t.code
 const SEED_G={Design:'u2',Marketing:'u3',Tecnologia:'u4',Financeiro:'u5'},gestorOf2=s=>SEED_G[s];
 const nameOf=id=>({u6:'Ana Costa',u7:'Carlos Lima',u8:'João Ribeiro',u9:'Lia Martins',ua:'Pedro Alves',ub:'Sofia Rocha'})[id]||id;
 let S;try{S=JSON.parse(localStorage.getItem('kraften-task'))}catch(e){}
-if(!S||S.v!==6)S=seed();
+if(!S||S.v!==7)S=seed();
 const objLabel=o=>String(o||'').replace(/^TK-\d+\s*/,'');
 const save=()=>{try{localStorage.setItem('kraften-task',JSON.stringify(S))}catch(e){}};
 let VIEW='home',UI={sel:null,collapsed:{},calSector:'Todos',logType:'Todos',q:''};
@@ -338,9 +337,9 @@ function tagSuggest(inp,boxId){const box=document.getElementById(boxId);if(!box)
  box.innerHTML=sim.length?`<span class="s" style="color:var(--muted)">Já existe${sim.length>1?'m':''} parecida${sim.length>1?'s':''}:</span> ${sim.map(p=>`<button type="button" class="chip" style="border:0;cursor:pointer" onclick="const i=document.getElementById('${inp.id}');i.value=this.dataset.n;i.dispatchEvent(new Event('input'))" data-n="${esc(p.name)}">${tagDot(p)} ${esc(p.name)}${p.status==='pendente'?' · pendente':''}</button>`).join(' ')}`:''}
 // resolve o nome digitado em uma tag (existente ou nova)
 function resolveTag(name,sec){const m=me();name=String(name||'').trim().replace(/\s+/g,' ');
- if(!name)return {tag:geralTag(sec)};
+ if(!name)return {err:'Escolha ou digite o projeto (tag). O campo é obrigatório.'};
  const ex=sectorTags(sec,true).find(p=>normTag(p.name)===normTag(name)&&p.status!=='recusada');
- if(ex){if(ex.archived)return {err:`A tag "${ex.name}" está arquivada. Peça ao Gestor para desarquivar ou escolha outra.`};return {tag:ex}}
+ if(ex)return {tag:ex};
  const tag={id:'p'+uid(),name,sector:sec,color:TAGC[S.projects.length%TAGC.length],creator:m.id,status:m.role==='gestor'?'aprovada':'pendente',archived:false};
  S.projects.push(tag);
  if(tag.status==='pendente'){log('Projeto','Tag criada (aguardando aprovação)',name,sec);notify([gestorOf(sec)?.id],`${m.name} criou a tag "${name}" e aguarda sua aprovação.`)}
@@ -352,26 +351,32 @@ function createTagView(){const m=me(),tags=sectorTags(m.sector,true).sort((a,b)=
  <div class="field"><label>Cor</label><div class="row wrap" style="gap:8px" id="tg_colors">${TAGC.map((c,k)=>`<label style="cursor:pointer"><input type="radio" name="tg_c" value="${c}" ${k===0?'checked':''} style="position:absolute;opacity:0"><span class="tgc" style="display:inline-block;width:24px;height:24px;border-radius:8px;background:${c}"></span></label>`).join('')}</div></div>
  <button class="btn" onclick="createTagNow()">${G?'Criar tag':'Enviar para aprovação'}</button>
  <div class="sep"></div><span class="lbl" style="margin-bottom:6px">Tags do setor</span>
- <div class="list">${tags.map(p=>{const st=tagStats(p);return `<div class="it">${tagDot(p)}<div class="grow"><div class="t">${esc(p.name)}</div><div class="s">${st.done} de ${st.n} tarefa(s) concluída(s)${p.creator&&p.status!=='aprovada'?' · criada por '+esc(U(p.creator).name):''}${p.rejectReason?' · Motivo: '+esc(p.rejectReason):''}</div></div>${p.status!=='aprovada'||p.archived?pill(tagState(p)):''}${G&&!p.geral&&p.status==='aprovada'?`<button class="btn ghost sm" onclick="tagMenu('${p.id}')">${ic('dots',16)}</button>`:''}</div>`}).join('')||'<div class="empty">Nenhuma tag ainda.</div>'}</div></div>`}
+ <div class="list">${tags.map(p=>{const st=tagStats(p);return `<div class="it">${tagDot(p)}<div class="grow"><div class="t">${esc(p.name)}</div><div class="s">${st.done} de ${st.n} tarefa(s) concluída(s)${p.creator&&p.status!=='aprovada'?' · criada por '+esc(U(p.creator).name):''}${p.rejectReason?' · Motivo: '+esc(p.rejectReason):''}</div></div>${p.status!=='aprovada'||p.archived?pill(tagState(p)):''}${G&&p.status==='aprovada'?`<button class="btn ghost sm" onclick="tagMenu('${p.id}')">${ic('dots',16)}</button>`:''}</div>`}).join('')||'<div class="empty">Nenhuma tag ainda.</div>'}</div></div>`}
 function createTagNow(){const name=val('tg_name');if(!name)return toast('Digite o nome da tag.');const m=me(),ex=sectorTags(m.sector,true).find(p=>normTag(p.name)===normTag(name)&&p.status!=='recusada');if(ex)return toast(`A tag "${ex.name}" já existe no setor.`);
  const r=resolveTag(name,m.sector);if(r.err)return toast(r.err);const c=document.querySelector('input[name="tg_c"]:checked');if(c)r.tag.color=c.value;save();renderBody();toast(r.tag.status==='pendente'?'Tag enviada para aprovação do Gestor':'Tag criada')}
 function tagMenu(id){const p=P(id);menu(p.name,[
- ['Renomear tag',`renameTagModal('${id}')`,!p.geral],
- ['Arquivar tag',`archiveTag('${id}',true)`,!p.archived&&!p.geral,'A tag Geral não pode ser arquivada.'],
- ['Desarquivar tag',`archiveTag('${id}',false)`,!!p.archived,'Somente tags arquivadas.']])}
+ ['Renomear tag',`renameTagModal('${id}')`,true],
+ ['Excluir tag',`deleteTagModal('${id}')`,true]])}
+function deleteTagModal(id){const p=P(id),n=S.tasks.filter(x=>x.project===id).length,others=sectorTags(p.sector).filter(x=>x.id!==id&&x.status==='aprovada');
+ if(!n)return ask(`Excluir a tag "${p.name}"? Ela não tem tarefas.`,()=>deleteTag(id),'Excluir tag');
+ if(!others.length)return openM(`<h2>Excluir tag</h2><p class="sub">"${esc(p.name)}" tem ${n} tarefa(s). Toda tarefa precisa de uma tag, e o setor não tem outra tag para receber essas tarefas. Crie outra tag antes de excluir.</p><div class="row"><button class="btn ghost" onclick="closeM()">Fechar</button></div>`);
+ openM(`<h2>Excluir tag</h2><p class="sub">"${esc(p.name)}" tem ${n} tarefa(s). Escolha para qual tag elas vão, já que toda tarefa precisa de uma tag.</p><div class="field"><label for="dt_to">Mover as tarefas para</label><select class="inp" id="dt_to">${others.map(x=>`<option value="${x.id}">${esc(x.name)}</option>`).join('')}</select></div><div class="row"><button class="btn" onclick="deleteTag('${id}',val('dt_to'))">Excluir tag</button><button class="btn ghost" onclick="closeM()">Cancelar</button></div>`)}
+function deleteTag(id,to){const p=P(id),dest=to&&P(to),ts=S.tasks.filter(x=>x.project===id);if(ts.length&&!dest)return toast('Escolha a tag que vai receber as tarefas.');
+ ts.forEach(x=>x.project=dest.id);S.projects=S.projects.filter(x=>x.id!==id);log('Projeto','Tag excluída',p.name,ts.length?`${ts.length} tarefa(s) movida(s) para ${dest.name}`:'Sem tarefas');save();closeM();render();toast('Tag excluída')}
 function renameTagModal(id){const p=P(id);openM(`<h2>Renomear tag</h2><div class="field"><label for="rt_n">Nome</label><input class="inp" id="rt_n" value="${esc(p.name)}" oninput="tagSuggest(this,'rt_sug')"><div id="rt_sug" class="row wrap" style="gap:6px;margin-top:6px"></div></div><div class="row"><button class="btn" onclick="renameTag('${id}')">Salvar</button><button class="btn ghost" onclick="closeM()">Cancelar</button></div>`)}
 function renameTag(id){const p=P(id),n=val('rt_n');if(!n)return toast('Digite o nome.');if(sectorTags(p.sector,true).some(x=>x.id!==id&&x.status!=='recusada'&&normTag(x.name)===normTag(n)))return toast('Já existe uma tag com esse nome no setor.');log('Projeto','Tag renomeada',n,`${p.name} → ${n}`);p.name=n;save();closeM();render();toast('Tag renomeada')}
-function archiveTag(id,on){const p=P(id);p.archived=on;log('Projeto',on?'Tag arquivada':'Tag desarquivada',p.name);save();closeM();render();toast(on?'Tag arquivada':'Tag desarquivada')}
 // aprovação de tags pelo Gestor
 function tagApprovalsCard(){const m=me(),pend=S.projects.filter(p=>p.status==='pendente'&&p.sector===m.sector),ok=sectorTags(m.sector).filter(p=>p.status==='aprovada');
  return `<div class="card hero"><div class="row between"><h2>Tags aguardando aprovação</h2><span class="chip">${pend.length}</span></div><p class="sub">Tags novas criadas por funcionários. As tarefas seguem normalmente enquanto você decide.</p>
  ${pend.length?`<div class="list">${pend.map(p=>{const st=tagStats(p),sim=similarTags(p.name,p.sector,p.id).filter(x=>x.status==='aprovada');return `<div class="it" style="flex-wrap:wrap">${tagDot(p)}<div class="grow"><div class="t">${esc(p.name)}</div><div class="s">${esc(U(p.creator).name)} · ${st.n} tarefa(s) usando${sim.length?` · parecida com <b>${sim.map(x=>esc(x.name)).join(', ')}</b>`:''}</div></div>
   <div class="row wrap" style="gap:6px"><button class="btn sm" onclick="decideTag('${p.id}','ok')">Aprovar</button><select class="inp" id="mg_${p.id}" style="width:auto;padding:5px 36px 5px 10px;background-position:right 12px center">${(sim.length?sim:ok).concat(ok.filter(x=>!sim.includes(x))).filter(x=>x.status==='aprovada').map(x=>`<option value="${x.id}">${esc(x.name)}</option>`).join('')}</select><button class="btn ghost sm" onclick="decideTag('${p.id}','merge',val('mg_${p.id}'))">Usar esta tag</button><button class="btn ghost sm" onclick="rejectTagModal('${p.id}')">Recusar</button></div></div>`}).join('')}</div>`:'<div class="empty">Nenhuma tag aguardando.</div>'}</div>`}
-function rejectTagModal(id){openM(`<h2>Recusar tag</h2><p class="sub">As tarefas com esta tag passam para a tag Geral. Explique o motivo para quem criou.</p><textarea class="inp" id="rj"></textarea><div class="row" style="margin-top:14px"><button class="btn" onclick="const r=val('rj');if(!r)return toast('Informe o motivo.');decideTag('${id}','no',null,r)">Confirmar recusa</button><button class="btn ghost" onclick="closeM()">Cancelar</button></div>`)}
+function rejectTagModal(id){const p=P(id),ok=sectorTags(p.sector).filter(x=>x.id!==id&&x.status==='aprovada'),n=S.tasks.filter(x=>x.project===id).length;
+ if(n&&!ok.length)return openM(`<h2>Recusar tag</h2><p class="sub">Esta tag tem ${n} tarefa(s) e o setor não tem outra tag aprovada para recebê-las. Aprove a tag ou crie outra antes de recusar.</p><div class="row"><button class="btn ghost" onclick="closeM()">Fechar</button></div>`);
+ openM(`<h2>Recusar tag</h2><p class="sub">Explique o motivo para quem criou.${n?' As tarefas com esta tag vão para a tag escolhida abaixo.':''}</p>${n?`<div class="field"><label for="rj_to">Mover as tarefas para</label><select class="inp" id="rj_to">${ok.map(x=>`<option value="${x.id}">${esc(x.name)}</option>`).join('')}</select></div>`:''}<div class="field"><label for="rj">Motivo</label><textarea class="inp" id="rj"></textarea></div><div class="row"><button class="btn" onclick="const r=val('rj');if(!r)return toast('Informe o motivo.');decideTag('${id}','no',val('rj_to'),r)">Confirmar recusa</button><button class="btn ghost" onclick="closeM()">Cancelar</button></div>`)}
 function decideTag(id,how,target,reason){const p=P(id),moveTo=t=>S.tasks.filter(x=>x.project===id).forEach(x=>x.project=t.id);
  if(how==='ok'){p.status='aprovada';log('Projeto','Tag aprovada',p.name);notify([p.creator],`Sua tag "${p.name}" foi aprovada.`)}
  else if(how==='merge'){const t=P(target);if(!t)return toast('Escolha a tag existente.');moveTo(t);S.projects=S.projects.filter(x=>x.id!==id);log('Projeto','Tag substituída por existente',t.name,`${p.name} → ${t.name}`);notify([p.creator],`Sua tag "${p.name}" foi trocada pela tag existente "${t.name}".`)}
- else{const g=geralTag(p.sector);moveTo(g);p.status='recusada';p.rejectReason=reason;log('Projeto','Tag recusada',p.name,reason);notify([p.creator],`Sua tag "${p.name}" foi recusada: ${reason}. As tarefas foram para Geral.`)}
+ else{const g=P(target);if(g)moveTo(g);p.status='recusada';p.rejectReason=reason;log('Projeto','Tag recusada',p.name,reason+(g?' · tarefas movidas para '+g.name:''));notify([p.creator],`Sua tag "${p.name}" foi recusada: ${reason}.${g?' As tarefas foram para "'+g.name+'".':''}`)}
  save();closeM();render();toast(how==='ok'?'Tag aprovada':how==='merge'?'Tarefas movidas para a tag existente':'Tag recusada')}
 // trocar a tag de uma tarefa
 function retagModal(tid){const t=Tk(tid),sec=P(t.project).sector;openM(`<h2>Alterar projeto (tag)</h2><p class="sub">${esc(t.name)}</p><div class="field"><label for="rtg">Tag</label><input class="inp" id="rtg" list="rtg_l" value="${esc(P(t.project).name)}" oninput="tagSuggest(this,'rtg_sug')"><datalist id="rtg_l">${sectorTags(sec).map(p=>`<option value="${esc(p.name)}">`).join('')}</datalist><div id="rtg_sug" class="row wrap" style="gap:6px;margin-top:6px"></div></div><div class="row"><button class="btn" onclick="retag('${tid}')">Salvar</button><button class="btn ghost" onclick="closeM()">Cancelar</button></div>`)}
@@ -701,7 +706,7 @@ function sectorView(){const m=me(),sec=m.sector,F=UI.sf;
  let shown=0,total=0;
  const rows=projs.map(p=>{const all=S.tasks.filter(t=>t.project===p.id&&(p.sector===sec||involvesSector(t,sec))&&match(t.name,p.name));if(!all.length&&p.geral)return'';const ts=all.filter(tf);total+=all.length;shown+=ts.length;
   if((UI.q||taskF)&&!ts.length&&!(UI.q&&!taskF&&match(p.name)))return'';const c=UI.collapsed[p.id],ps=pStatus(p);
-  return `<tr class="proj"><td><button class="btn ghost sm" style="padding:2px 8px" onclick="UI.collapsed['${p.id}']=!UI.collapsed['${p.id}'];renderBody()">${c?'▸':'▾'}</button> ${tagDot(p)} ${esc(p.name)}</td><td>${p.sector===sec?'Tag do setor':'Participação do setor'}</td><td>${p.sector}</td><td>${(()=>{const q=tagStats(p);return q.done+' de '+q.n+' concluídas'})()}</td><td>${p.status==='pendente'||p.archived?pill(tagState(p)):''}</td><td>${m.role==='gestor'&&p.sector===sec&&!p.geral&&p.status==='aprovada'?`<button class="btn ghost sm" onclick="tagMenu('${p.id}')">${ic('dots',16)}</button>`:''}</td></tr>`+
+  return `<tr class="proj"><td><button class="btn ghost sm" style="padding:2px 8px" onclick="UI.collapsed['${p.id}']=!UI.collapsed['${p.id}'];renderBody()">${c?'▸':'▾'}</button> ${tagDot(p)} ${esc(p.name)}</td><td>${p.sector===sec?'Tag do setor':'Participação do setor'}</td><td>${p.sector}</td><td>${(()=>{const q=tagStats(p);return q.done+' de '+q.n+' concluídas'})()}</td><td>${p.status==='pendente'||p.archived?pill(tagState(p)):''}</td><td>${m.role==='gestor'&&p.sector===sec&&p.status==='aprovada'?`<button class="btn ghost sm" onclick="tagMenu('${p.id}')">${ic('dots',16)}</button>`:''}</td></tr>`+
   (c?'':ts.map(t=>`<tr><td style="padding-left:40px">↳ ${esc(t.name)}${t.rec?' <span class="chip">↻ '+esc(t.rec.freq)+'</span>':''}</td><td>${esc(flowLabel(t))}</td><td>${fmtS(t.due)}</td><td>${farolPill(tFarol(t))}</td><td>${pill(tStatus(t))}</td><td><button class="btn ghost sm" onclick="taskMenu('${t.id}')">${ic('dots',16)}</button></td></tr>`).join(''))}).join('');
  const team=S.users.filter(u=>u.sector===sec&&u.status==='ativo'&&['func','gestor'].includes(u.role));
  const sel=(k,opts,label)=>`<label class="field" style="margin:0;min-width:140px;flex:1"><span style="font-size:11px;color:var(--muted)">${label}</span><select class="inp" onchange="sfSet('${k}',this.value)">${opts.map(([v,l])=>`<option value="${esc(v)}" ${F[k]===v?'selected':''}>${esc(l)}</option>`).join('')}</select></label>`;
@@ -714,7 +719,6 @@ function sectorView(){const m=me(),sec=m.sector,F=UI.sf;
  ${sel('farol',[['Todos','Todos'],['vermelho','Crítico'],['amarelo','Prazo próximo'],['verde','No prazo'],['neutro','Finalizada']],'Farol')}
  ${sel('resp',[['Todos','Todos'],...team.map(u=>[u.id,u.name+(u.id===m.id?' (você)':'')])],'Responsável')}
  ${sel('prazo',[['Todos','Qualquer prazo'],['atrasadas','Atrasadas'],['hoje','Vence hoje'],['7','Próximos 7 dias'],['30','Próximos 30 dias']],'Prazo')}
- ${sel('arch',[['nao','Ocultar arquivadas'],['sim','Mostrar arquivadas']],'Tags arquivadas')}
  <button class="btn ghost" ${active?'':'disabled'} onclick="UI.sf={...SF0};renderBody()">Limpar filtros${active?` (${active})`:''}</button></div>
  <p class="s" style="color:var(--muted);margin:0 0 6px">${shown===total?`${total} tarefa(s)`:`${shown} de ${total} tarefa(s)`} em ${rows?rows.split('class="proj"').length-1:0} projeto(s)</p><div style="overflow:auto"><table><tr><th>Projeto / Tarefa</th><th>Relação / Fluxo</th><th>Setor / Prazo</th><th>Andamento / Farol</th><th>Status</th><th></th></tr>${rows||'<tr><td colspan=6 class="empty">Nenhum projeto ou tarefa com estes filtros.</td></tr>'}</table></div></div>`}
 function menu(title,items){openM(`<h2>${esc(title)}</h2><p class="sub">Opções indisponíveis ficam desabilitadas.</p><div class="list">${items.map(([l,fn,ok,why])=>`<div class="it"><div class="grow"><div class="t">${l}</div>${!ok&&why?`<div class="s">${why}</div>`:''}</div><button class="btn sm" ${ok?'':'disabled'} onclick="${fn}">Selecionar</button></div>`).join('')}</div><div class="row" style="margin-top:14px"><button class="btn ghost" onclick="closeM()">Fechar</button></div>`)}
@@ -727,7 +731,9 @@ function taskMenu(tid){const t=Tk(tid),m=me(),creator=t.creator===m.id,my=t.stag
   ['Alterar projeto (tag)',`retagModal('${tid}')`,creator&&act,'Somente o criador, em tarefa ativa.'],
   ['Gerar próxima ocorrência',`genTaskOcc('${tid}')`,creator&&!!t.rec,'Somente tarefas recorrentes, pelo criador.'],
   ['Encerrar recorrência',`stopTaskRec('${tid}')`,creator&&!!t.rec,'Somente tarefas recorrentes, pelo criador.'],
-  ['Cancelar tarefa',`cancelModal('${tid}')`,creator&&act,'Somente o criador, em tarefa ativa.']])}
+  ['Cancelar tarefa',`cancelModal('${tid}')`,creator&&act,'Somente o criador, em tarefa ativa.'],
+  ['Excluir tarefa',`deleteTask('${tid}')`,creator,'Somente quem criou a tarefa.']])}
+function deleteTask(tid){const t=Tk(tid);ask(`Excluir a tarefa "${t.name}"? Ela some de todas as listas e não pode ser recuperada. Os envolvidos serão avisados.`,()=>{const who=t.stages.flatMap(s=>[gestorOf(s.sector)?.id,...s.steps.map(x=>x.user)]);S.tasks=S.tasks.filter(x=>x.id!==tid);S.deadlineReqs=S.deadlineReqs.filter(d=>d.task!==tid);log('Tarefa','Tarefa excluída',`${t.code} ${t.name}`,'Excluída por '+me().name);notify(who,`A tarefa "${t.name}" foi excluída por ${me().name}.`);UI.sel=null;save();closeM();render();toast('Tarefa excluída')},'Excluir tarefa')}
 function deadlineModal(tid){const t=Tk(tid),s=t.stages.find(z=>z.sector===me().sector);openM(`<h2>Solicitar novo prazo · ${s.sector}</h2><p class="sub">O prazo atual (${fmt(s.due)}) continua valendo até a decisão do Gestor criador.</p>
  <div class="field"><label>Nova data</label><input type="date" class="inp" id="dl_to"></div><div class="field"><label>Justificativa</label><textarea class="inp" id="dl_r"></textarea></div>
  <div class="row"><button class="btn" onclick="reqDeadline('${tid}','${s.id}')">Enviar solicitação</button><button class="btn ghost" onclick="closeM()">Cancelar</button></div>`)}
@@ -755,7 +761,7 @@ function createView(){const m=me(),others=S.sectors.filter(s=>s!==m.sector&&gest
  return `<div class="grid g2" style="align-items:start">${createTagView()}
  <div class="card info" id="taskform"><h2>Criar tarefa</h2><p class="sub">Por padrão a tarefa é do seu setor. Envolva outros setores só se necessário.</p>
  <span class="lbl">1. Dados da tarefa</span>
- <div class="field"><label for="nt_tag">Projeto (tag)</label><input class="inp" id="nt_tag" list="nt_tag_l" placeholder="Escolha ou digite. Vazio = Geral" value="${esc(UI.newTag||'')}" oninput="tagSuggest(this,'nt_tag_sug')"><datalist id="nt_tag_l">${tl.map(p=>`<option value="${esc(p.name)}">${p.status==='pendente'?'pendente':''}</option>`).join('')}</datalist><div id="nt_tag_sug" class="row wrap" style="gap:6px;margin-top:6px"></div>${m.role==='func'?'<span class="s" style="color:var(--muted);font-size:11px">Uma tag nova fica pendente até o Gestor aprovar. A tarefa é criada normalmente.</span>':''}</div>
+ <div class="field"><label for="nt_tag">Projeto (tag) *</label><input class="inp" id="nt_tag" list="nt_tag_l" placeholder="Escolha uma tag ou digite uma nova" value="${esc(UI.newTag||'')}" oninput="tagSuggest(this,'nt_tag_sug')"><datalist id="nt_tag_l">${tl.map(p=>`<option value="${esc(p.name)}">${p.status==='pendente'?'pendente':''}</option>`).join('')}</datalist><div id="nt_tag_sug" class="row wrap" style="gap:6px;margin-top:6px"></div>${m.role==='func'?'<span class="s" style="color:var(--muted);font-size:11px">Uma tag nova fica pendente até o Gestor aprovar. A tarefa é criada normalmente.</span>':''}</div>
  <div class="field"><label>Nome da tarefa *</label><input class="inp" id="nt_name"></div>
  <div class="field"><label>Descrição / entrega esperada *</label><textarea class="inp" id="nt_desc"></textarea></div>
  <div class="row"><div class="field grow"><label>Prazo final *</label><input type="date" class="inp" id="nt_due" min="${iso(T0)}"></div><div class="field grow"><label>Etapa do meu setor</label><input type="number" class="inp" id="nt_ph" min="1" max="99" step="1" value="1" title="Número da etapa"></div></div>
