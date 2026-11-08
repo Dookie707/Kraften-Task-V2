@@ -83,7 +83,7 @@ tr.click{cursor:pointer}tr.click:hover td{background:var(--hover)}
 .field label{font-size:12px;color:var(--sub)}
 .inp{border:1px solid var(--bd);background:var(--field);border-radius:12px;padding:10px 13px;outline:0;width:100%}
 .inp:focus{border-color:var(--ink)}
-#dist_rows,#nt_resp{counter-reset:r}.resp:only-child .rdue{display:none}.resp{counter-increment:r}.rn::before{content:counter(r) "º"}.rn{flex:none}
+input[name=tg_c]:checked+.tgc{outline:2px solid var(--ink);outline-offset:2px}input[name=tg_c]:focus-visible+.tgc{outline:2px dashed var(--ink);outline-offset:2px}#dist_rows,#nt_resp{counter-reset:r}.resp:first-child .rapr{display:none}.resp:only-child .rdue{display:none}.resp{counter-increment:r}.rn::before{content:counter(r) "º"}.rn{flex:none}
 select.inp{appearance:none;-webkit-appearance:none;padding-right:42px;background:var(--field) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23141414' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E") no-repeat right 16px center;cursor:pointer}
 select.inp:disabled{cursor:not-allowed;opacity:.6}
 textarea.inp{min-height:80px;resize:vertical}
@@ -174,7 +174,7 @@ const SECT_BG=themed(SECT_BG_L,SECT_BG_D),SECT_FG=themed(SECT_FG_L,SECT_FG_D);
 const ROLE={admin:'Super Admin',ceo:'CEO',gestor:'Gestor',func:'Funcionário'};
 const STC={'Em andamento':'var(--orange)','Concluída':'var(--green)','Concluído':'var(--green)','Bloqueado':'var(--red)','Bloqueada':'var(--red)','Não iniciada':'var(--gray)','Não iniciado':'var(--gray)',
 'Aguardando acordo':'var(--violet)','Aguardando resposta':'var(--violet)','Ajustes solicitados':'var(--red)','Reenviada':'var(--violet)','Distribuída':'var(--green)','Aguardando vez':'var(--gray)',
-'Cancelada':'#555','Aguardando aprovação':'var(--violet)','Recusado':'var(--red)','Ativo':'var(--green)','Desativado':'var(--red)','Pronto para concluir':'var(--blue)','Aguardando aprovação':'var(--violet)','Recusado':'var(--red)','Arquivado':'var(--gray)','Aberto':'var(--orange)','Em análise':'var(--blue)','Aguardando cliente':'var(--violet)','Resolvido':'var(--green)',
+'Cancelada':'#555','Aguardando aprovação':'var(--violet)','Recusado':'var(--red)','Ativo':'var(--green)','Desativado':'var(--red)','Em aprovação':'var(--blue)','Aguardando confirmação':'var(--violet)','Aprovada':'var(--green)','Arquivada':'var(--gray)','Recusada':'var(--red)','Pronto para concluir':'var(--blue)','Aguardando aprovação':'var(--violet)','Recusado':'var(--red)','Arquivado':'var(--gray)','Aberto':'var(--orange)','Em análise':'var(--blue)','Aguardando cliente':'var(--violet)','Resolvido':'var(--green)',
 'ativo':'var(--green)','pendente':'var(--orange)','bloqueado':'var(--red)','Pendente':'var(--orange)','Aprovada':'var(--green)','Rejeitada':'var(--red)'};
 const pill=s=>`<span class="pill"><i style="background:${STC[s]||'#999'}"></i>${esc(s)}</span>`;
 const FAROL={verde:['var(--green)','No prazo'],amarelo:['var(--orange)','Prazo próximo'],vermelho:['var(--red)','Crítico'],neutro:['#c4c4c4','Finalizada']};
@@ -198,12 +198,10 @@ function seed(){
   u('uc','Bruno Reis','func','Comercial','bruno@acme.com','pendente','gestor'),u('ud','Elisa Prado','func',null,'elisa@acme.com','pendente','ceo')];
   const st=(user,status='Não iniciada',reason='')=>({user,status,reason,links:'',notes:''});
   const stage=(sector,phase,part,steps,due)=>({id:uid(),sector,phase,part,steps,due,partNote:''});
-  const projects=[
-   {id:'p1',name:'Campanha de novembro',sector:'Marketing',desc:'Lançamento da campanha de fim de ano em todos os canais.',due:dd(17),priority:'Alta',creator:'u3',concluded:false,archived:false,cycles:0,rec:null},
-   {id:'p2',name:'Site institucional',sector:'Design',desc:'Novo site com identidade atualizada.',due:dd(20),priority:'Alta',creator:'u2',concluded:false,archived:false,cycles:0,rec:{freq:'—'}},
-   {id:'p3',name:'Identidade visual',sector:'Design',desc:'Revisão da paleta e tipografia da marca.',due:dd(5),priority:'Média',creator:'u2',concluded:false,archived:false,cycles:0,rec:null},
-   {id:'p4',name:'Fechamento mensal',sector:'Financeiro',desc:'Fechamento contábil de outubro.',due:dd(9),priority:'Alta',creator:'u5',concluded:false,archived:false,cycles:0,rec:{freq:'Mensal',start:dd(18),mode:'rascunho',struct:'tarefas'}}];
-  projects[1].rec=null;
+  const tg=(id,name,sector,color,creator,status='aprovada')=>({id,name,sector,color,creator,status,archived:false});
+  const projects=[tg('p1','Campanha de novembro','Marketing','#2563eb','u3'),tg('p2','Site institucional','Design','#7c3aed','u2'),tg('p3','Identidade visual','Design','#db2777','u2'),tg('p4','Fechamento mensal','Financeiro','#d97706','u5'),
+   tg('p6','feira inovacao','Design','#0891b2','u6','pendente'),
+   ...['Design','Marketing','Tecnologia','Financeiro','Comercial'].map(s=>({...tg('g-'+s,'Geral',s,'#6b7280',null),geral:true}))];
   const tasks=[
    {id:'t1',code:'TK-101',project:'p1',name:'Peças para redes sociais',desc:'Criar e publicar o pacote de peças da campanha.',due:dd(8),creator:'u3',cancelled:false,
     stages:[stage('Marketing',1,'Distribuída',[st('u8','Em andamento')],dd(4)),stage('Design',1,'Aguardando resposta',[],dd(5)),stage('Tecnologia',2,'Distribuída',[st('u9')],dd(7))]},
@@ -216,8 +214,10 @@ function seed(){
    {id:'t5',code:'TK-105',project:'p4',name:'Conciliação bancária',desc:'Conciliar extratos de todas as contas.',due:dd(2),creator:'u5',cancelled:false,
     stages:[stage('Financeiro',1,'Distribuída',[st('ub','Em andamento')],dd(2)),stage('Tecnologia',2,'Ajustes solicitados',[],dd(3))]}];
   tasks[4].stages[1].partNote='Precisamos de mais 2 dias por conta da sprint atual.';
+  tasks[4].rec={freq:'Mensal'};
+  tasks[0].stages[1]={...tasks[0].stages[1],part:'Aguardando confirmação',steps:[st('u6')],partNote:'Sugestão de Carla Dias: Ana Costa'};
   // Dia de alta carga: Feira de Inovação com muitas entregas na mesma data
-  projects.push({id:'p5',name:'Feira de Inovação 2026',sector:'Design',desc:'Estande, materiais e demonstrações para a feira anual.',due:dd(9),priority:'Alta',creator:'u2',concluded:false,archived:false,cycles:0,rec:null});
+  projects.push(tg('p5','Feira de Inovação 2026','Design','#16a34a','u2'));
   const D=dd(7),X=[
    ['Painel principal do estande',[['Design',1,[['u6','Em andamento']]]]],
    ['Folder institucional',[['Design',1,[['u7','Concluída']]],['Marketing',2,[['u8','Em andamento']]]]],
@@ -234,7 +234,9 @@ function seed(){
    ['Ficha técnica dos produtos',[['Design',1,[['u6','Não iniciada']]]]]];
   X.forEach(([name,sts],k)=>tasks.push({id:'tx'+k,code:'TK-'+(110+k),project:'p5',name,desc:name+' para a Feira de Inovação.',due:D,creator:'u2',cancelled:false,extra:true,
    stages:sts.map(([sec,ph,steps])=>steps==='pend'?stage(sec,ph,'Aguardando resposta',[],D):stage(sec,ph,'Distribuída',steps.map(([u,s,r])=>st(u,s,r)),D))}));
-  return {v:5,session:null,sectors:['Design','Marketing','Tecnologia','Financeiro','Comercial'],users,projects,tasks,seq:106,
+  tasks.push({id:'tx13',code:'TK-123',project:'p6',name:'Arte do convite da feira',desc:'Convite digital para clientes e parceiros.',due:D,creator:'u6',cancelled:false,
+   stages:[stage('Design',1,'Distribuída',[{...st('u6','Concluída'),desc:'Criar a arte',due:dd(3)},{...st('u7'),desc:'Aprovar a arte',kind:'aprovacao',due:dd(5)},{...st('u6'),desc:'Aplicar ajustes e exportar',due:D}],D)]});
+  return {v:6,session:null,sectors:['Design','Marketing','Tecnologia','Financeiro','Comercial'],users,projects,tasks,seq:106,
    company:{name:'Acme Tecnologia',slug:'acme-tecnologia',status:'Ativa',limit:300,allowSignup:true,gestorApproval:true,domain:'acme.com'},
    deadlineReqs:[{id:'d1',task:'t1',stage:tasks[0].stages[2].id,by:'u4',from:dd(7),to:dd(9),reason:'Aguardando entrega das peças do Design.',status:'Pendente'}],
    tickets:[{id:'SUP-001',subject:'Erro ao exportar relatório',cat:'Relatórios',status:'Aberto',created:fmt(dd(-1)),by:'u1',msgs:[{by:'u1',text:'O relatório de desempenho não gera o PDF.',at:fmt(dd(-1))}]},
@@ -293,7 +295,7 @@ function seedLogs(tasks){const o=Object.fromEntries(tasks.map(t=>[t.id,`${t.code
 const SEED_G={Design:'u2',Marketing:'u3',Tecnologia:'u4',Financeiro:'u5'},gestorOf2=s=>SEED_G[s];
 const nameOf=id=>({u6:'Ana Costa',u7:'Carlos Lima',u8:'João Ribeiro',u9:'Lia Martins',ua:'Pedro Alves',ub:'Sofia Rocha'})[id]||id;
 let S;try{S=JSON.parse(localStorage.getItem('kraften-task'))}catch(e){}
-if(!S||S.v!==5)S=seed();
+if(!S||S.v!==6)S=seed();
 const objLabel=o=>String(o||'').replace(/^TK-\d+\s*/,'');
 const save=()=>{try{localStorage.setItem('kraften-task',JSON.stringify(S))}catch(e){}};
 let VIEW='home',UI={sel:null,collapsed:{},calSector:'Todos',logType:'Todos',q:''};
@@ -318,10 +320,85 @@ function tStatus(t){if(t.cancelled)return'Cancelada';if(t.stages.every(stageDone
 const tDone=t=>t.cancelled||tStatus(t)==='Concluída';
 const tFarol=t=>farol(t.due,t.stages.some(stageStarted),tDone(t));
 const stFarol=(t,s)=>farol(s.due,stageStarted(s),t.cancelled||stageDone(s));
-function pStatus(p){if(p.approval==='pendente')return'Aguardando aprovação';if(p.approval==='recusado')return'Recusado';if(p.archived)return'Arquivado';if(p.concluded)return'Concluído';const ts=S.tasks.filter(t=>t.project===p.id);
- if(ts.length&&ts.every(tDone))return'Pronto para concluir';if(ts.some(t=>t.stages.some(stageStarted)))return'Em andamento';return'Não iniciado'}
+// ---------- projetos como tags do setor ----------
+const TAGC=['#7c3aed','#2563eb','#16a34a','#d97706','#dc2626','#0891b2','#db2777','#6b7280'];
+const normTag=s=>String(s||'').normalize('NFD').replace(/[̀-ͯ]/g,'').toLowerCase().replace(/[^a-z0-9]/g,'');
+function lev(a,b){const m=a.length,n=b.length;if(!m)return n;if(!n)return m;let p=Array.from({length:n+1},(_,j)=>j);for(let i=1;i<=m;i++){const c=[i];for(let j=1;j<=n;j++)c[j]=Math.min(p[j]+1,c[j-1]+1,p[j-1]+(a[i-1]===b[j-1]?0:1));p=c}return p[n]}
+const tagDot=p=>`<i class="dot" style="background:${p&&p.color||'#9a9aa6'};width:9px;height:9px;border-radius:3px"></i>`;
+const sectorTags=(sec,incl)=>S.projects.filter(p=>p.sector===sec&&(incl||(p.status!=='recusada'&&!p.archived)));
+function tagStats(p){const ts=S.tasks.filter(t=>t.project===p.id&&!t.cancelled);return {n:ts.length,done:ts.filter(t=>tStatus(t)==='Concluída').length}}
+function tagState(p){return p.status==='pendente'?'Pendente':p.status==='recusada'?'Recusada':p.archived?'Arquivada':'Aprovada'}
+function pStatus(p){return tagState(p)}
+function similarTags(q,sec,exceptId){const n=normTag(q);if(n.length<3)return[];return sectorTags(sec).filter(p=>p.id!==exceptId&&p.status!=='recusada').filter(p=>{const m=normTag(p.name);if(m===n||m.includes(n)||n.includes(m)||lev(m,n)<=Math.max(2,Math.floor(Math.min(m.length,n.length)/5)))return true;const A=tagWords(q),B=tagWords(p.name),[sm,lg]=A.length<=B.length?[A,B]:[B,A];return sm.length>0&&sm.every(w=>lg.some(v=>v===w||v.startsWith(w)||w.startsWith(v)||(w.length>4&&lev(v,w)<=1)))}).slice(0,4)}
+const TAG_STOP=['de','da','do','das','dos','e','a','o','para','com'];
+const tagWords=s=>String(s||'').normalize('NFD').replace(/[̀-ͯ]/g,'').toLowerCase().split(/[^a-z0-9]+/).filter(w=>w.length>1&&!TAG_STOP.includes(w)&&!/^\d+$/.test(w));
+function geralTag(sec){let g=S.projects.find(p=>p.sector===sec&&p.geral);if(!g){g={id:'g-'+uid(),name:'Geral',sector:sec,color:'#6b7280',creator:null,status:'aprovada',archived:false,geral:true};S.projects.push(g)}return g}
+// sugestões enquanto digita (input → caixa de sugestões)
+function tagSuggest(inp,boxId){const box=document.getElementById(boxId);if(!box)return;const sim=similarTags(inp.value,me().sector).filter(p=>normTag(p.name)!==normTag(inp.value));
+ box.innerHTML=sim.length?`<span class="s" style="color:var(--muted)">Já existe${sim.length>1?'m':''} parecida${sim.length>1?'s':''}:</span> ${sim.map(p=>`<button type="button" class="chip" style="border:0;cursor:pointer" onclick="const i=document.getElementById('${inp.id}');i.value=this.dataset.n;i.dispatchEvent(new Event('input'))" data-n="${esc(p.name)}">${tagDot(p)} ${esc(p.name)}${p.status==='pendente'?' · pendente':''}</button>`).join(' ')}`:''}
+// resolve o nome digitado em uma tag (existente ou nova)
+function resolveTag(name,sec){const m=me();name=String(name||'').trim().replace(/\s+/g,' ');
+ if(!name)return {tag:geralTag(sec)};
+ const ex=sectorTags(sec,true).find(p=>normTag(p.name)===normTag(name)&&p.status!=='recusada');
+ if(ex){if(ex.archived)return {err:`A tag "${ex.name}" está arquivada. Peça ao Gestor para desarquivar ou escolha outra.`};return {tag:ex}}
+ const tag={id:'p'+uid(),name,sector:sec,color:TAGC[S.projects.length%TAGC.length],creator:m.id,status:m.role==='gestor'?'aprovada':'pendente',archived:false};
+ S.projects.push(tag);
+ if(tag.status==='pendente'){log('Projeto','Tag criada (aguardando aprovação)',name,sec);notify([gestorOf(sec)?.id],`${m.name} criou a tag "${name}" e aguarda sua aprovação.`)}
+ else log('Projeto','Tag criada',name,sec);
+ return {tag,isNew:true}}
+function createTagView(){const m=me(),tags=sectorTags(m.sector,true).sort((a,b)=>(a.status==='pendente'?-1:0)-(b.status==='pendente'?-1:0)||a.name.localeCompare(b.name)),G=m.role==='gestor';
+ return `<div class="card hero"><h2>Projetos (tags) de ${esc(m.sector)}</h2><p class="sub">O projeto é só uma tag para agrupar as tarefas do setor. ${G?'Tags criadas por você valem na hora.':'Tags novas criadas por você ficam pendentes até o Gestor aprovar.'}</p>
+ <div class="field"><label for="tg_name">Nova tag</label><input class="inp" id="tg_name" maxlength="60" placeholder="Ex.: Campanha de Natal" oninput="tagSuggest(this,'tg_sug')"><div id="tg_sug" class="row wrap" style="gap:6px;margin-top:6px"></div></div>
+ <div class="field"><label>Cor</label><div class="row wrap" style="gap:8px" id="tg_colors">${TAGC.map((c,k)=>`<label style="cursor:pointer"><input type="radio" name="tg_c" value="${c}" ${k===0?'checked':''} style="position:absolute;opacity:0"><span class="tgc" style="display:inline-block;width:24px;height:24px;border-radius:8px;background:${c}"></span></label>`).join('')}</div></div>
+ <button class="btn" onclick="createTagNow()">${G?'Criar tag':'Enviar para aprovação'}</button>
+ <div class="sep"></div><span class="lbl" style="margin-bottom:6px">Tags do setor</span>
+ <div class="list">${tags.map(p=>{const st=tagStats(p);return `<div class="it">${tagDot(p)}<div class="grow"><div class="t">${esc(p.name)}</div><div class="s">${st.done} de ${st.n} tarefa(s) concluída(s)${p.creator&&p.status!=='aprovada'?' · criada por '+esc(U(p.creator).name):''}${p.rejectReason?' · Motivo: '+esc(p.rejectReason):''}</div></div>${p.status!=='aprovada'||p.archived?pill(tagState(p)):''}${G&&!p.geral&&p.status==='aprovada'?`<button class="btn ghost sm" onclick="tagMenu('${p.id}')">${ic('dots',16)}</button>`:''}</div>`}).join('')||'<div class="empty">Nenhuma tag ainda.</div>'}</div></div>`}
+function createTagNow(){const name=val('tg_name');if(!name)return toast('Digite o nome da tag.');const m=me(),ex=sectorTags(m.sector,true).find(p=>normTag(p.name)===normTag(name)&&p.status!=='recusada');if(ex)return toast(`A tag "${ex.name}" já existe no setor.`);
+ const r=resolveTag(name,m.sector);if(r.err)return toast(r.err);const c=document.querySelector('input[name="tg_c"]:checked');if(c)r.tag.color=c.value;save();renderBody();toast(r.tag.status==='pendente'?'Tag enviada para aprovação do Gestor':'Tag criada')}
+function tagMenu(id){const p=P(id);menu(p.name,[
+ ['Renomear tag',`renameTagModal('${id}')`,!p.geral],
+ ['Arquivar tag',`archiveTag('${id}',true)`,!p.archived&&!p.geral,'A tag Geral não pode ser arquivada.'],
+ ['Desarquivar tag',`archiveTag('${id}',false)`,!!p.archived,'Somente tags arquivadas.']])}
+function renameTagModal(id){const p=P(id);openM(`<h2>Renomear tag</h2><div class="field"><label for="rt_n">Nome</label><input class="inp" id="rt_n" value="${esc(p.name)}" oninput="tagSuggest(this,'rt_sug')"><div id="rt_sug" class="row wrap" style="gap:6px;margin-top:6px"></div></div><div class="row"><button class="btn" onclick="renameTag('${id}')">Salvar</button><button class="btn ghost" onclick="closeM()">Cancelar</button></div>`)}
+function renameTag(id){const p=P(id),n=val('rt_n');if(!n)return toast('Digite o nome.');if(sectorTags(p.sector,true).some(x=>x.id!==id&&x.status!=='recusada'&&normTag(x.name)===normTag(n)))return toast('Já existe uma tag com esse nome no setor.');log('Projeto','Tag renomeada',n,`${p.name} → ${n}`);p.name=n;save();closeM();render();toast('Tag renomeada')}
+function archiveTag(id,on){const p=P(id);p.archived=on;log('Projeto',on?'Tag arquivada':'Tag desarquivada',p.name);save();closeM();render();toast(on?'Tag arquivada':'Tag desarquivada')}
+// aprovação de tags pelo Gestor
+function tagApprovalsCard(){const m=me(),pend=S.projects.filter(p=>p.status==='pendente'&&p.sector===m.sector),ok=sectorTags(m.sector).filter(p=>p.status==='aprovada');
+ return `<div class="card hero"><div class="row between"><h2>Tags aguardando aprovação</h2><span class="chip">${pend.length}</span></div><p class="sub">Tags novas criadas por funcionários. As tarefas seguem normalmente enquanto você decide.</p>
+ ${pend.length?`<div class="list">${pend.map(p=>{const st=tagStats(p),sim=similarTags(p.name,p.sector,p.id).filter(x=>x.status==='aprovada');return `<div class="it" style="flex-wrap:wrap">${tagDot(p)}<div class="grow"><div class="t">${esc(p.name)}</div><div class="s">${esc(U(p.creator).name)} · ${st.n} tarefa(s) usando${sim.length?` · parecida com <b>${sim.map(x=>esc(x.name)).join(', ')}</b>`:''}</div></div>
+  <div class="row wrap" style="gap:6px"><button class="btn sm" onclick="decideTag('${p.id}','ok')">Aprovar</button><select class="inp" id="mg_${p.id}" style="width:auto;padding:5px 36px 5px 10px;background-position:right 12px center">${(sim.length?sim:ok).concat(ok.filter(x=>!sim.includes(x))).filter(x=>x.status==='aprovada').map(x=>`<option value="${x.id}">${esc(x.name)}</option>`).join('')}</select><button class="btn ghost sm" onclick="decideTag('${p.id}','merge',val('mg_${p.id}'))">Usar esta tag</button><button class="btn ghost sm" onclick="rejectTagModal('${p.id}')">Recusar</button></div></div>`}).join('')}</div>`:'<div class="empty">Nenhuma tag aguardando.</div>'}</div>`}
+function rejectTagModal(id){openM(`<h2>Recusar tag</h2><p class="sub">As tarefas com esta tag passam para a tag Geral. Explique o motivo para quem criou.</p><textarea class="inp" id="rj"></textarea><div class="row" style="margin-top:14px"><button class="btn" onclick="const r=val('rj');if(!r)return toast('Informe o motivo.');decideTag('${id}','no',null,r)">Confirmar recusa</button><button class="btn ghost" onclick="closeM()">Cancelar</button></div>`)}
+function decideTag(id,how,target,reason){const p=P(id),moveTo=t=>S.tasks.filter(x=>x.project===id).forEach(x=>x.project=t.id);
+ if(how==='ok'){p.status='aprovada';log('Projeto','Tag aprovada',p.name);notify([p.creator],`Sua tag "${p.name}" foi aprovada.`)}
+ else if(how==='merge'){const t=P(target);if(!t)return toast('Escolha a tag existente.');moveTo(t);S.projects=S.projects.filter(x=>x.id!==id);log('Projeto','Tag substituída por existente',t.name,`${p.name} → ${t.name}`);notify([p.creator],`Sua tag "${p.name}" foi trocada pela tag existente "${t.name}".`)}
+ else{const g=geralTag(p.sector);moveTo(g);p.status='recusada';p.rejectReason=reason;log('Projeto','Tag recusada',p.name,reason);notify([p.creator],`Sua tag "${p.name}" foi recusada: ${reason}. As tarefas foram para Geral.`)}
+ save();closeM();render();toast(how==='ok'?'Tag aprovada':how==='merge'?'Tarefas movidas para a tag existente':'Tag recusada')}
+// trocar a tag de uma tarefa
+function retagModal(tid){const t=Tk(tid),sec=P(t.project).sector;openM(`<h2>Alterar projeto (tag)</h2><p class="sub">${esc(t.name)}</p><div class="field"><label for="rtg">Tag</label><input class="inp" id="rtg" list="rtg_l" value="${esc(P(t.project).name)}" oninput="tagSuggest(this,'rtg_sug')"><datalist id="rtg_l">${sectorTags(sec).map(p=>`<option value="${esc(p.name)}">`).join('')}</datalist><div id="rtg_sug" class="row wrap" style="gap:6px;margin-top:6px"></div></div><div class="row"><button class="btn" onclick="retag('${tid}')">Salvar</button><button class="btn ghost" onclick="closeM()">Cancelar</button></div>`)}
+function retag(tid){const t=Tk(tid),old=P(t.project),r=resolveTag(val('rtg'),old.sector);if(r.err)return toast(r.err);t.project=r.tag.id;log('Tarefa','Projeto (tag) alterado',`${t.code} ${t.name}`,`${old.name} → ${r.tag.name}`);save();closeM();render();toast('Tag alterada')}
+// tarefas recorrentes
+const FREQ={Semanal:7,Quinzenal:14,Mensal:30,Bimestral:61,Trimestral:91,Semestral:182,Anual:365};
+function genTaskOcc(tid){const t=Tk(tid),k=FREQ[t.rec.freq]||30,sh=d=>{if(!d)return d;const x=new Date(d+'T00:00');x.setDate(x.getDate()+k);return iso(x)},own=U(t.creator).sector;
+ const n={...t,id:'t'+uid(),code:'TK-'+(S.seq++),due:sh(t.due),created:iso(new Date()),cancelled:false,cancelReason:'',rec:t.rec,
+  stages:t.stages.map(s=>({id:uid(),sector:s.sector,phase:s.phase,desc:s.desc,due:sh(s.due),partNote:'',part:s.sector===own?'Distribuída':'Aguardando resposta',steps:s.sector===own?s.steps.map(x=>({user:x.user,desc:x.desc,kind:x.kind,due:sh(x.due),status:'Não iniciada',reason:'',links:'',notes:''})):[]}))};
+ t.rec=null;S.tasks.push(n);log('Tarefa','Ocorrência gerada',`${n.code} ${n.name}`,`Recorrência ${n.rec.freq} · prazo ${fmt(n.due)}`);
+ notify(n.stages.flatMap(s=>s.part==='Distribuída'?s.steps.map(x=>x.user):[gestorOf(s.sector)?.id]),`Nova ocorrência de "${n.name}" com prazo ${fmt(n.due)}.`);save();closeM();render();toast('Próxima ocorrência criada')}
+function stopTaskRec(tid){const t=Tk(tid);log('Tarefa','Recorrência encerrada',`${t.code} ${t.name}`,t.rec.freq);t.rec=null;save();closeM();render();toast('Recorrência encerrada')}
+// etapa de aprovação: aprovar ou devolver com ajustes
+function approveStep(tid,sid,i){const t=Tk(tid);ask(`Aprovar a etapa em "${t.name}"? A próxima etapa será liberada.`,()=>setStatus(tid,sid,i,'Concluída'),'Aprovar')}
+function returnModal(tid,sid,i){const t=Tk(tid),s=t.stages.find(z=>z.id===sid),pv=s.steps[i-1];openM(`<h2>Devolver com ajustes</h2><p class="sub">A etapa volta para ${esc(U(pv.user).name)}, que será avisado(a). Depois que ajustar, a aprovação volta para você.</p><textarea class="inp" id="rtn" placeholder="O que precisa ser ajustado (obrigatório)"></textarea><div class="row" style="margin-top:14px"><button class="btn" onclick="returnStep('${tid}','${sid}',${i})">Devolver</button><button class="btn ghost" onclick="closeM()">Cancelar</button></div>`)}
+function returnStep(tid,sid,i){const r=val('rtn');if(!r)return toast('Descreva o que precisa ser ajustado.');const t=Tk(tid),s=t.stages.find(z=>z.id===sid),x=s.steps[i],pv=s.steps[i-1];
+ if(x.user!==S.session)return toast('Somente o aprovador pode devolver.');if(!stageReady(t,s)||curIdx(s)!==i)return toast('Esta aprovação ainda não foi liberada.');if(!pv)return toast('Não há etapa anterior para devolver.');
+ pv.status='Em andamento';pv.reason='';pv.returned=r;x.status='Não iniciada';x.returns=(x.returns||0)+1;
+ log('Tarefa','Devolvido com ajustes',`${t.code} ${t.name}`,`${me().name} → ${U(pv.user).name}: ${r}`);notify([pv.user],`${me().name} devolveu "${t.name}" com ajustes: ${r}`);save();closeM();render();toast('Etapa devolvida')}
+// participação: confirmar a pessoa sugerida por outro setor
+function confirmStage(tid,sid){const t=Tk(tid),s=t.stages.find(z=>z.id===sid);s.part='Distribuída';s.partNote='';
+ log('Participação','Pessoa sugerida confirmada',`${t.code} ${t.name}`,`${s.sector}: ${s.steps.map(x=>U(x.user).name).join(' → ')}`);notify([t.creator,...s.steps.map(x=>x.user)],`${s.sector} confirmou a participação em "${t.name}".`);save();render();toast('Participação confirmada')}
+const secPeopleOpts=sec=>'<option value="">Ninguém: o Gestor do setor escolhe</option>'+S.users.filter(u=>u.sector===sec&&u.status==='ativo'&&['func','gestor'].includes(u.role)).map(u=>`<option value="${u.id}">${esc(u.name)}${u.role==='gestor'?' (Gestor)':''}</option>`).join('');
+const consecDup=ids=>ids.findIndex((v,k)=>k>0&&v===ids[k-1]);
+
 function flowLabel(t){const ph=[...new Set(t.stages.map(s=>s.phase))].sort((a,b)=>a-b);return ph.map(n=>t.stages.filter(s=>s.phase===n).map(s=>s.sector).join(' / ')).join(' → ')}
-function stepView(t,s,i){const x=s.steps[i];if(t.cancelled)return'Cancelada';if(x.status==='Não iniciada'&&(!stageReady(t,s)||curIdx(s)!==i))return'Aguardando vez';return x.status}
+function stepView(t,s,i){const x=s.steps[i];if(t.cancelled)return'Cancelada';if(x.status==='Não iniciada'&&(!stageReady(t,s)||curIdx(s)!==i))return'Aguardando vez';if(x.kind==='aprovacao'&&x.status==='Não iniciada')return'Em aprovação';return x.status}
 function myAssign(uid_){const out=[];S.tasks.forEach(t=>t.stages.forEach(s=>s.steps.forEach((x,i)=>{if(x.user===uid_)out.push({t,s,i,x,p:P(t.project),d:x.due||s.due})})));return out}
 const involvesSector=(t,sec)=>t.stages.some(s=>s.sector===sec);
 
@@ -482,15 +559,16 @@ function detailPanel(a){const {t,s,i,x,p}=a,v=stepView(t,s,i),can=v!=='Aguardand
  const opts=['Não iniciada','Em andamento','Bloqueado','Concluída'].filter(o=>!(x.status==='Em andamento'&&o==='Não iniciada')&&!(x.status==='Bloqueado'&&o==='Não iniciada'));
  return `<div class="card"><div class="row between"><h2>Detalhes da tarefa</h2><button class="btn ghost sm" onclick="UI.sel=null;renderBody()">✕</button></div><p class="sub">${esc(p.name)}</p>
  <div class="field"><label>Descrição</label><div class="note">${esc(t.desc)}</div></div>
- ${x.desc?`<div class="field"><label>Sua atividade</label><div class="note">${esc(x.desc)}</div></div>`:''}<div class="field"><label>Responsáveis (${s.sector}, em ordem)</label><div class="row wrap">${s.steps.map((y,j)=>`<span class="chip">${j+1}. ${esc(U(y.user).name)} · ${stepView(t,s,j)}</span>`).join('')}</div></div>
+ ${x.desc?`<div class="field"><label>Sua atividade</label><div class="note">${esc(x.desc)}</div></div>`:''}<div class="field"><label>Responsáveis (${s.sector}, em ordem)</label><div class="row wrap">${s.steps.map((y,j)=>`<span class="chip">${j+1}. ${esc(U(y.user).name)}${y.kind==='aprovacao'?' (aprovação)':''} · ${stepView(t,s,j)}</span>`).join('')}</div></div>
  <div class="row"><div class="field grow"><label>${x.due?'Seu prazo de encerramento':'Entrega da etapa'}</label><div class="note">${fmt(x.due||s.due)}</div></div><div class="field grow"><label>Prazo final</label><div class="note">${fmt(t.due)}</div></div></div>
- <div class="field"><label>Status</label>${can?`<select class="inp" id="st_sel">${opts.map(o=>`<option ${o===x.status?'selected':''}>${o}</option>`).join('')}</select>`:`<div>${pill(v)}</div>`}</div>
+ ${x.returned&&x.status!=='Concluída'?`<div class="note" style="margin-bottom:12px;border-left:3px solid var(--orange);border-radius:0 10px 10px 0">Devolvido com ajustes: ${esc(x.returned)}</div>`:''}
+ <div class="field"><label>Status${x.kind==='aprovacao'?' · etapa de aprovação':''}</label>${can&&x.kind==='aprovacao'?`<div class="row wrap"><button class="btn" onclick="approveStep('${t.id}','${s.id}',${i})">Aprovar</button><button class="btn ghost" onclick="returnModal('${t.id}','${s.id}',${i})">Devolver com ajustes</button></div>`:can?`<select class="inp" id="st_sel">${opts.map(o=>`<option ${o===x.status?'selected':''}>${o}</option>`).join('')}</select>`:`<div>${pill(v)}</div>`}</div>
  ${x.status==='Bloqueado'?`<div class="note" style="margin-bottom:12px">Motivo do bloqueio: ${esc(x.reason)}</div>`:''}
  <div class="field"><label>Links</label><input class="inp" id="st_links" value="${esc(x.links)}" ${t.cancelled?'disabled':''}></div>
  <div class="field"><label>Observações gerais</label><textarea class="inp" id="st_notes" ${t.cancelled?'disabled':''}>${esc(x.notes)}</textarea></div>
  <button class="btn" onclick="saveStep('${t.id}','${s.id}',${i})" ${t.cancelled?'disabled':''}>Salvar</button>
  ${v==='Aguardando vez'?'<p class="note" style="margin-top:12px">Sua etapa é liberada quando o responsável anterior ou o setor anterior concluir.</p>':''}</div>`}
-function saveStep(tid,sid,i){const t=Tk(tid),s=t.stages.find(z=>z.id===sid),x=s.steps[i];x.links=val('st_links');x.notes=val('st_notes');
+function saveStep(tid,sid,i){const t=Tk(tid),s=t.stages.find(z=>z.id===sid),x=s.steps[i];x.links=val('st_links');x.notes=val('st_notes');if(x.status==='Concluída')delete x.returned;
  const ns=document.getElementById('st_sel')?.value;
  if(ns&&ns!==x.status){if(ns==='Bloqueado'){save();return openM(`<h2>Informar bloqueio</h2><p class="sub">A justificativa é obrigatória e o Gestor será notificado. O prazo continua correndo.</p><textarea class="inp" id="blk"></textarea><div class="row" style="margin-top:14px"><button class="btn" onclick="const r=val('blk');if(!r)return toast('Informe o motivo.');closeM();setStatus('${tid}','${sid}',${i},'Bloqueado',r)">Confirmar bloqueio</button><button class="btn ghost" onclick="closeM()">Cancelar</button></div>`)}
   return setStatus(tid,sid,i,ns)}
@@ -552,12 +630,12 @@ function taskModal(tid,back){BACK=back||null;const t=Tk(tid),p=P(t.project),hist
  const cl=[...hist].reverse().find(l=>l.action==='Tarefa criada'),created=cl?cl.at.slice(0,10):(t.created?fmt(t.created):'—');
  const ord=[...t.stages].sort((a,b)=>a.phase-b.phase),people=ord.flatMap(s=>s.steps.map((x,i)=>({s,x,i}))),pend=ord.filter(s=>!s.steps.length);
  const multi=t.stages.length>1;
- openM(`<div class="row" style="gap:12px;padding:12px 14px;border-radius:16px;background:var(--g1);margin-bottom:18px">${sectorIcon(p.sector)}<div class="grow"><span class="lbl">Projeto · ${p.sector}</span><div class="val" style="font-size:17px">${esc(p.name)}</div></div><div style="text-align:right"><span class="lbl">Prazo do projeto</span><div class="val">${fmt(p.due)}</div></div></div>
+ openM(`<div class="row" style="gap:12px;padding:12px 14px;border-radius:16px;background:var(--g1);margin-bottom:18px">${sectorIcon(p.sector)}<div class="grow"><span class="lbl">Projeto (tag) · ${p.sector}</span><div class="val" style="font-size:17px;display:flex;align-items:center;gap:8px">${tagDot(p)}${esc(p.name)}</div></div><div style="text-align:right"><span class="lbl">Tarefas da tag</span><div class="val">${(()=>{const q=tagStats(p);return q.done+' de '+q.n+' concluídas'})()}</div>${p.status==='pendente'?pill('Pendente'):''}</div></div>
  <div class="row between" style="align-items:flex-start"><div><span class="lbl">Tarefa</span><h2>${esc(t.name)}</h2></div><div class="row">${pill(tStatus(t))}${farolPill(tFarol(t))}</div></div>
  <div style="margin:14px 0"><span class="lbl">Descrição</span><div>${esc(t.desc)}</div></div>
- <div class="row wrap" style="gap:28px;margin-bottom:18px"><div><span class="lbl">Criador</span><div class="val">${esc(U(t.creator).name)}</div></div><div><span class="lbl">Data de criação</span><div class="val">${created}</div></div><div><span class="lbl">Prazo final</span><div class="val">${fmt(t.due)}</div></div></div>
+ <div class="row wrap" style="gap:28px;margin-bottom:18px">${t.rec?`<div><span class="lbl">Recorrência</span><div class="val">↻ ${esc(t.rec.freq)}</div></div>`:''}<div><span class="lbl">Criador</span><div class="val">${esc(U(t.creator).name)}</div></div><div><span class="lbl">Data de criação</span><div class="val">${created}</div></div><div><span class="lbl">Prazo final</span><div class="val">${fmt(t.due)}</div></div></div>
  <span class="lbl" style="margin-bottom:6px">Responsáveis</span>
- <div class="list" style="border:1px solid var(--line);border-radius:16px;padding:2px 14px">${people.map(({s,x,i})=>`<div class="it">${av(x.user)}<div class="grow"><div class="t">${esc(U(x.user).name)}${multi?` <span class="chip" style="margin-left:4px">${s.sector}</span>`:''}</div><div class="s">${x.desc?esc(x.desc):'Sem descrição da etapa'}</div><div class="s" style="color:var(--sub)">Prazo de encerramento: ${fmt(x.due||s.due)}</div>${x.reason?`<div class="s" style="color:var(--red)">Bloqueio: ${esc(x.reason)}</div>`:''}</div>${pill(stepView(t,s,i))}</div>`).join('')||'<div class="empty">Nenhum responsável definido.</div>'}
+ <div class="list" style="border:1px solid var(--line);border-radius:16px;padding:2px 14px">${people.map(({s,x,i})=>`<div class="it">${av(x.user)}<div class="grow"><div class="t">${esc(U(x.user).name)}${multi?` <span class="chip" style="margin-left:4px">${s.sector}</span>`:''}${x.kind==='aprovacao'?` <span class="chip" style="margin-left:4px">Aprovação${x.returns?' · devolveu '+x.returns+'x':''}</span>`:''}</div><div class="s">${x.desc?esc(x.desc):'Sem descrição da etapa'}</div><div class="s" style="color:var(--sub)">Prazo de encerramento: ${fmt(x.due||s.due)}</div>${x.reason?`<div class="s" style="color:var(--red)">Bloqueio: ${esc(x.reason)}</div>`:''}</div>${pill(s.part!=='Distribuída'?s.part:stepView(t,s,i))}</div>`).join('')||'<div class="empty">Nenhum responsável definido.</div>'}
  ${pend.map(s=>`<div class="it">${sectorIcon(s.sector)}<div class="grow"><div class="t">${s.sector}</div><div class="s">Equipe ainda não definida pelo Gestor do setor</div></div>${pill(s.part)}</div>`).join('')}</div>
  <h2 style="margin-top:18px">Histórico</h2><div class="list scroll" style="max-height:180px">${hist.map(l=>`<div class="it"><div class="grow"><div>${esc(l.action)}${l.detail?` — <span class="s">${esc(l.detail)}</span>`:''}</div><div class="s">${esc(U(l.by).name)} · ${l.at}</div></div></div>`).join('')||'<div class="empty">Sem eventos registrados.</div>'}</div>
  <div class="row" style="margin-top:16px"><button class="btn ghost" onclick="closeM()">${back?'← Voltar':'Fechar'}</button></div>`,true)}
@@ -565,7 +643,7 @@ function taskModal(tid,back){BACK=back||null;const t=Tk(tid),p=P(t.project),hist
 // ---------- Gestor ----------
 function gestHome(){const m=me(),sec=m.sector;
  const mine=S.tasks.filter(t=>involvesSector(t,sec)&&!tDone(t));
- const invites=[];S.tasks.forEach(t=>t.stages.forEach(s=>{if(s.sector===sec&&['Aguardando resposta','Reenviada'].includes(s.part)&&!t.cancelled)invites.push({t,s})}));
+ const invites=[];S.tasks.forEach(t=>t.stages.forEach(s=>{if(s.sector===sec&&['Aguardando resposta','Reenviada','Aguardando confirmação'].includes(s.part)&&!t.cancelled)invites.push({t,s})}));
  const toDistribute=[];S.tasks.forEach(t=>t.stages.forEach(s=>{if(s.sector===sec&&s.part==='Aceita')toDistribute.push({t,s})}));
  const adjust=[];S.tasks.filter(t=>t.creator===m.id&&!t.cancelled).forEach(t=>t.stages.forEach(s=>{if(s.part==='Ajustes solicitados')adjust.push({t,s})}));
  const dreq=S.deadlineReqs.filter(d=>d.status==='Pendente'&&Tk(d.task).creator===m.id);
@@ -573,29 +651,29 @@ function gestHome(){const m=me(),sec=m.sector;
  const risk=mine.filter(t=>tFarol(t)==='vermelho').length;
  const alerts=mine.filter(t=>match(t.name)).map(t=>({t,s:t.stages.find(z=>z.sector===sec)})).map(x=>({...x,f:stFarol(x.t,x.s)})).filter(x=>x.f==='vermelho'||x.f==='amarelo').sort((a,b)=>(a.f===b.f?0:a.f==='vermelho'?-1:1)||a.s.due.localeCompare(b.s.due));
  const stg=t=>t.stages.find(z=>z.sector===sec)||t.stages[0];KPI_SETS={g_act:mine.map(t=>({t,s:stg(t)})),g_blk:blocks,g_risk:mine.filter(t=>tFarol(t)==='vermelho').map(t=>({t,s:stg(t)})),g_dec:[...invites,...toDistribute,...adjust,...dreq.map(d=>{const t=Tk(d.task);return {t,s:t.stages.find(z=>z.id===d.stage)}})]};
- const __k=kpis([['Tarefas ativas do setor',mine.length,'Em execução ou aguardando',{k:'blue',e:'📋',click:"openKpi('g_act')"}],['Bloqueadas',blocks.length,'Funcionários impedidos',{k:'red',e:'⛔',alert:1,ok:'Nenhum bloqueio',click:"openKpi('g_blk')"}],['Em risco',risk,'Farol vermelho',{k:'orange',e:'⚠️',alert:1,ok:'Nenhuma em risco',click:"openKpi('g_risk')"}],['Decisões pendentes',invites.length+adjust.length+dreq.length+toDistribute.length,'Aceites, ajustes e prazos',{k:'violet',e:'📥',alert:1,ok:'Nada aguardando você',click:"openKpi('g_dec')"}]]);if(VIEW!=='approvals')return __k+sectorView();return `<div class="grid g2" style="align-items:start">${projApprovalsCard()}
- <div class="card hero"><h2>Solicitações de participação</h2><p class="sub">Outros setores pedindo a participação de ${sec}.</p>${invites.length?`<div class="list">${invites.map(({t,s})=>`<div class="it">${sectorIcon(P(t.project).sector)}<div class="grow"><div class="t">${esc(t.name)}</div><div class="s">${esc(U(t.creator).name)} · ${esc(P(t.project).name)} · etapa ${s.phase} · entrega ${fmtS(s.due)}</div>${s.desc?`<div class="s" style="color:var(--sub)">${esc(s.desc)}</div>`:''}</div><button class="btn sm" onclick="distModal('${t.id}','${s.id}')">Aceitar</button><button class="btn ghost sm" onclick="adjustModal('${t.id}','${s.id}')">Ajustes</button></div>`).join('')}</div>`:'<div class="empty">Nenhuma solicitação aguardando.</div>'}
+ const __k=kpis([['Tarefas ativas do setor',mine.length,'Em execução ou aguardando',{k:'blue',e:'📋',click:"openKpi('g_act')"}],['Bloqueadas',blocks.length,'Funcionários impedidos',{k:'red',e:'⛔',alert:1,ok:'Nenhum bloqueio',click:"openKpi('g_blk')"}],['Em risco',risk,'Farol vermelho',{k:'orange',e:'⚠️',alert:1,ok:'Nenhuma em risco',click:"openKpi('g_risk')"}],['Decisões pendentes',invites.length+adjust.length+dreq.length+toDistribute.length,'Aceites, ajustes e prazos',{k:'violet',e:'📥',alert:1,ok:'Nada aguardando você',click:"openKpi('g_dec')"}]]);if(VIEW!=='approvals')return __k+sectorView();return `<div class="grid g2" style="align-items:start">${tagApprovalsCard()}
+ <div class="card hero"><h2>Solicitações de participação</h2><p class="sub">Outros setores pedindo a participação de ${sec}.</p>${invites.length?`<div class="list">${invites.map(({t,s})=>`<div class="it">${sectorIcon(P(t.project).sector)}<div class="grow"><div class="t">${esc(t.name)}</div><div class="s">${esc(U(t.creator).name)} · ${esc(P(t.project).name)} · etapa ${s.phase} · entrega ${fmtS(s.due)}</div>${s.desc?`<div class="s" style="color:var(--sub)">${esc(s.desc)}</div>`:''}${s.part==='Aguardando confirmação'?`<div class="s" style="color:var(--violet)">Pessoa sugerida: ${s.steps.map(x=>esc(U(x.user).name)).join(', ')}</div>`:''}</div>${s.part==='Aguardando confirmação'?`<button class="btn sm" onclick="confirmStage('${t.id}','${s.id}')">Confirmar</button><button class="btn ghost sm" onclick="distModal('${t.id}','${s.id}')">Trocar pessoa</button>`:`<button class="btn sm" onclick="distModal('${t.id}','${s.id}')">Aceitar</button>`}<button class="btn ghost sm" onclick="adjustModal('${t.id}','${s.id}')">Ajustes</button></div>`).join('')}</div>`:'<div class="empty">Nenhuma solicitação aguardando.</div>'}
  ${toDistribute.map(({t,s})=>`<div class="it row"><div class="grow">${esc(t.name)} · aceita, aguardando distribuição</div><button class="btn sm" onclick="distModal('${t.id}','${s.id}')">Distribuir</button></div>`).join('')}</div>
  <div class="card"><h2>Ajustes pedidos nas suas tarefas</h2><p class="sub">Negociação direta, sem arbitragem do CEO.</p>${adjust.length?`<div class="list">${adjust.map(({t,s})=>`<div class="it">${sectorIcon(s.sector)}<div class="grow"><div class="t">${esc(t.name)} · ${s.sector}</div><div class="s">${esc(s.partNote)}</div></div><button class="btn sm" onclick="resendModal('${t.id}','${s.id}')">Revisar e reenviar</button></div>`).join('')}</div>`:'<div class="empty">Nenhum ajuste pendente.</div>'}</div>
  <div class="card"><h2>Pedidos de alteração de prazo</h2><p class="sub">O prazo original vale até a sua decisão.</p>${dreq.length?`<div class="list">${dreq.map(d=>{const t=Tk(d.task),s=t.stages.find(z=>z.id===d.stage);return `<div class="it">${sectorIcon(s.sector)}<div class="grow"><div class="t">${esc(t.name)} · ${s.sector}</div><div class="s">${fmtS(d.from)} → ${fmtS(d.to)} · ${esc(d.reason)}${d.to>t.due?' · ⚠ ultrapassa o prazo final':''}</div></div><button class="btn sm" onclick="decideDeadline('${d.id}',true)">Aprovar</button><button class="btn ghost sm" onclick="decideDeadline('${d.id}',false)">Rejeitar</button></div>`}).join('')}</div>`:'<div class="empty">Nenhum pedido.</div>'}</div></div>`}
 
 function distModal(tid,sid){const t=Tk(tid),s=t.stages.find(z=>z.id===sid),team=S.users.filter(u=>u.sector===s.sector&&u.status==='ativo'&&['func','gestor'].includes(u.role));
  openM(`<h2>Distribuir equipe · ${s.sector}</h2><p class="sub">${esc(t.name)} — defina os responsáveis em ordem de execução e a entrega da etapa.</p>
- <div id="dist_rows">${(s.steps.length?s.steps:[{user:team[0]?.id}]).map(x=>respRow(team,x.user,x.desc,x.due)).join('')}</div>
+ <div id="dist_rows">${(s.steps.length?s.steps:[{user:team[0]?.id}]).map(x=>respRow(team,x.user,x.desc,x.due,x.kind)).join('')}</div>
  <button class="btn ghost sm" onclick="addResp('dist_rows','${s.sector}')">+ Adicionar próximo responsável</button>
  <div class="field" style="margin-top:14px"><label>Entrega da etapa (prazo final da tarefa: ${fmt(t.due)})</label><input type="date" class="inp" id="dist_due" value="${s.due}" max="${t.due}"></div>
  <div class="row"><button class="btn" onclick="distribute('${tid}','${sid}')">Aceitar e distribuir</button><button class="btn ghost" onclick="closeM()">Cancelar</button></div>`)}
-function respRow(team,sel,desc='',due=''){return `<div class="resp" style="margin-bottom:12px;padding:10px;border:1px solid var(--line);border-radius:14px;background:var(--card)"><div class="row"><span class="chip rn"></span><select class="inp">${team.map(u=>`<option value="${u.id}" ${u.id===sel?'selected':''}>${esc(u.name)}${u.role==='gestor'?' (Gestor)':''}</option>`).join('')}</select><button class="btn ghost sm" onclick="const b=this.closest('.resp').parentNode;this.closest('.resp').remove();numberResp(b)">✕</button></div>
- <input class="inp" style="margin-top:8px" maxlength="200" placeholder="Descrição da atividade deste responsável (opcional)" value="${esc(desc)}"><label class="field rdue" style="margin:8px 0 0"><span style="font-size:11px;color:var(--muted)">Prazo de encerramento deste responsável *</span><input type="date" class="inp rd" value="${esc(due)}"></label></div>`}
+function respRow(team,sel,desc='',due='',kind){return `<div class="resp" style="margin-bottom:12px;padding:10px;border:1px solid var(--line);border-radius:14px;background:var(--card)"><div class="row"><span class="chip rn"></span><select class="inp">${team.map(u=>`<option value="${u.id}" ${u.id===sel?'selected':''}>${esc(u.name)}${u.role==='gestor'?' (Gestor)':''}</option>`).join('')}</select><button class="btn ghost sm" onclick="const b=this.closest('.resp').parentNode;this.closest('.resp').remove();numberResp(b)">✕</button></div>
+ <input class="inp" style="margin-top:8px" maxlength="200" placeholder="Descrição da atividade deste responsável (opcional)" value="${esc(desc)}"><label class="field rdue" style="margin:8px 0 0"><span style="font-size:11px;color:var(--muted)">Prazo de encerramento deste responsável *</span><input type="date" class="inp rd" value="${esc(due)}"></label><label class="rapr row" style="gap:8px;margin-top:8px;font-size:12px;color:var(--sub);cursor:pointer"><input type="checkbox" class="ra" ${kind==='aprovacao'?'checked':''} style="width:16px;height:16px;accent-color:var(--acc)"> Etapa de aprovação (pode aprovar ou devolver com ajustes)</label></div>`}
 function numberResp(){}
 function addResp(boxId,sector){const box=document.getElementById(boxId),team=S.users.filter(u=>u.sector===sector&&u.status==='ativo'&&['func','gestor'].includes(u.role)),used=[...box.querySelectorAll('.resp select')].map(x=>x.value);
- box.insertAdjacentHTML('beforeend',respRow(team,(team.find(u=>!used.includes(u.id))||team[0])?.id));numberResp(box);box.querySelector('.resp:last-child input').focus()}
-const readResp=box=>{const rows=[...document.querySelectorAll(box+' .resp')];return rows.map(r=>({user:r.querySelector('select').value,desc:r.querySelector('input').value.trim(),due:rows.length>1?r.querySelector('.rd').value:''}))};
+ box.insertAdjacentHTML('beforeend',respRow(team,(team.find(u=>u.id!==used[used.length-1]&&!used.includes(u.id))||team.find(u=>u.id!==used[used.length-1])||team[0])?.id));numberResp(box);box.querySelector('.resp:last-child input').focus()}
+const readResp=box=>{const rows=[...document.querySelectorAll(box+' .resp')];return rows.map((r,k)=>({user:r.querySelector('select').value,desc:r.querySelector('input').value.trim(),due:rows.length>1?r.querySelector('.rd').value:'',kind:k>0&&r.querySelector('.ra')?.checked?'aprovacao':undefined}))};
 function checkStepDues(rs,limit){if(rs.length<2)return '';if(rs.some(r=>!r.due))return 'Informe o prazo de encerramento de cada responsável.';if(rs.some(r=>r.due>limit))return 'O prazo de um responsável passa do prazo da etapa ('+fmt(limit)+').';for(let k=1;k<rs.length;k++)if(rs[k].due<rs[k-1].due)return 'Os prazos devem seguir a ordem de execução: '+U(rs[k].user).name+' não pode encerrar antes de '+U(rs[k-1].user).name+'.';return ''}
 function distribute(tid,sid){const t=Tk(tid),s=t.stages.find(z=>z.id===sid),rs=readResp('#dist_rows'),ids=rs.map(r=>r.user),due=val('dist_due');
- if(!ids.length)return toast('Defina ao menos um responsável.');if(new Set(ids).size!==ids.length)return toast('Responsável repetido.');if(due>t.due)return toast('A etapa não pode passar do prazo final.');{const er=checkStepDues(rs,due);if(er)return toast(er)}
+ if(!ids.length)return toast('Defina ao menos um responsável.');{const k=consecDup(ids);if(k>0)return toast(`${U(ids[k]).name} aparece duas vezes seguidas. Junte as duas etapas em uma.`)}if(due>t.due)return toast('A etapa não pode passar do prazo final.');{const er=checkStepDues(rs,due);if(er)return toast(er)}
  if(stageStarted(s))return toast('Etapa já iniciada: alteração não permitida.');
- const prev=s.part;s.part='Distribuída';s.partNote='';s.due=due;s.steps=rs.map(r=>({user:r.user,desc:r.desc,due:r.due||undefined,status:'Não iniciada',reason:'',links:'',notes:''}));
+ const prev=s.part;s.part='Distribuída';s.partNote='';s.due=due;s.steps=rs.map(r=>({user:r.user,desc:r.desc,kind:r.kind,due:r.due||undefined,status:'Não iniciada',reason:'',links:'',notes:''}));
  log('Participação',prev==='Distribuída'?'Responsáveis alterados':'Participação aceita e distribuída',`${t.code} ${t.name}`,`${s.sector}: ${ids.map(i=>U(i).name).join(' → ')}`);
  notify([t.creator,...ids],`${s.sector} distribuiu sua etapa em "${t.name}".`);save();closeM();render();toast('Etapa distribuída')}
 function adjustModal(tid,sid){openM(`<h2>Solicitar ajustes</h2><p class="sub">Não é recusa definitiva: o Gestor criador revisa e reenvia.</p><textarea class="inp" id="adj"></textarea><div class="row" style="margin-top:14px"><button class="btn" onclick="reqAdjust('${tid}','${sid}')">Enviar</button><button class="btn ghost" onclick="closeM()">Cancelar</button></div>`)}
@@ -614,39 +692,42 @@ UI.sf={...SF0};
 function sfSet(k,v){UI.sf[k]=v;renderBody()}
 function sfAll(c){S.projects.forEach(p=>UI.collapsed[p.id]=c);renderBody()}
 function sectorView(){const m=me(),sec=m.sector,F=UI.sf;
- const allP=S.projects.filter(p=>p.creator===m.id||p.sector===sec||S.tasks.some(t=>t.project===p.id&&involvesSector(t,sec)));
+ const allP=S.projects.filter(p=>p.status!=='recusada'&&(p.sector===sec||S.tasks.some(t=>t.project===p.id&&involvesSector(t,sec))));
  const taskF=['status','farol','resp','prazo'].some(k=>F[k]!==SF0[k]);
  const tf=t=>{const n=daysTo(t.due);return (F.status==='Todos'||tStatus(t)===F.status)&&(F.farol==='Todos'||tFarol(t)===F.farol)
   &&(F.resp==='Todos'||t.stages.some(s=>s.sector===sec&&s.steps.some(x=>x.user===F.resp)))
   &&(F.prazo==='Todos'||(F.prazo==='atrasadas'&&n<0&&!tDone(t))||(F.prazo==='hoje'&&n===0)||(F.prazo==='7'&&n>=0&&n<=7)||(F.prazo==='30'&&n>=0&&n<=30))};
- const projs=allP.filter(p=>(F.rel==='Todos'||(F.rel==='meus'?p.creator===m.id:p.creator!==m.id))&&(F.project==='Todos'||p.id===F.project)&&(F.arch==='sim'||!p.archived));
+ const projs=allP.filter(p=>(F.rel==='Todos'||(F.rel==='meus'?p.sector===sec:p.sector!==sec))&&(F.project==='Todos'||p.id===F.project)&&(F.arch==='sim'||!p.archived));
  let shown=0,total=0;
- const rows=projs.map(p=>{const all=S.tasks.filter(t=>t.project===p.id&&(p.creator===m.id||involvesSector(t,sec))&&match(t.name,p.name));const ts=all.filter(tf);total+=all.length;shown+=ts.length;
+ const rows=projs.map(p=>{const all=S.tasks.filter(t=>t.project===p.id&&(p.sector===sec||involvesSector(t,sec))&&match(t.name,p.name));if(!all.length&&p.geral)return'';const ts=all.filter(tf);total+=all.length;shown+=ts.length;
   if((UI.q||taskF)&&!ts.length&&!(UI.q&&!taskF&&match(p.name)))return'';const c=UI.collapsed[p.id],ps=pStatus(p);
-  return `<tr class="proj"><td><button class="btn ghost sm" style="padding:2px 8px" onclick="UI.collapsed['${p.id}']=!UI.collapsed['${p.id}'];renderBody()">${c?'▸':'▾'}</button> ${esc(p.name)} ${p.rec?'<span class="chip">↻ '+esc(p.rec.freq)+'</span>':''}</td><td>${p.creator===m.id?'Criado por você':'Participação do setor'}</td><td>${p.sector} · ${fmtS(p.due)}</td><td>${ts.length} tarefas</td><td>${pill(ps)}</td><td>${p.creator===m.id?`<button class="btn ghost sm" onclick="projMenu('${p.id}')">${ic('dots',16)}</button>`:''}</td></tr>`+
-  (c?'':ts.map(t=>`<tr><td style="padding-left:40px">↳ ${esc(t.name)}</td><td>${esc(flowLabel(t))}</td><td>${fmtS(t.due)}</td><td>${farolPill(tFarol(t))}</td><td>${pill(tStatus(t))}</td><td><button class="btn ghost sm" onclick="taskMenu('${t.id}')">${ic('dots',16)}</button></td></tr>`).join(''))}).join('');
+  return `<tr class="proj"><td><button class="btn ghost sm" style="padding:2px 8px" onclick="UI.collapsed['${p.id}']=!UI.collapsed['${p.id}'];renderBody()">${c?'▸':'▾'}</button> ${tagDot(p)} ${esc(p.name)}</td><td>${p.sector===sec?'Tag do setor':'Participação do setor'}</td><td>${p.sector}</td><td>${(()=>{const q=tagStats(p);return q.done+' de '+q.n+' concluídas'})()}</td><td>${p.status==='pendente'||p.archived?pill(tagState(p)):''}</td><td>${m.role==='gestor'&&p.sector===sec&&!p.geral&&p.status==='aprovada'?`<button class="btn ghost sm" onclick="tagMenu('${p.id}')">${ic('dots',16)}</button>`:''}</td></tr>`+
+  (c?'':ts.map(t=>`<tr><td style="padding-left:40px">↳ ${esc(t.name)}${t.rec?' <span class="chip">↻ '+esc(t.rec.freq)+'</span>':''}</td><td>${esc(flowLabel(t))}</td><td>${fmtS(t.due)}</td><td>${farolPill(tFarol(t))}</td><td>${pill(tStatus(t))}</td><td><button class="btn ghost sm" onclick="taskMenu('${t.id}')">${ic('dots',16)}</button></td></tr>`).join(''))}).join('');
  const team=S.users.filter(u=>u.sector===sec&&u.status==='ativo'&&['func','gestor'].includes(u.role));
  const sel=(k,opts,label)=>`<label class="field" style="margin:0;min-width:140px;flex:1"><span style="font-size:11px;color:var(--muted)">${label}</span><select class="inp" onchange="sfSet('${k}',this.value)">${opts.map(([v,l])=>`<option value="${esc(v)}" ${F[k]===v?'selected':''}>${esc(l)}</option>`).join('')}</select></label>`;
  const active=Object.keys(SF0).filter(k=>F[k]!==SF0[k]).length;
- return `<div class="card" data-exp="setor"><div class="row between wrap" style="gap:12px"><div><h2>Projetos e tarefas do setor</h2><p class="sub" style="margin:0">Projetos criados por você e com participação em outros setores.</p></div><div class="row"><button class="btn ghost sm" onclick="sfAll(false)">Expandir tudo</button><button class="btn ghost sm" onclick="sfAll(true)">Recolher tudo</button>${expBtn("exportCard('setor','Projetos e tarefas do setor')")}</div></div>
+ return `<div class="card" data-exp="setor"><div class="row between wrap" style="gap:12px"><div><h2>Projetos e tarefas do setor</h2><p class="sub" style="margin:0">Tarefas do setor agrupadas por projeto (tag), incluindo participações em outros setores.</p></div><div class="row"><button class="btn ghost sm" onclick="sfAll(false)">Expandir tudo</button><button class="btn ghost sm" onclick="sfAll(true)">Recolher tudo</button>${expBtn("exportCard('setor','Projetos e tarefas do setor')")}</div></div>
  <div class="row wrap" style="align-items:flex-end;gap:10px;margin:16px 0 12px;padding:14px;border-radius:16px;background:var(--g1)">
- ${sel('rel',[['Todos','Todos'],['meus','Criados por você'],['part','Participação do setor']],'Relação')}
+ ${sel('rel',[['Todos','Todos'],['meus','Tags do setor'],['part','Participação em outros setores']],'Relação')}
  ${sel('project',[['Todos','Todos os projetos'],...allP.map(p=>[p.id,p.name])],'Projeto')}
  ${sel('status',[['Todos','Todos os status'],...['Não iniciada','Em andamento','Bloqueada','Aguardando acordo','Concluída','Cancelada'].map(s=>[s,s])],'Status da tarefa')}
  ${sel('farol',[['Todos','Todos'],['vermelho','Crítico'],['amarelo','Prazo próximo'],['verde','No prazo'],['neutro','Finalizada']],'Farol')}
  ${sel('resp',[['Todos','Todos'],...team.map(u=>[u.id,u.name+(u.id===m.id?' (você)':'')])],'Responsável')}
  ${sel('prazo',[['Todos','Qualquer prazo'],['atrasadas','Atrasadas'],['hoje','Vence hoje'],['7','Próximos 7 dias'],['30','Próximos 30 dias']],'Prazo')}
- ${sel('arch',[['nao','Ocultar arquivados'],['sim','Mostrar arquivados']],'Arquivados')}
+ ${sel('arch',[['nao','Ocultar arquivadas'],['sim','Mostrar arquivadas']],'Tags arquivadas')}
  <button class="btn ghost" ${active?'':'disabled'} onclick="UI.sf={...SF0};renderBody()">Limpar filtros${active?` (${active})`:''}</button></div>
- <p class="s" style="color:var(--muted);margin:0 0 6px">${shown===total?`${total} tarefa(s)`:`${shown} de ${total} tarefa(s)`} em ${rows?rows.split('class="proj"').length-1:0} projeto(s)</p><div style="overflow:auto"><table><tr><th>Projeto / Tarefa</th><th>Relação / Fluxo</th><th>Setor / Prazo</th><th>Tarefas / Farol</th><th>Status</th><th></th></tr>${rows||'<tr><td colspan=6 class="empty">Nenhum projeto ou tarefa com estes filtros.</td></tr>'}</table></div></div>`}
+ <p class="s" style="color:var(--muted);margin:0 0 6px">${shown===total?`${total} tarefa(s)`:`${shown} de ${total} tarefa(s)`} em ${rows?rows.split('class="proj"').length-1:0} projeto(s)</p><div style="overflow:auto"><table><tr><th>Projeto / Tarefa</th><th>Relação / Fluxo</th><th>Setor / Prazo</th><th>Andamento / Farol</th><th>Status</th><th></th></tr>${rows||'<tr><td colspan=6 class="empty">Nenhum projeto ou tarefa com estes filtros.</td></tr>'}</table></div></div>`}
 function menu(title,items){openM(`<h2>${esc(title)}</h2><p class="sub">Opções indisponíveis ficam desabilitadas.</p><div class="list">${items.map(([l,fn,ok,why])=>`<div class="it"><div class="grow"><div class="t">${l}</div>${!ok&&why?`<div class="s">${why}</div>`:''}</div><button class="btn sm" ${ok?'':'disabled'} onclick="${fn}">Selecionar</button></div>`).join('')}</div><div class="row" style="margin-top:14px"><button class="btn ghost" onclick="closeM()">Fechar</button></div>`)}
-function taskMenu(tid){const t=Tk(tid),m=me(),creator=t.creator===m.id,my=t.stages.find(s=>s.sector===m.sector),act=!tDone(t),pc=P(t.project).concluded;
+function taskMenu(tid){const t=Tk(tid),m=me(),creator=t.creator===m.id,my=t.stages.find(s=>s.sector===m.sector),act=!tDone(t),pc=false;
  menu(t.name,[['Ver detalhes e histórico',`taskModal('${tid}')`,true],
   ['Gerenciar setores e etapas',`sectorsModal('${tid}')`,creator&&act&&!pc,'Somente o Gestor criador, em tarefa ativa.'],
   ['Alterar responsáveis do meu setor',`closeM();distModal('${tid}','${my?.id}')`,!!my&&act&&my.part==='Distribuída'&&!stageStarted(my),'Somente antes da etapa do seu setor começar.'],
   ['Solicitar alteração de prazo da etapa',`deadlineModal('${tid}')`,!!my&&!creator&&act&&!stageDone(my),'Para Gestores participantes.'],
   ['Alterar prazo final',`dueModal('${tid}')`,creator&&act,'Somente o Gestor criador.'],
-  ['Cancelar tarefa',`cancelModal('${tid}')`,creator&&act,'Somente o Gestor criador, em tarefa ativa.']])}
+  ['Alterar projeto (tag)',`retagModal('${tid}')`,creator&&act,'Somente o criador, em tarefa ativa.'],
+  ['Gerar próxima ocorrência',`genTaskOcc('${tid}')`,creator&&!!t.rec,'Somente tarefas recorrentes, pelo criador.'],
+  ['Encerrar recorrência',`stopTaskRec('${tid}')`,creator&&!!t.rec,'Somente tarefas recorrentes, pelo criador.'],
+  ['Cancelar tarefa',`cancelModal('${tid}')`,creator&&act,'Somente o criador, em tarefa ativa.']])}
 function deadlineModal(tid){const t=Tk(tid),s=t.stages.find(z=>z.sector===me().sector);openM(`<h2>Solicitar novo prazo · ${s.sector}</h2><p class="sub">O prazo atual (${fmt(s.due)}) continua valendo até a decisão do Gestor criador.</p>
  <div class="field"><label>Nova data</label><input type="date" class="inp" id="dl_to"></div><div class="field"><label>Justificativa</label><textarea class="inp" id="dl_r"></textarea></div>
  <div class="row"><button class="btn" onclick="reqDeadline('${tid}','${s.id}')">Enviar solicitação</button><button class="btn ghost" onclick="closeM()">Cancelar</button></div>`)}
@@ -669,68 +750,36 @@ function addSector(tid){const t=Tk(tid),sec=val('as_sec'),ph=+val('as_ph'),r=val
  t.stages.push({id:uid(),sector:sec,phase:ph,part:'Aguardando resposta',steps:[],due:val('as_due'),partNote:''});log('Participação','Setor adicionado',`${t.code} ${t.name}`,`${sec}: ${r}`);notify([gestorOf(sec)?.id],`Nova solicitação de participação em "${t.name}".`);save();closeM();render();toast('Solicitação enviada a '+sec)}
 function removeSector(tid,sid,r){if(r===undefined)return openM(`<h2>Remover setor</h2><p class="sub">A justificativa é obrigatória e o Gestor do setor será avisado.</p><textarea class="inp" id="rm_r"></textarea><div class="row" style="margin-top:14px"><button class="btn" onclick="removeSector('${tid}','${sid}',val('rm_r'))">Remover setor</button><button class="btn ghost" onclick="sectorsModal('${tid}')">Voltar</button></div>`);if(!r)return toast('Informe a justificativa.');const t=Tk(tid),s=t.stages.find(z=>z.id===sid);if(stageStarted(s))return toast('Etapa em execução é protegida.');
  t.stages=t.stages.filter(z=>z.id!==sid);log('Participação','Setor removido',`${t.code} ${t.name}`,`${s.sector}: ${r}`);notify([gestorOf(s.sector)?.id],`${s.sector} foi removido de "${t.name}".`);save();sectorsModal(tid);render()}
-function projMenu(pid){const p=P(pid),ps=pStatus(p);menu(p.name,[
- ['Concluir projeto',`concludeProj('${pid}')`,ps==='Pronto para concluir','Disponível quando todas as tarefas estão concluídas ou canceladas.'],
- ['Reabrir projeto',`reopenModal('${pid}')`,ps==='Concluído','Somente projetos concluídos e não arquivados.'],
- ['Arquivar projeto',`archive('${pid}',true)`,ps==='Concluído','Somente projetos concluídos.'],
- ['Desarquivar projeto',`archive('${pid}',false)`,ps==='Arquivado'],
- ['Gerar próxima ocorrência',`genOcc('${pid}')`,!!p.rec&&!p.archived,'Somente projetos recorrentes.'],
- ['Pausar / encerrar recorrência',`stopRec('${pid}')`,!!p.rec,'Somente projetos recorrentes.']])}
-function concludeProj(pid){const p=P(pid);ask('Concluir "'+p.name+'"? O projeto ficará somente leitura até ser reaberto.',()=>{p.concluded=true;p.cycles++;log('Projeto','Projeto concluído',p.name,'Ciclo '+p.cycles);save();closeM();render();toast('Projeto concluído')},'Concluir projeto')}
-function reopenModal(pid){openM(`<h2>Reabrir projeto</h2><p class="sub">Tarefas concluídas permanecem concluídas. Correções exigem novas tarefas.</p><textarea class="inp" id="ro" placeholder="Justificativa obrigatória"></textarea><div class="row" style="margin-top:14px"><button class="btn" onclick="reopen('${pid}')">Confirmar reabertura</button><button class="btn ghost" onclick="closeM()">Cancelar</button></div>`)}
-function reopen(pid){const r=val('ro');if(!r)return toast('Justificativa obrigatória.');const p=P(pid);p.concluded=false;log('Projeto','Projeto reaberto',p.name,r);save();closeM();render()}
-function archive(pid,on){const p=P(pid);p.archived=on;log('Projeto',on?'Projeto arquivado':'Projeto desarquivado',p.name);save();closeM();render()}
-function stopRec(pid){const p=P(pid);log('Projeto','Recorrência encerrada',p.name,p.rec.freq);p.rec=null;save();closeM();render()}
-const FREQ={Semanal:7,Quinzenal:14,Mensal:30,Bimestral:61,Trimestral:91,Semestral:182,Anual:365};
-function genOcc(pid){const p=P(pid),k=FREQ[p.rec.freq]||30,sh=d=>{const x=new Date(d+'T00:00');x.setDate(x.getDate()+k);return iso(x)};
- const n={...p,id:'p'+uid(),name:p.name.replace(/ \(#\d+\)$/,'')+' (#'+((p.occ||1)+1)+')',due:sh(p.due),concluded:false,archived:false,cycles:0,occ:(p.occ||1)+1,draft:p.rec.mode==='rascunho'};
- p.rec=null;S.projects.push(n);
- if(n.rec.struct==='tarefas')S.tasks.filter(t=>t.project===pid&&!t.cancelled).forEach(t=>{S.tasks.push({...t,id:'t'+uid(),code:'TK-'+(S.seq++),project:n.id,due:sh(t.due),cancelled:false,
-  stages:t.stages.map(s=>({id:uid(),sector:s.sector,phase:s.phase,due:sh(s.due),partNote:'',part:s.sector===p.sector?'Distribuída':'Aguardando resposta',steps:s.sector===p.sector?s.steps.map(x=>({user:x.user,desc:x.desc,status:'Não iniciada',reason:'',links:'',notes:''})):[]}))});
-  t.stages.filter(s=>s.sector!==p.sector).forEach(s=>notify([gestorOf(s.sector)?.id],`Nova ocorrência de "${n.name}" requer seu aceite.`))});
- log('Projeto','Ocorrência gerada',n.name,n.draft?'Rascunho para revisão':'Automática');save();closeM();render();toast('Ocorrência criada: '+n.name)}
-
-function createView(){const m=me(),projs=S.projects.filter(p=>(m.role==='func'?p.sector===m.sector:p.creator===m.id)&&!p.approval&&!p.concluded&&!p.archived),others=S.sectors.filter(s=>s!==m.sector&&gestorOf(s));
- const team=S.users.filter(u=>u.sector===m.sector&&u.status==='ativo'&&['func','gestor'].includes(u.role));
- return `<div class="grid g2"><div class="card hero"><h2>Criar projeto</h2><p class="sub">Dados essenciais. Ações avançadas ficam no menu ··· depois.</p>
- <div class="field"><label>Nome do projeto *</label><input class="inp" id="np_name" placeholder="Ex.: Campanha de novembro"></div>
- <div class="row"><div class="field grow"><label>Setor responsável</label><input class="inp" value="${m.sector}" disabled></div><div class="field grow"><label>Prioridade</label><select class="inp" id="np_pri"><option>Alta</option><option selected>Média</option><option>Baixa</option></select></div></div>
- <div class="field"><label>Descrição / objetivo *</label><textarea class="inp" id="np_desc"></textarea></div>
- <div class="field"><label>Prazo final *</label><input type="date" class="inp" id="np_due" min="${iso(T0)}"></div>
- <div class="field"><label>Projeto recorrente?</label><select class="inp" id="np_rec" onchange="document.getElementById('recbox').style.display=this.value==='sim'?'block':'none'"><option value="nao">Não, projeto único</option><option value="sim">Sim, projeto recorrente</option></select></div>
- <div id="recbox" style="display:none"><div class="row"><div class="field grow"><label>Frequência</label><select class="inp" id="np_freq">${Object.keys(FREQ).map(f=>`<option ${f==='Mensal'?'selected':''}>${f}</option>`).join('')}</select></div><div class="field grow"><label>Repetir</label><select class="inp" id="np_struct"><option value="tarefas">Projeto + tarefas modelo</option><option value="projeto">Somente projeto</option></select></div></div>
- <div class="field"><label>Geração</label><select class="inp" id="np_mode"><option value="rascunho">Rascunho para revisão</option><option value="auto">Automática</option></select></div><p class="note">Cada ocorrência é um projeto independente. Participações de outros setores exigem novo aceite.</p></div>
- <div class="row"><button class="btn" onclick="createProj(false)">Salvar projeto</button><button class="btn ghost" onclick="createProj(true)">Salvar e criar tarefa</button></div></div>
+function createView(){const m=me(),others=S.sectors.filter(s=>s!==m.sector&&gestorOf(s));
+ const team=S.users.filter(u=>u.sector===m.sector&&u.status==='ativo'&&['func','gestor'].includes(u.role)),tl=sectorTags(m.sector).filter(p=>p.status==='aprovada'||p.creator===m.id);
+ return `<div class="grid g2" style="align-items:start">${createTagView()}
  <div class="card info" id="taskform"><h2>Criar tarefa</h2><p class="sub">Por padrão a tarefa é do seu setor. Envolva outros setores só se necessário.</p>
  <span class="lbl">1. Dados da tarefa</span>
- <div class="field"><label>Projeto *</label><select class="inp" id="nt_proj">${projs.map(p=>`<option value="${p.id}" ${UI.newProj===p.id?'selected':''}>${esc(p.name)} · até ${fmtS(p.due)}</option>`).join('')||'<option value="">Crie um projeto primeiro</option>'}</select></div>
+ <div class="field"><label for="nt_tag">Projeto (tag)</label><input class="inp" id="nt_tag" list="nt_tag_l" placeholder="Escolha ou digite. Vazio = Geral" value="${esc(UI.newTag||'')}" oninput="tagSuggest(this,'nt_tag_sug')"><datalist id="nt_tag_l">${tl.map(p=>`<option value="${esc(p.name)}">${p.status==='pendente'?'pendente':''}</option>`).join('')}</datalist><div id="nt_tag_sug" class="row wrap" style="gap:6px;margin-top:6px"></div>${m.role==='func'?'<span class="s" style="color:var(--muted);font-size:11px">Uma tag nova fica pendente até o Gestor aprovar. A tarefa é criada normalmente.</span>':''}</div>
  <div class="field"><label>Nome da tarefa *</label><input class="inp" id="nt_name"></div>
  <div class="field"><label>Descrição / entrega esperada *</label><textarea class="inp" id="nt_desc"></textarea></div>
  <div class="row"><div class="field grow"><label>Prazo final *</label><input type="date" class="inp" id="nt_due" min="${iso(T0)}"></div><div class="field grow"><label>Etapa do meu setor</label><input type="number" class="inp" id="nt_ph" min="1" max="99" step="1" value="1" title="Número da etapa"></div></div>
+ <div class="field"><label for="nt_rec">Repetir tarefa</label><select class="inp" id="nt_rec"><option value="">Não se repete</option>${Object.keys(FREQ).map(f=>`<option>${f}</option>`).join('')}</select></div>
  <span class="lbl">2. Responsáveis de ${m.sector} (em ordem)</span><div id="nt_resp" style="margin-top:6px">${respRow(team,team.find(u=>u.role==='func')?.id)}</div>
  <button class="btn ghost sm" onclick="addResp('nt_resp','${m.sector}')">+ Adicionar próximo responsável</button>
+ <p class="s" style="color:var(--muted);font-size:11px;margin:6px 0 0">A mesma pessoa pode aparecer mais de uma vez, desde que não seja em sequência.</p>
  <div id="nt_sec" style="margin-top:12px"></div>
  ${others.length?`<button class="btn ghost sm" onclick="addSecRow()">+ Envolver outro setor</button>`:''}
  <p class="note" style="margin-top:12px">Setores na mesma etapa trabalham em paralelo; uma etapa só começa quando as anteriores concluem.</p>
  <span class="lbl" style="margin-top:12px">3. Revisar e criar</span><button class="btn" style="margin-top:8px" onclick="createTask()">Criar tarefa ${ic('arrow',18)}</button></div></div>`}
 function nextPhase(){const v=[+val('nt_ph')||1,...[...document.querySelectorAll('#nt_sec .sec input[type=number]')].map(x=>+x.value||1)];return Math.max(...v)+1}
-function addSecRow(){const m=me(),others=S.sectors.filter(s=>s!==m.sector&&gestorOf(s)),used=[...document.querySelectorAll('#nt_sec .sec select')].map(x=>x.value),def=others.find(s=>!used.includes(s))||others[0],lab=t=>`<span style="font-size:11px;color:var(--muted)">${t}</span>`;document.getElementById('nt_sec').insertAdjacentHTML('beforeend',`<div class="sec" style="margin-bottom:12px;padding:10px;border:1px solid var(--line);border-radius:14px;background:var(--card)"><div class="row" style="align-items:flex-end;gap:10px"><label class="field" style="margin:0;flex:2;min-width:0">${lab('Setor')}<select class="inp">${others.map(s=>`<option ${s===def?'selected':''}>${s}</option>`).join('')}</select></label><label class="field" style="margin:0;flex:0 0 96px">${lab('Etapa')}<input type="number" class="inp" min="1" max="99" step="1" value="${nextPhase()}" title="Setores com o mesmo número trabalham em paralelo"></label><label class="field" style="margin:0;flex:2;min-width:0">${lab('Prazo da etapa')}<input type="date" class="inp" value="${val('nt_due')}" max="${val('nt_due')}"></label><button class="btn ghost sm" style="margin-bottom:6px" onclick="this.closest('.sec').remove()" aria-label="Remover setor">✕</button></div><label class="field" style="margin:10px 0 0">${lab('Descrição')}<input class="inp" maxlength="240" placeholder="O que este setor deve entregar nesta etapa (opcional)"></label></div>`)}
-function createProj(thenTask){const m=me(),name=val('np_name'),desc=val('np_desc'),due=val('np_due');if(!name||!desc||!due)return toast('Preencha os campos obrigatórios.');
- const p={id:'p'+uid(),name,sector:m.sector,desc,due,priority:val('np_pri'),creator:m.id,concluded:false,archived:false,cycles:0,rec:val('np_rec')==='sim'?{freq:val('np_freq'),struct:val('np_struct'),mode:val('np_mode')}:null};
- if(m.role==='func'){p.approval='pendente';S.projects.push(p);log('Projeto','Projeto criado (aguardando aprovação)',name);notify([gestorOf(m.sector)?.id],m.name+' criou o projeto "'+name+'" e aguarda sua aprovação.');save();renderBody();return toast('Projeto enviado para aprovação do Gestor')}
- S.projects.push(p);log('Projeto','Projeto criado',name,p.rec?'Recorrente: '+p.rec.freq:'');save();UI.newProj=p.id;renderBody();toast('Projeto criado · Não iniciado');if(thenTask)document.getElementById('nt_name').focus()}
-function createTask(){const m=me(),pid=val('nt_proj'),name=val('nt_name'),desc=val('nt_desc'),due=val('nt_due'),rs=readResp('#nt_resp'),ids=rs.map(r=>r.user),ph=+val('nt_ph');
- if(!pid)return toast('A tarefa precisa de um projeto.');if(!name||!desc||!due)return toast('Preencha os campos obrigatórios.');if(!ids.length)return toast('Responsável obrigatório.');if(new Set(ids).size!==ids.length)return toast('Responsável repetido.');
- const p=P(pid);if(due>p.due)return toast('O prazo passa do prazo final do projeto ('+fmt(p.due)+').');{const er=checkStepDues(rs,due);if(er)return toast(er)}
- const secs=[...document.querySelectorAll('#nt_sec .sec')].map(r=>{const [a,b,c,d]=r.querySelectorAll('select,input');return {sector:a.value,phase:+b.value,due:c.value||due,desc:d.value.trim()}});
+function addSecRow(){const m=me(),others=S.sectors.filter(s=>s!==m.sector&&gestorOf(s)),used=[...document.querySelectorAll('#nt_sec .sec select')].map(x=>x.value),def=others.find(s=>!used.includes(s))||others[0],lab=t=>`<span style="font-size:11px;color:var(--muted)">${t}</span>`;document.getElementById('nt_sec').insertAdjacentHTML('beforeend',`<div class="sec" style="margin-bottom:12px;padding:10px;border:1px solid var(--line);border-radius:14px;background:var(--card)"><div class="row" style="align-items:flex-end;gap:10px"><label class="field" style="margin:0;flex:2;min-width:0">${lab('Setor')}<select class="inp" onchange="this.closest('.sec').querySelector('.sp').innerHTML=secPeopleOpts(this.value)">${others.map(s=>`<option ${s===def?'selected':''}>${s}</option>`).join('')}</select></label><label class="field" style="margin:0;flex:0 0 96px">${lab('Etapa')}<input type="number" class="inp" min="1" max="99" step="1" value="${nextPhase()}" title="Setores com o mesmo número trabalham em paralelo"></label><label class="field" style="margin:0;flex:2;min-width:0">${lab('Prazo da etapa')}<input type="date" class="inp" value="${val('nt_due')}" max="${val('nt_due')}"></label><button class="btn ghost sm" style="margin-bottom:6px" onclick="this.closest('.sec').remove()" aria-label="Remover setor">✕</button></div><label class="field" style="margin:10px 0 0">${lab('Descrição')}<input class="inp" maxlength="240" placeholder="O que este setor deve entregar nesta etapa (opcional)"></label><label class="field" style="margin:10px 0 0">${lab('Pessoa sugerida (o Gestor do setor confirma ou troca)')}<select class="inp sp">${secPeopleOpts(def)}</select></label></div>`)}
+function createTask(){const m=me(),name=val('nt_name'),desc=val('nt_desc'),due=val('nt_due'),rs=readResp('#nt_resp'),ids=rs.map(r=>r.user),ph=+val('nt_ph');
+ if(!name||!desc||!due)return toast('Preencha os campos obrigatórios.');if(!ids.length)return toast('Responsável obrigatório.');{const k=consecDup(ids);if(k>0)return toast(`${U(ids[k]).name} aparece duas vezes seguidas. Junte as duas etapas em uma.`)}
+ {const er=checkStepDues(rs,due);if(er)return toast(er)}
+ const secs=[...document.querySelectorAll('#nt_sec .sec')].map(r=>{const [a,b,c,d]=r.querySelectorAll('select,input'),sp=r.querySelector('.sp');return {sector:a.value,phase:+b.value,due:c.value||due,desc:d.value.trim(),person:sp?sp.value:''}});
  if(new Set(secs.map(s=>s.sector)).size!==secs.length)return toast('Setor repetido.');
  const phases=[ph,...secs.map(s=>s.phase)];if(phases.some(v=>!Number.isInteger(v)||v<1))return toast('Informe números de etapa inteiros a partir de 1.');const used=[...new Set(phases)].sort((a,b)=>a-b);if(used.some((v,k)=>v!==k+1))return toast('As etapas devem ser sequenciais a partir da 1 (sem pular números).');
- const t={id:'t'+uid(),code:'TK-'+(S.seq++),project:pid,name,desc,due,created:iso(new Date()),creator:m.id,cancelled:false,stages:[{id:uid(),sector:m.sector,phase:ph,part:'Distribuída',partNote:'',due,steps:rs.map(r=>({user:r.user,desc:r.desc,due:r.due||undefined,status:'Não iniciada',reason:'',links:'',notes:''}))},
-  ...secs.map(s=>({id:uid(),sector:s.sector,phase:s.phase,desc:s.desc,part:'Aguardando resposta',partNote:'',due:s.due>due?due:s.due,steps:[]}))]};
- S.tasks.push(t);log('Tarefa','Tarefa criada',`${t.code} ${t.name}`,flowLabel(t));notify(ids,`Nova tarefa atribuída: "${name}".`);secs.forEach(s=>notify([gestorOf(s.sector)?.id],`${m.name} solicitou participação de ${s.sector} em "${name}".`));
- save();renderBody();toast(secs.length?'Tarefa criada · solicitações enviadas':'Tarefa interna criada')}
-
-// ---------- CEO ----------
+ const r=resolveTag(val('nt_tag'),m.sector);if(r.err)return toast(r.err);
+ const t={id:'t'+uid(),code:'TK-'+(S.seq++),project:r.tag.id,name,desc,due,created:iso(new Date()),creator:m.id,cancelled:false,rec:val('nt_rec')?{freq:val('nt_rec')}:null,stages:[{id:uid(),sector:m.sector,phase:ph,part:'Distribuída',partNote:'',due,steps:rs.map(x=>({user:x.user,desc:x.desc,kind:x.kind,due:x.due||undefined,status:'Não iniciada',reason:'',links:'',notes:''}))},
+  ...secs.map(s=>({id:uid(),sector:s.sector,phase:s.phase,desc:s.desc,part:s.person?'Aguardando confirmação':'Aguardando resposta',partNote:s.person?`Sugestão de ${m.name}: ${U(s.person).name}`:'',due:s.due>due?due:s.due,steps:s.person?[{user:s.person,status:'Não iniciada',reason:'',links:'',notes:''}]:[]}))]};
+ S.tasks.push(t);UI.newTag='';log('Tarefa','Tarefa criada',`${t.code} ${t.name}`,flowLabel(t)+' · tag '+r.tag.name);notify([...new Set(ids)],`Nova tarefa atribuída: "${name}".`);secs.forEach(s=>notify([gestorOf(s.sector)?.id],s.person?`${m.name} sugeriu ${U(s.person).name} para "${name}". Confirme ou troque a pessoa.`:`${m.name} solicitou participação de ${s.sector} em "${name}".`));
+ save();renderBody();toast(r.isNew&&r.tag.status==='pendente'?'Tarefa criada · tag nova enviada para aprovação':secs.length?'Tarefa criada · solicitações enviadas':'Tarefa criada')}
 function ceoHome(){const act=S.tasks.filter(t=>!tDone(t)&&!P(t.project).archived);
  const late=act.filter(t=>daysTo(t.due)<0),blocked=act.filter(t=>tStatus(t)==='Bloqueada'),risk=act.filter(t=>tFarol(t)!=='verde'&&daysTo(t.due)>=0),neg=act.filter(t=>t.stages.some(s=>s.part!=='Distribuída'));
  const pend=S.users.filter(u=>u.status==='pendente'&&u.declared==='gestor');
@@ -758,14 +807,7 @@ function ceoHome(){const act=S.tasks.filter(t=>!tDone(t)&&!P(t.project).archived
  <p class="s" style="color:var(--muted);margin:0 0 6px">${all.length===pool.length?`${pool.length} tarefa(s)`:`${all.length} de ${pool.length} tarefa(s)`}</p>
  <div style="overflow:auto"><table><tr><th>Projeto / Tarefa</th><th>Setores</th><th>Responsáveis</th><th>Prazo</th><th>Status</th><th>Farol</th></tr>
  ${all.map(t=>`<tr class="click" onclick="taskModal('${t.id}')"><td>${esc(P(t.project).name)} / ${esc(t.name)}</td><td>${esc(flowLabel(t))}</td><td>${esc(names(t))}</td><td>${fmtS(t.due)}</td><td>${pill(tStatus(t))}</td><td>${farolPill(tFarol(t))}</td></tr>`).join('')||'<tr><td colspan=6 class="empty">Nenhuma tarefa com estes filtros.</td></tr>'}</table></div></div>`}
-function projApprovalsCard(){const m=me(),pend=S.projects.filter(p=>p.approval==='pendente'&&p.sector===m.sector);
- return `<div class="card hero"><div class="row between"><h2>Projetos aguardando aprovação</h2><span class="chip">${pend.length}</span></div><p class="sub">Projetos criados por funcionários do seu setor. As tarefas não precisam de aprovação.</p>
- ${pend.length?`<div class="list">${pend.map(p=>`<div class="it">${av(p.creator)}<div class="grow"><div class="t">${esc(p.name)}</div><div class="s">${esc(U(p.creator).name)} · prazo ${fmtS(p.due)} · prioridade ${esc(p.priority)}</div><div class="s" style="color:var(--sub)">${esc(p.desc)}</div></div><button class="btn sm" onclick="approveProj('${p.id}',true)">Aprovar</button><button class="btn ghost sm" onclick="rejectProjModal('${p.id}')">Recusar</button></div>`).join('')}</div>`:'<div class="empty">Nenhum projeto aguardando.</div>'}</div>`}
-function approveProj(id,ok,reason){const p=P(id);if(ok){delete p.approval;p.rejectReason=''}else{p.approval='recusado';p.rejectReason=reason}
- log('Projeto',ok?'Projeto aprovado':'Projeto recusado',p.name,reason||'');notify([p.creator],`Seu projeto "${p.name}" foi ${ok?'aprovado. Você já pode criar tarefas nele.':'recusado: '+reason}`);save();closeM();render();toast(ok?'Projeto aprovado':'Projeto recusado')}
-function rejectProjModal(id){openM(`<h2>Recusar projeto</h2><p class="sub">Explique o motivo para o funcionário.</p><textarea class="inp" id="rj"></textarea><div class="row" style="margin-top:14px"><button class="btn" onclick="const r=val('rj');if(!r)return toast('Informe o motivo.');approveProj('${id}',false,r)">Confirmar recusa</button><button class="btn ghost" onclick="closeM()">Cancelar</button></div>`)}
-function myProjStatus(){const m=me(),mine=S.projects.filter(p=>p.creator===m.id);if(!mine.length)return'';
- return `<div class="card" style="margin-top:20px"><h2>Meus projetos</h2><p class="sub">Projetos que você criou. Depois de aprovados pelo Gestor, você pode criar tarefas neles.</p><div class="list">${mine.map(p=>`<div class="it">${sectorIcon(p.sector)}<div class="grow"><div class="t">${esc(p.name)}</div><div class="s">Prazo ${fmtS(p.due)}${p.rejectReason?` · Motivo: ${esc(p.rejectReason)}`:''}</div></div>${pill(pStatus(p))}</div>`).join('')}</div></div>`}
+function myProjStatus(){return''}
 // ---------- CEO: cadastro e equipe ----------
 UI.tf={sector:'Todos',role:'Todos',status:'Todos'};
 function ceoTeam(){const F=UI.tf,people=S.users.filter(u=>u.role!=='admin'&&u.role!=='ceo');
